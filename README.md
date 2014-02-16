@@ -1,4 +1,4 @@
 D3hex
 =====
 
-D3hexeditor
+The first node based Hex-Editor available!
