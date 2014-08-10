@@ -1,0 +1,7 @@
+
+*.exe
+Thumbs.db
+
+/Distribution
+/Screenshots
+/Test

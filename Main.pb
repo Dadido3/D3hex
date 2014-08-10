@@ -112,7 +112,7 @@
 ;   - Using a flag instead of several object-types for opening and reopening
 ;   - Network terminal
 ;   
-; - V0.930 (indev)
+; - V0.925 (10.08.2014)
 ;   - Fixed loading of the default D3hex file
 ;   - Added names to object-inputs and outputs
 ;   - Editor:
@@ -138,7 +138,7 @@ XIncludeFile "Includes/Crash.pbi"
 
 ; ##################################################### Constants ###################################################
 
-#Version = 0930
+#Version = 0925
 
 Enumeration
   #Data_Raw
@@ -316,7 +316,7 @@ XIncludeFile "Includes/Object_History.pbi"
 XIncludeFile "Includes/Object_Process.pbi"
 XIncludeFile "Includes/Object_Network_Terminal.pbi"
 ;XIncludeFile "Includes/Object_Math.pbi"
-XIncludeFile "Includes/Object_MathFormula.pbi"
+;XIncludeFile "Includes/Object_MathFormula.pbi"
 XIncludeFile "Includes/Object_Datatypes.pbi"
 
 ; ##################################################### Procedures ##################################################
@@ -833,7 +833,8 @@ DataSection
   
 EndDataSection
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 114
+; CursorPosition = 318
+; FirstLine = 88
 ; Folding = --
 ; EnableUnicode
 ; EnableXP
