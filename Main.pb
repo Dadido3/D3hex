@@ -1,9 +1,22 @@
-﻿
-EnableExplicit
-
-UsePNGImageDecoder()
-UsePNGImageEncoder()
-
+﻿; ##################################################### License / Copyright #########################################
+; 
+;     D3hex
+;     Copyright (C) 2014  David Vogel
+; 
+;     This program is free software; you can redistribute it and/or modify
+;     it under the terms of the GNU General Public License As published by
+;     the Free Software Foundation; either version 2 of the License, or
+;     (at your option) any later version.
+; 
+;     This program is distributed in the hope that it will be useful,
+;     but WITHOUT ANY WARRANTY; without even the implied warranty of
+;     MERCHANTABILITY Or FITNESS For A PARTICULAR PURPOSE.  See the
+;     GNU General Public License For more details.
+; 
+;     You should have received a copy of the GNU General Public License along
+;     With this program; if not, write to the Free Software Foundation, Inc.,
+;     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+;
 ; ##################################################### Dokumentation / Kommentare ##################################
 ; 
 ; Todo:
@@ -37,7 +50,6 @@ UsePNGImageEncoder()
 ;   - Disassembler (x86/64, 6809, ...)
 ;   - Audiowiedergabe
 ;   - Cheat-Engine like object
-;   - Data-Viewer (Interprets the data as integer, float, ... whatever)
 ;   - Text-Viewer (Shows the data as text in a editor gadget)
 ;   
 ; - Data_Source elemente
@@ -110,6 +122,13 @@ UsePNGImageEncoder()
 ;   - Added Object_Datatypes
 ;   - Fixed crash because of wrong pointer returned from Window_Create(...)
 ;   
+; ##################################################### Begin #######################################################
+
+EnableExplicit
+
+UsePNGImageDecoder()
+UsePNGImageEncoder()
+
 ; ##################################################### Includes ####################################################
 
 XIncludeFile "Includes/TabBarGadget.pbi"
@@ -814,8 +833,7 @@ DataSection
   
 EndDataSection
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 110
-; FirstLine = 82
+; CursorPosition = 114
 ; Folding = --
 ; EnableUnicode
 ; EnableXP

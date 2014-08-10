@@ -1,4 +1,22 @@
-﻿
+﻿; ##################################################### License / Copyright #########################################
+; 
+;     D3hex
+;     Copyright (C) 2014  David Vogel
+; 
+;     This program is free software; you can redistribute it and/or modify
+;     it under the terms of the GNU General Public License As published by
+;     the Free Software Foundation; either version 2 of the License, or
+;     (at your option) any later version.
+; 
+;     This program is distributed in the hope that it will be useful,
+;     but WITHOUT ANY WARRANTY; without even the implied warranty of
+;     MERCHANTABILITY Or FITNESS For A PARTICULAR PURPOSE.  See the
+;     GNU General Public License For more details.
+; 
+;     You should have received a copy of the GNU General Public License along
+;     With this program; if not, write to the Free Software Foundation, Inc.,
+;     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+;
 ; ##################################################### Dokumentation / Kommentare ##################################
 ; 
 ; 
@@ -110,6 +128,8 @@ Structure Object_Output
   
   ; #### Custom Data
   *Custom_Data
+  
+  *Descriptor.NBT_Element
   
   i.l
   
@@ -619,8 +639,7 @@ EndProcedure
 ; ##################################################### End #########################################################
 
 
-; IDE Options = PureBasic 5.22 LTS (Windows - x64)
-; CursorPosition = 573
-; FirstLine = 544
+; IDE Options = PureBasic 5.30 (Windows - x64)
+; CursorPosition = 18
 ; Folding = ----
 ; EnableXP

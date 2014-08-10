@@ -1,4 +1,22 @@
-﻿
+﻿; ##################################################### License / Copyright #########################################
+; 
+;     D3hex
+;     Copyright (C) 2014  David Vogel
+; 
+;     This program is free software; you can redistribute it and/or modify
+;     it under the terms of the GNU General Public License As published by
+;     the Free Software Foundation; either version 2 of the License, or
+;     (at your option) any later version.
+; 
+;     This program is distributed in the hope that it will be useful,
+;     but WITHOUT ANY WARRANTY; without even the implied warranty of
+;     MERCHANTABILITY Or FITNESS For A PARTICULAR PURPOSE.  See the
+;     GNU General Public License For more details.
+; 
+;     You should have received a copy of the GNU General Public License along
+;     With this program; if not, write to the Free Software Foundation, Inc.,
+;     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+;
 ; ##################################################### Dokumentation / Kommentare ##################################
 ; 
 ; 
@@ -189,7 +207,7 @@ EndProcedure
 Procedure.s Object_Datatypes_Data_2_String(*Object.Object, Type.i, Flags.i)
   Protected Size.q
   Protected String.s
-  Protected i.q
+  Protected i.i
   Protected Ascii_Metadata.a
   Protected Ascii_Data.a
   Protected Other_Data.q
@@ -428,7 +446,7 @@ Procedure Object_Datatypes_String_2_Data(*Object.Object, Type.i, String.s, Flags
   Protected Size.q
   Protected Part_String.s
   Protected Result.i
-  Protected i.q
+  Protected i.i
   Protected Ascii_Metadata.a
   Protected Ascii_Data.a
   Protected Other_Data.q
@@ -943,9 +961,9 @@ EndIf
 ; ##################################################### End #########################################################
 
 
-; IDE Options = PureBasic 5.30 Beta 1 (Windows - x64)
-; CursorPosition = 695
-; FirstLine = 692
+; IDE Options = PureBasic 5.30 (Windows - x64)
+; CursorPosition = 470
+; FirstLine = 434
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP

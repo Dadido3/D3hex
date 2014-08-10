@@ -1,4 +1,22 @@
-﻿
+﻿; ##################################################### License / Copyright #########################################
+; 
+;     D3hex
+;     Copyright (C) 2014  David Vogel
+; 
+;     This program is free software; you can redistribute it and/or modify
+;     it under the terms of the GNU General Public License As published by
+;     the Free Software Foundation; either version 2 of the License, or
+;     (at your option) any later version.
+; 
+;     This program is distributed in the hope that it will be useful,
+;     but WITHOUT ANY WARRANTY; without even the implied warranty of
+;     MERCHANTABILITY Or FITNESS For A PARTICULAR PURPOSE.  See the
+;     GNU General Public License For more details.
+; 
+;     You should have received a copy of the GNU General Public License along
+;     With this program; if not, write to the Free Software Foundation, Inc.,
+;     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+;
 ; ##################################################### Dokumentation / Kommentare ##################################
 ; 
 ; Can handle up to $7FFFFFFFFFFFFFFF bytes of data
@@ -225,7 +243,7 @@ Procedure Object_Editor_Create(Requester)
   *Object_Input\Function_Event = @Object_Editor_Input_Event()
   
   ; #### Add Output
-  *Object_Output = Object_Output_Add(*Object)
+  *Object_Output = Object_Output_Add(*Object, "Selection", "Selection")
   *Object_Output\Function_Event = @Object_Editor_Output_Event()
   *Object_Output\Function_Get_Segments = @Object_Editor_Output_Get_Segments()
   *Object_Output\Function_Get_Descriptor = @Object_Editor_Output_Get_Descriptor()
@@ -2365,7 +2383,7 @@ If Object_Editor_Main\Object_Type
   Object_Editor_Main\Object_Type\UID = "D3EDITOR"
   Object_Editor_Main\Object_Type\Author = "David Vogel (Dadido3)"
   Object_Editor_Main\Object_Type\Date_Creation = Date(2014,01,12,14,02,00)
-  Object_Editor_Main\Object_Type\Date_Modification = Date(2014,03,02,21,59,00)
+  Object_Editor_Main\Object_Type\Date_Modification = Date(2014,10,08,16,45,00)
   Object_Editor_Main\Object_Type\Date_Compilation = #PB_Compiler_Date
   Object_Editor_Main\Object_Type\Description = "Just a normal hex-editor."
   Object_Editor_Main\Object_Type\Function_Create = @Object_Editor_Create()
@@ -2385,9 +2403,8 @@ MenuItem(#Object_Editor_PopupMenu_Select_All, "Select All", ImageID(Icon_Select_
 ; ##################################################### End #########################################################
 
 
-; IDE Options = PureBasic 5.30 Beta 1 (Windows - x64)
-; CursorPosition = 2266
-; FirstLine = 2254
+; IDE Options = PureBasic 5.30 (Windows - x64)
+; CursorPosition = 18
 ; Folding = -------
 ; EnableUnicode
 ; EnableXP

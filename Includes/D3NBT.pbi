@@ -1,3 +1,23 @@
+; ##################################################### License / Copyright #########################################
+; 
+;     D3NBT
+;     Copyright (C) 2012-2014  David Vogel
+; 
+;     This library is free software; you can redistribute it and/or
+;     modify it under the terms of the GNU Lesser General Public
+;     License As published by the Free Software Foundation; either
+;     version 2.1 of the License, Or (at your option) any later version.
+; 
+;     This library is distributed in the hope that it will be useful,
+;     but WITHOUT ANY WARRANTY; without even the implied warranty of
+;     MERCHANTABILITY Or FITNESS For A PARTICULAR PURPOSE.  See the GNU
+;     Lesser General Public License For more details.
+; 
+;     You should have received a copy of the GNU Lesser General Public
+;     License along With this library; if not, write to the Free Software
+;     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+;     USA
+;
 ; #################################################### Documentation #############################################
 
 ; Named Binary Tags - Include
@@ -1181,8 +1201,7 @@ EndProcedure
 ; #################################################### Initstuff #################################################
 
 ; #################################################### Datasections ##############################################
-; IDE Options = PureBasic 5.30 Beta 1 (Windows - x64)
-; CursorPosition = 25
-; FirstLine = 9
+; IDE Options = PureBasic 5.30 (Windows - x64)
+; CursorPosition = 6
 ; Folding = -----
 ; EnableXP
