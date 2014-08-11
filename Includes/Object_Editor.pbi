@@ -623,7 +623,7 @@ Procedure Object_Editor_Output_Set_Data(*Object_Output.Object_Output, Position.q
     EndIf
   EndIf
   
-  ProcedureReturn 
+  ProcedureReturn #False
 EndProcedure
 
 Procedure Object_Editor_Output_Convolute(*Object_Output.Object_Output, Position.q, Offset.q)
@@ -2404,7 +2404,8 @@ MenuItem(#Object_Editor_PopupMenu_Select_All, "Select All", ImageID(Icon_Select_
 
 
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 18
+; CursorPosition = 624
+; FirstLine = 502
 ; Folding = -------
 ; EnableUnicode
 ; EnableXP

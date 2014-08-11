@@ -264,7 +264,7 @@ Procedure Object_Random_Get_Data(*Object_Output.Object_Output, Position.q, Size.
     EndIf
   EndIf
   
-  ; #### Todo: put in correct values!
+  ;TODO: put in correct values!
   If *Metadata
     FillMemory(*Metadata, Size, #Metadata_NoError | #Metadata_Readable, #PB_Ascii)
   EndIf
@@ -566,6 +566,7 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 18
+; CursorPosition = 265
+; FirstLine = 236
 ; Folding = ----
 ; EnableXP

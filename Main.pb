@@ -121,6 +121,9 @@
 ;   - Added Set_Data_Check and Convolute_Check functions
 ;   - Added Object_Datatypes
 ;   - Fixed crash because of wrong pointer returned from Window_Create(...)
+;
+; - V0.930 (indev)
+;   - Added Object_Binary_Operation
 ;   
 ; ##################################################### Begin #######################################################
 
@@ -138,7 +141,7 @@ XIncludeFile "Includes/Crash.pbi"
 
 ; ##################################################### Constants ###################################################
 
-#Version = 0925
+#Version = 0930
 
 Enumeration
   #Data_Raw
@@ -318,6 +321,7 @@ XIncludeFile "Includes/Object_Network_Terminal.pbi"
 ;XIncludeFile "Includes/Object_Math.pbi"
 ;XIncludeFile "Includes/Object_MathFormula.pbi"
 XIncludeFile "Includes/Object_Datatypes.pbi"
+XIncludeFile "Includes/Object_Binary_Operation.pbi"
 
 ; ##################################################### Procedures ##################################################
 
@@ -833,8 +837,8 @@ DataSection
   
 EndDataSection
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 318
-; FirstLine = 88
+; CursorPosition = 125
+; FirstLine = 98
 ; Folding = --
 ; EnableUnicode
 ; EnableXP

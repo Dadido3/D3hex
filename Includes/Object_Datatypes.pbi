@@ -66,17 +66,6 @@ Structure Object_Datatypes_Main
 EndStructure
 Global Object_Datatypes_Main.Object_Datatypes_Main
 
-Structure Object_Datatypes_Input
-  ; #### Data-Array properties
-  
-  Offset.q      ; in Bytes
-  
-  Color.l
-  
-  ; #### Temp Values
-  List Value.Object_View1D_Input_Value()
-EndStructure
-
 Structure Object_Datatypes
   *Window.Window
   Window_Close.l
@@ -97,8 +86,6 @@ EndStructure
 
 ; ##################################################### Init ########################################################
 
-Global Object_Datatypes_Font = LoadFont(#PB_Any, "Courier New", 10)
-
 ; ##################################################### Declares ####################################################
 
 Declare   Object_Datatypes_Main(*Object.Object)
@@ -118,7 +105,6 @@ Procedure Object_Datatypes_Create(Requester)
   Protected *Object.Object = _Object_Create()
   Protected *Object_Datatypes.Object_Datatypes
   Protected *Object_Input.Object_Input
-  Protected *Object_Output.Object_Output
   
   If Not *Object
     ProcedureReturn #False
@@ -962,8 +948,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 470
-; FirstLine = 434
+; CursorPosition = 106
+; FirstLine = 90
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP

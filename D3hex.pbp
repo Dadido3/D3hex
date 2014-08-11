@@ -7,7 +7,7 @@
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2014-08-10 22:54" user="David Vogel" host="DAVIDS"/>
+    <lastopen date="2014-08-11 23:16" user="David Vogel" host="DAVIDS"/>
   </section>
   <section name="files">
     <file name="Includes\About.pbi">
@@ -38,9 +38,13 @@
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
       <fingerprint md5="70a5f7739c76fe72ea3135f51baee935"/>
     </file>
+    <file name="Includes\Object_Binary_Operation.pbi">
+      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
+      <fingerprint md5="ef2d39b39f8ffcddba0f99e19ac75e7a"/>
+    </file>
     <file name="Includes\Object_Datatypes.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
-      <fingerprint md5="c13d62b15a2d0537e489f5e007889541"/>
+      <fingerprint md5="18a1fd09513c781cc7318a54fddd5680"/>
     </file>
     <file name="Includes\Object_Dummy.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
@@ -48,7 +52,7 @@
     </file>
     <file name="Includes\Object_Editor.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
-      <fingerprint md5="604d3afb4e47543dcbdb11b3fa597a05"/>
+      <fingerprint md5="d31e64918715f5afb81a2ceeaddf88f6"/>
     </file>
     <file name="Includes\Object_Editor_Goto.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
@@ -84,7 +88,7 @@
     </file>
     <file name="Includes\Object_Random.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
-      <fingerprint md5="de43d9f4cc72521eda485941af1abab8"/>
+      <fingerprint md5="0b1348962b141185c5965cb6e46fa95f"/>
     </file>
     <file name="Includes\Object_Type.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
@@ -112,7 +116,7 @@
     </file>
     <file name="Main.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="15b63a1b1ed1f19ec03450adc5b9828c"/>
+      <fingerprint md5="a368f167698005a31362e2ba2ae756da"/>
     </file>
   </section>
   <section name="targets">
@@ -123,8 +127,8 @@
       <executable value="D3hex.x86.exe"/>
       <options unicode="1" xpskin="1" user="1" onerror="1"/>
       <icon enable="1">Data\Images\Icon.ico</icon>
-      <compilecount enable="1" value="217"/>
-      <buildcount enable="1" value="29"/>
+      <compilecount enable="1" value="219"/>
+      <buildcount enable="1" value="31"/>
       <versioninfo enable="1">
         <field3 value="D3hex"/>
         <field14 value="D3nexus.de"/>
@@ -139,8 +143,8 @@
       <options unicode="1" xpskin="1" user="1" onerror="1"/>
       <purifier enable="0" granularity="1,1,1,1"/>
       <icon enable="1">Data\Images\Icon.ico</icon>
-      <compilecount enable="1" value="2273"/>
-      <buildcount enable="1" value="36"/>
+      <compilecount enable="1" value="2281"/>
+      <buildcount enable="1" value="38"/>
       <versioninfo enable="1">
         <field3 value="D3hex"/>
         <field14 value="D3nexus.de"/>
