@@ -110,7 +110,9 @@ Procedure Crash_Handler()
   End
 EndProcedure
 
-OnErrorCall(@Crash_Handler())
+CompilerIf #PB_Compiler_Debugger = #False
+  OnErrorCall(@Crash_Handler())
+CompilerEndIf
 
 ; ##################################################### Initialisation ##############################################
 
@@ -119,7 +121,8 @@ OnErrorCall(@Crash_Handler())
 ; ##################################################### Data Sections ###############################################
 
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 1
+; CursorPosition = 111
+; FirstLine = 61
 ; Folding = -
 ; EnableUnicode
 ; EnableXP

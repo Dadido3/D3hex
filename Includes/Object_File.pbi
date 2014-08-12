@@ -1004,7 +1004,7 @@ Procedure Object_File_Window_Open(*Object.Object)
     *Object_File\CheckBox[0] = CheckBoxGadget(#PB_Any, 110, 60, 100, 20, "Shared Read")
     *Object_File\CheckBox[1] = CheckBoxGadget(#PB_Any, 110, 80, 100, 20, "Shared Write")
     *Object_File\CheckBox[2] = CheckBoxGadget(#PB_Any, 110, 100, 100, 20, "Cached")
-    *Object_File\Button_Create = ButtonGadget(#PB_Any, Width-200, Height-40, 90, 30, "Create", #PB_Button_Toggle)
+    *Object_File\Button_Create = ButtonGadget(#PB_Any, Width-200, Height-40, 90, 30, "Create")
     *Object_File\Button_Open = ButtonGadget(#PB_Any, Width-100, Height-40, 90, 30, "Open", #PB_Button_Toggle)
     
     SendMessage_(GadgetID(*Object_File\Editor),#EM_SETTARGETDEVICE,#Null,0) ; automatic word wrap
@@ -1136,7 +1136,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 18
+; CursorPosition = 1006
+; FirstLine = 978
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

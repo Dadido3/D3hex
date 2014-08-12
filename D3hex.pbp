@@ -7,7 +7,7 @@
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2014-08-11 23:16" user="David Vogel" host="DAVIDS"/>
+    <lastopen date="2014-08-13 01:09" user="David Vogel" host="DAVIDS"/>
   </section>
   <section name="files">
     <file name="Includes\About.pbi">
@@ -16,7 +16,7 @@
     </file>
     <file name="Includes\Crash.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
-      <fingerprint md5="96064d18378b001be002a3f9a67efbf2"/>
+      <fingerprint md5="2f28ecd33757a1c7f22279e8087548f9"/>
     </file>
     <file name="Includes\D3NBT.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
@@ -40,7 +40,7 @@
     </file>
     <file name="Includes\Object_Binary_Operation.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
-      <fingerprint md5="ef2d39b39f8ffcddba0f99e19ac75e7a"/>
+      <fingerprint md5="af4cd93ceec5f10b4fbb4ded3326f878"/>
     </file>
     <file name="Includes\Object_Datatypes.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
@@ -64,7 +64,7 @@
     </file>
     <file name="Includes\Object_File.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
-      <fingerprint md5="78dea3e7b286f79fd801f63f068b52e8"/>
+      <fingerprint md5="bf545227ff5571deebc7ef2a97f8add5"/>
     </file>
     <file name="Includes\Object_History.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
@@ -143,7 +143,7 @@
       <options unicode="1" xpskin="1" user="1" onerror="1"/>
       <purifier enable="0" granularity="1,1,1,1"/>
       <icon enable="1">Data\Images\Icon.ico</icon>
-      <compilecount enable="1" value="2281"/>
+      <compilecount enable="1" value="2298"/>
       <buildcount enable="1" value="38"/>
       <versioninfo enable="1">
         <field3 value="D3hex"/>

@@ -45,6 +45,8 @@ EndEnumeration
 Enumeration
   #Object_Binary_Operation_Size_Mode_Max
   #Object_Binary_Operation_Size_Mode_Min
+  #Object_Binary_Operation_Size_Mode_A
+  #Object_Binary_Operation_Size_Mode_B
   #Object_Binary_Operation_Size_Mode_Custom
 EndEnumeration
 
@@ -194,16 +196,24 @@ Procedure Object_Binary_Operation_Configuration_Get(*Object.Object, *Parent_Tag.
     ProcedureReturn #False
   EndIf
   
-  ;*NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Size", #NBT_Tag_Quad)  : NBT_Tag_Set_Number(*NBT_Tag, *Object_Binary_Operation\Size)
+  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "A_Negate", #NBT_Tag_Quad)    : NBT_Tag_Set_Number(*NBT_Tag, *Object_Binary_Operation\A_Negate)
+  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "A_Repeat", #NBT_Tag_Quad)    : NBT_Tag_Set_Number(*NBT_Tag, *Object_Binary_Operation\A_Repeat)
+  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "A_Offset", #NBT_Tag_Quad)    : NBT_Tag_Set_Number(*NBT_Tag, *Object_Binary_Operation\A_Offset)
   
-  ;TODO: Save and Load settings
+  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "B_Negate", #NBT_Tag_Quad)    : NBT_Tag_Set_Number(*NBT_Tag, *Object_Binary_Operation\B_Negate)
+  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "B_Repeat", #NBT_Tag_Quad)    : NBT_Tag_Set_Number(*NBT_Tag, *Object_Binary_Operation\B_Repeat)
+  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "B_Offset", #NBT_Tag_Quad)    : NBT_Tag_Set_Number(*NBT_Tag, *Object_Binary_Operation\B_Offset)
+  
+  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Operation", #NBT_Tag_Quad)   : NBT_Tag_Set_Number(*NBT_Tag, *Object_Binary_Operation\Operation)
+  
+  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Size_Mode", #NBT_Tag_Quad)   : NBT_Tag_Set_Number(*NBT_Tag, *Object_Binary_Operation\Size_Mode)
+  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Size_Custom", #NBT_Tag_Quad) : NBT_Tag_Set_Number(*NBT_Tag, *Object_Binary_Operation\Size_Custom)
   
   ProcedureReturn #True
 EndProcedure
 
 Procedure Object_Binary_Operation_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
   Protected *NBT_Tag.NBT_Tag
-  Protected New_Size.i, *Temp
   
   If Not *Object
     ProcedureReturn #False
@@ -216,7 +226,18 @@ Procedure Object_Binary_Operation_Configuration_Set(*Object.Object, *Parent_Tag.
     ProcedureReturn #False
   EndIf
   
-  ;*NBT_Tag = NBT_Tag(*Parent_Tag, "Size") : *Object_Binary_Operation\Size = NBT_Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT_Tag(*Parent_Tag, "A_Negate")     : *Object_Binary_Operation\A_Negate     = NBT_Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT_Tag(*Parent_Tag, "A_Repeat")     : *Object_Binary_Operation\A_Repeat     = NBT_Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT_Tag(*Parent_Tag, "A_Offset")     : *Object_Binary_Operation\A_Offset     = NBT_Tag_Get_Number(*NBT_Tag)
+  
+  *NBT_Tag = NBT_Tag(*Parent_Tag, "B_Negate")     : *Object_Binary_Operation\B_Negate     = NBT_Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT_Tag(*Parent_Tag, "B_Repeat")     : *Object_Binary_Operation\B_Repeat     = NBT_Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT_Tag(*Parent_Tag, "B_Offset")     : *Object_Binary_Operation\B_Offset     = NBT_Tag_Get_Number(*NBT_Tag)
+  
+  *NBT_Tag = NBT_Tag(*Parent_Tag, "Operation")    : *Object_Binary_Operation\Operation    = NBT_Tag_Get_Number(*NBT_Tag)
+  
+  *NBT_Tag = NBT_Tag(*Parent_Tag, "Size_Mode")    : *Object_Binary_Operation\Size_Mode    = NBT_Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT_Tag(*Parent_Tag, "Size_Custom")  : *Object_Binary_Operation\Size_Custom  = NBT_Tag_Get_Number(*NBT_Tag)
   
   ProcedureReturn #True
 EndProcedure
@@ -250,6 +271,12 @@ Procedure.q Object_Binary_Operation_Get_Size(*Object.Object)
       If Size > Size_B
         Size = Size_B
       EndIf
+      
+    Case #Object_Binary_Operation_Size_Mode_A
+      Size = Object_Input_Get_Size(FirstElement(*Object\Input()))
+      
+    Case #Object_Binary_Operation_Size_Mode_B
+      Size = Object_Input_Get_Size(LastElement(*Object\Input()))
       
     Case #Object_Binary_Operation_Size_Mode_Custom
       Size = *Object_Binary_Operation\Size_Custom
@@ -418,8 +445,11 @@ Procedure Object_Binary_Operation_Output_Get_Data(*Object_Output.Object_Output, 
   Protected Temp_A.a, Temp_B.a
   Protected Temp_Metadata.a
   Protected Output_Size.q = Object_Binary_Operation_Get_Size(*Object)
-  Protected Size_A.q = Object_Input_Get_Size(FirstElement(*Object\Input())) - Position
-  Protected Size_B.q = Object_Input_Get_Size(LastElement(*Object\Input())) - Position
+  Protected Size_A.q = Object_Input_Get_Size(FirstElement(*Object\Input()))
+  Protected Size_B.q = Object_Input_Get_Size(LastElement(*Object\Input()))
+  Protected Size_A_Buffer.q = Size_A - Position
+  Protected Size_B_Buffer.q = Size_B - Position
+  Protected Temp_Pos.q, Temp_Size.i, Temp_Pos_Real.q
   
   ; #### Limit the output to the borders
   If Size > Output_Size - Position
@@ -429,34 +459,42 @@ Procedure Object_Binary_Operation_Output_Get_Data(*Object_Output.Object_Output, 
     ProcedureReturn #True
   EndIf
   
-  ; #### Limit the input to the borders
-  If Size_A > Size
-    Size_A = Size
+  ; #### If repeat is enabled, use "size" as size
+  If *Object_Binary_Operation\A_Repeat
+    Size_A_Buffer = Size
   EndIf
-  If Size_B > Size
-    Size_B = Size
+  If *Object_Binary_Operation\B_Repeat
+    Size_B_Buffer = Size
+  EndIf
+  
+  ; #### Limit the input to the borders
+  If Size_A_Buffer > Size
+    Size_A_Buffer = Size
+  EndIf
+  If Size_B_Buffer > Size
+    Size_B_Buffer = Size
   EndIf
   
   ; #### Allocate everything
-  If Size_A > 0
-    Protected *Temp_Data_A = AllocateMemory(Size_A)
+  If Size_A_Buffer > 0
+    Protected *Temp_Data_A = AllocateMemory(Size_A_Buffer)
     If Not *Temp_Data_A
       ProcedureReturn #False
     EndIf
-    Protected *Temp_Metadata_A = AllocateMemory(Size_A)
+    Protected *Temp_Metadata_A = AllocateMemory(Size_A_Buffer)
     If Not *Temp_Metadata_A
       FreeMemory(*Temp_Data_A)
       ProcedureReturn #False
     EndIf
   EndIf
-  If Size_B > 0
-    Protected *Temp_Data_B = AllocateMemory(Size_B)
+  If Size_B_Buffer > 0
+    Protected *Temp_Data_B = AllocateMemory(Size_B_Buffer)
     If Not *Temp_Data_B
       FreeMemory(*Temp_Data_A)
       FreeMemory(*Temp_Metadata_A)
       ProcedureReturn #False
     EndIf
-    Protected *Temp_Metadata_B = AllocateMemory(Size_B)
+    Protected *Temp_Metadata_B = AllocateMemory(Size_B_Buffer)
     If Not *Temp_Metadata_B
       FreeMemory(*Temp_Data_A)
       FreeMemory(*Temp_Metadata_A)
@@ -465,12 +503,56 @@ Procedure Object_Binary_Operation_Output_Get_Data(*Object_Output.Object_Output, 
     EndIf
   EndIf
   
-  If Size_A > 0
-    Object_Input_Get_Data(FirstElement(*Object\Input()), Position, Size_A, *Temp_Data_A, *Temp_Metadata_A)
+  ; #### Prepare Buffer A
+  If Size_A_Buffer > 0
+    If *Object_Binary_Operation\A_Repeat
+      If Size_A > 0
+        For i = Position/Size_A To (Position+Size)/Size_A
+          Temp_Pos_Real = 0
+          Temp_Pos = i * Size_A
+          Temp_Size = Size_A
+          If Temp_Pos < Position
+            Temp_Size + Temp_Pos - Position
+            Temp_Pos_Real = Position - Temp_Pos
+            Temp_Pos = Position
+          EndIf
+          If Temp_Pos + Temp_Size > Position + Size
+            Temp_Size = Position + Size - Temp_Pos
+          EndIf
+          If Temp_Size > 0
+            Object_Input_Get_Data(FirstElement(*Object\Input()), Temp_Pos_Real, Temp_Size, *Temp_Data_A+Temp_Pos-Position, *Temp_Metadata_A+Temp_Pos-Position)
+          EndIf
+        Next
+      EndIf
+    Else
+      Object_Input_Get_Data(FirstElement(*Object\Input()), Position, Size_A_Buffer, *Temp_Data_A, *Temp_Metadata_A)
+    EndIf
   EndIf
   
-  If Size_B > 0
-    Object_Input_Get_Data(LastElement(*Object\Input()), Position, Size_B, *Temp_Data_B, *Temp_Metadata_B)
+  ; #### Prepare Buffer B
+  If Size_B_Buffer > 0
+    If *Object_Binary_Operation\B_Repeat
+      If Size_B > 0
+        For i = Position/Size_B To (Position+Size)/Size_B
+          Temp_Pos_Real = 0
+          Temp_Pos = i * Size_B
+          Temp_Size = Size_B
+          If Temp_Pos < Position
+            Temp_Size + Temp_Pos - Position
+            Temp_Pos_Real = Position - Temp_Pos
+            Temp_Pos = Position
+          EndIf
+          If Temp_Pos + Temp_Size > Position + Size
+            Temp_Size = Position + Size - Temp_Pos
+          EndIf
+          If Temp_Size > 0
+            Object_Input_Get_Data(LastElement(*Object\Input()), Temp_Pos_Real, Temp_Size, *Temp_Data_B+Temp_Pos-Position, *Temp_Metadata_B+Temp_Pos-Position)
+          EndIf
+        Next
+      EndIf
+    Else
+      Object_Input_Get_Data(LastElement(*Object\Input()), Position, Size_B_Buffer, *Temp_Data_B, *Temp_Metadata_B)
+    EndIf
   EndIf
   
   ;TODO: Add Offset stuff
@@ -486,9 +568,8 @@ Procedure Object_Binary_Operation_Output_Get_Data(*Object_Output.Object_Output, 
     
     Temp_Metadata = #Metadata_NoError | #Metadata_Readable
     
-    If i < Size_A
+    If i < Size_A_Buffer
       If *Pointer_Metadata_A\a
-        ;TODO: Add repeat behaviour
         Temp_A = *Pointer_Data_A\a
       Else
         Temp_Metadata & ~#Metadata_NoError
@@ -497,7 +578,7 @@ Procedure Object_Binary_Operation_Output_Get_Data(*Object_Output.Object_Output, 
       Temp_A = 0
     EndIf
     
-    If i < Size_B
+    If i < Size_B_Buffer
       If *Pointer_Metadata_B\a
         Temp_B = *Pointer_Data_B\a
       Else
@@ -535,10 +616,14 @@ Procedure Object_Binary_Operation_Output_Get_Data(*Object_Output.Object_Output, 
     *Pointer_Metadata_B + 1
   Next
   
-  FreeMemory(*Temp_Data_A)
-  FreeMemory(*Temp_Metadata_A)
-  FreeMemory(*Temp_Data_B)
-  FreeMemory(*Temp_Metadata_B)
+  If Size_A_Buffer > 0
+    FreeMemory(*Temp_Data_A)
+    FreeMemory(*Temp_Metadata_A)
+  EndIf
+  If Size_B_Buffer > 0
+    FreeMemory(*Temp_Data_B)
+    FreeMemory(*Temp_Metadata_B)
+  EndIf
   
   ProcedureReturn #True
 EndProcedure
@@ -729,6 +814,12 @@ Procedure Object_Binary_Operation_Window_Event_Option()
       *Object_Binary_Operation\Size_Mode = #Object_Binary_Operation_Size_Mode_Min
       
     Case *Object_Binary_Operation\Option[2]
+      *Object_Binary_Operation\Size_Mode = #Object_Binary_Operation_Size_Mode_A
+      
+    Case *Object_Binary_Operation\Option[3]
+      *Object_Binary_Operation\Size_Mode = #Object_Binary_Operation_Size_Mode_B
+      
+    Case *Object_Binary_Operation\Option[4]
       *Object_Binary_Operation\Size_Mode = #Object_Binary_Operation_Size_Mode_Custom
       
   EndSelect
@@ -830,11 +921,13 @@ Procedure Object_Binary_Operation_Window_Open(*Object.Object)
     AddGadgetItem(*Object_Binary_Operation\ComboBox, #Object_Binary_Operation_AND, "AND")
     AddGadgetItem(*Object_Binary_Operation\ComboBox, #Object_Binary_Operation_XOR, "XOR")
     
-    *Object_Binary_Operation\Frame[3] = FrameGadget(#PB_Any, 180, 70, 160, 110, "Size")
-    *Object_Binary_Operation\Option[0] = OptionGadget(#PB_Any, 190, 90, 150, 20, "MAX (A, B)")
-    *Object_Binary_Operation\Option[1] = OptionGadget(#PB_Any, 190, 110, 150, 20, "MIN (A, B)")
-    *Object_Binary_Operation\Option[2] = OptionGadget(#PB_Any, 190, 130, 150, 20, "Custom:")
-    *Object_Binary_Operation\String[2] = StringGadget(#PB_Any, 190, 150, 140, 20, "")
+    *Object_Binary_Operation\Frame[3] = FrameGadget(#PB_Any, 180, 70, 160, 150, "Output-Size")
+    *Object_Binary_Operation\Option[0] = OptionGadget(#PB_Any, 190, 90, 140, 20, "MAX (A, B)")
+    *Object_Binary_Operation\Option[1] = OptionGadget(#PB_Any, 190, 110, 140, 20, "MIN (A, B)")
+    *Object_Binary_Operation\Option[2] = OptionGadget(#PB_Any, 190, 130, 140, 20, "A")
+    *Object_Binary_Operation\Option[3] = OptionGadget(#PB_Any, 190, 150, 140, 20, "B")
+    *Object_Binary_Operation\Option[4] = OptionGadget(#PB_Any, 190, 170, 140, 20, "Custom:")
+    *Object_Binary_Operation\String[2] = StringGadget(#PB_Any, 190, 190, 140, 20, "")
     
     ; #### Initialise states
     SetGadgetState(*Object_Binary_Operation\CheckBox[0], *Object_Binary_Operation\A_Negate)
@@ -850,7 +943,9 @@ Procedure Object_Binary_Operation_Window_Open(*Object.Object)
     Select *Object_Binary_Operation\Size_Mode
       Case #Object_Binary_Operation_Size_Mode_Max     : SetGadgetState(*Object_Binary_Operation\Option[0], #True)
       Case #Object_Binary_Operation_Size_Mode_Min     : SetGadgetState(*Object_Binary_Operation\Option[1], #True)
-      Case #Object_Binary_Operation_Size_Mode_Custom  : SetGadgetState(*Object_Binary_Operation\Option[2], #True)
+      Case #Object_Binary_Operation_Size_Mode_A       : SetGadgetState(*Object_Binary_Operation\Option[2], #True)
+      Case #Object_Binary_Operation_Size_Mode_B       : SetGadgetState(*Object_Binary_Operation\Option[3], #True)
+      Case #Object_Binary_Operation_Size_Mode_Custom  : SetGadgetState(*Object_Binary_Operation\Option[4], #True)
     EndSelect
     
     SetGadgetText(*Object_Binary_Operation\String[2], Str(*Object_Binary_Operation\Size_Custom))
@@ -866,6 +961,8 @@ Procedure Object_Binary_Operation_Window_Open(*Object.Object)
     BindGadgetEvent(*Object_Binary_Operation\Option[0], @Object_Binary_Operation_Window_Event_Option())
     BindGadgetEvent(*Object_Binary_Operation\Option[1], @Object_Binary_Operation_Window_Event_Option())
     BindGadgetEvent(*Object_Binary_Operation\Option[2], @Object_Binary_Operation_Window_Event_Option())
+    BindGadgetEvent(*Object_Binary_Operation\Option[3], @Object_Binary_Operation_Window_Event_Option())
+    BindGadgetEvent(*Object_Binary_Operation\Option[4], @Object_Binary_Operation_Window_Event_Option())
     
     BindEvent(#PB_Event_SizeWindow, @Object_Binary_Operation_Window_Event_SizeWindow(), *Object_Binary_Operation\Window\ID)
     BindEvent(#PB_Event_Menu, @Object_Binary_Operation_Window_Event_Menu(), *Object_Binary_Operation\Window\ID)
@@ -898,6 +995,8 @@ Procedure Object_Binary_Operation_Window_Close(*Object.Object)
     UnbindGadgetEvent(*Object_Binary_Operation\Option[0], @Object_Binary_Operation_Window_Event_Option())
     UnbindGadgetEvent(*Object_Binary_Operation\Option[1], @Object_Binary_Operation_Window_Event_Option())
     UnbindGadgetEvent(*Object_Binary_Operation\Option[2], @Object_Binary_Operation_Window_Event_Option())
+    UnbindGadgetEvent(*Object_Binary_Operation\Option[3], @Object_Binary_Operation_Window_Event_Option())
+    UnbindGadgetEvent(*Object_Binary_Operation\Option[4], @Object_Binary_Operation_Window_Event_Option())
     
     UnbindEvent(#PB_Event_SizeWindow, @Object_Binary_Operation_Window_Event_SizeWindow(), *Object_Binary_Operation\Window\ID)
     UnbindEvent(#PB_Event_Menu, @Object_Binary_Operation_Window_Event_Menu(), *Object_Binary_Operation\Window\ID)
@@ -938,11 +1037,11 @@ If Object_Binary_Operation_Main\Object_Type
   Object_Binary_Operation_Main\Object_Type\UID = "D3_BINOP"
   Object_Binary_Operation_Main\Object_Type\Author = "David Vogel (Dadido3)"
   Object_Binary_Operation_Main\Object_Type\Date_Creation = Date(2014,08,11,14,32,00)
-  Object_Binary_Operation_Main\Object_Type\Date_Modification = Date(2014,08,11,23,13,00)
+  Object_Binary_Operation_Main\Object_Type\Date_Modification = Date(2014,08,13,01,08,00)
   Object_Binary_Operation_Main\Object_Type\Date_Compilation = #PB_Compiler_Date
   Object_Binary_Operation_Main\Object_Type\Description = "Combines data per binary operation."
   Object_Binary_Operation_Main\Object_Type\Function_Create = @Object_Binary_Operation_Create()
-  Object_Binary_Operation_Main\Object_Type\Version = 500
+  Object_Binary_Operation_Main\Object_Type\Version = 800
 EndIf
 
 ; ##################################################### Main ########################################################
@@ -951,8 +1050,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 195
-; FirstLine = 170
+; CursorPosition = 1043
+; FirstLine = 992
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP
