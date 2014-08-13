@@ -7,7 +7,7 @@
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2014-08-13 01:09" user="David Vogel" host="DAVIDS"/>
+    <lastopen date="2014-08-13 15:56" user="David Vogel" host="DAVIDS"/>
   </section>
   <section name="files">
     <file name="Includes\About.pbi">
@@ -40,7 +40,7 @@
     </file>
     <file name="Includes\Object_Binary_Operation.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
-      <fingerprint md5="af4cd93ceec5f10b4fbb4ded3326f878"/>
+      <fingerprint md5="1e96f2d0b3da3e3d87a379a950fa2d01"/>
     </file>
     <file name="Includes\Object_Datatypes.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
@@ -143,7 +143,7 @@
       <options unicode="1" xpskin="1" user="1" onerror="1"/>
       <purifier enable="0" granularity="1,1,1,1"/>
       <icon enable="1">Data\Images\Icon.ico</icon>
-      <compilecount enable="1" value="2298"/>
+      <compilecount enable="1" value="2302"/>
       <buildcount enable="1" value="38"/>
       <versioninfo enable="1">
         <field3 value="D3hex"/>

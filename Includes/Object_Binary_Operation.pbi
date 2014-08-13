@@ -257,31 +257,35 @@ Procedure.q Object_Binary_Operation_Get_Size(*Object.Object)
   
   Select *Object_Binary_Operation\Size_Mode
     Case #Object_Binary_Operation_Size_Mode_Max
-      Size_A = Object_Input_Get_Size(FirstElement(*Object\Input()))
-      Size_B = Object_Input_Get_Size(LastElement(*Object\Input()))
+      Size_A = Object_Input_Get_Size(FirstElement(*Object\Input())) - *Object_Binary_Operation\A_Offset
+      Size_B = Object_Input_Get_Size(LastElement(*Object\Input())) - *Object_Binary_Operation\B_Offset
       Size = Size_A
       If Size < Size_B
         Size = Size_B
       EndIf
       
     Case #Object_Binary_Operation_Size_Mode_Min
-      Size_A = Object_Input_Get_Size(FirstElement(*Object\Input()))
-      Size_B = Object_Input_Get_Size(LastElement(*Object\Input()))
+      Size_A = Object_Input_Get_Size(FirstElement(*Object\Input())) - *Object_Binary_Operation\A_Offset
+      Size_B = Object_Input_Get_Size(LastElement(*Object\Input())) - *Object_Binary_Operation\B_Offset
       Size = Size_A
       If Size > Size_B
         Size = Size_B
       EndIf
       
     Case #Object_Binary_Operation_Size_Mode_A
-      Size = Object_Input_Get_Size(FirstElement(*Object\Input()))
+      Size = Object_Input_Get_Size(FirstElement(*Object\Input())) - *Object_Binary_Operation\A_Offset
       
     Case #Object_Binary_Operation_Size_Mode_B
-      Size = Object_Input_Get_Size(LastElement(*Object\Input()))
+      Size = Object_Input_Get_Size(LastElement(*Object\Input())) - *Object_Binary_Operation\B_Offset
       
     Case #Object_Binary_Operation_Size_Mode_Custom
       Size = *Object_Binary_Operation\Size_Custom
       
   EndSelect
+  
+  If Size < 0
+    Size = 0
+  EndIf
   
   ProcedureReturn Size
 EndProcedure
@@ -303,26 +307,29 @@ Procedure Object_Binary_Operation_Input_Event(*Object_Input.Object_Input, *Objec
   EndIf
   
   Protected Object_Event.Object_Event
+  Protected Offset.q, Size.q
+  
+  Size = Object_Binary_Operation_Get_Size(*Object)
+  Select *Object_Input\i
+    Case 0 : Offset = *Object_Binary_Operation\A_Offset
+    Case 1 : Offset = *Object_Binary_Operation\B_Offset
+  EndSelect
   
   Select *Object_Event\Type
-    Case #Object_Link_Event_Update
+    Case #Object_Link_Event_Update, #Object_Link_Event_Goto
       ; #### Forward the event to the selection-output
       CopyStructure(*Object_Event, Object_Event, Object_Event)
-      ;Object_Event\Type = #Object_Link_Event_Update
-      ;Object_Event\Position = *Object_Event\Position
-      ;Object_Event\Size = *Object_Event\Size
-      ;TODO: The Object needs to cut the event range to the size.
-      ;TODO: The Object needs to recalculate the size!
-      Object_Output_Event(FirstElement(*Object\Output()), Object_Event)
-      
-    Case #Object_Link_Event_Goto
-      ; #### Forward the event to the selection-output
-      CopyStructure(*Object_Event, Object_Event, Object_Event)
-      ;Object_Event\Type = #Object_Link_Event_Goto
-      ;Object_Event\Position = *Object_Event\Position
-      ;Object_Event\Size = *Object_Event\Size
-      ;TODO: The Object needs to cut the event range to the size.
-      Object_Output_Event(FirstElement(*Object\Output()), Object_Event)
+      Object_Event\Position - Offset
+      If Object_Event\Position < 0
+        Object_Event\Size + Object_Event\Position
+        Object_Event\Position = 0
+      EndIf
+      If Object_Event\Position + Object_Event\Size > Size
+        Object_Event\Size = Size - Object_Event\Position
+      EndIf
+      If Object_Event\Size >= 0
+        Object_Output_Event(FirstElement(*Object\Output()), Object_Event)
+      EndIf
       
   EndSelect
   
@@ -447,8 +454,8 @@ Procedure Object_Binary_Operation_Output_Get_Data(*Object_Output.Object_Output, 
   Protected Output_Size.q = Object_Binary_Operation_Get_Size(*Object)
   Protected Size_A.q = Object_Input_Get_Size(FirstElement(*Object\Input()))
   Protected Size_B.q = Object_Input_Get_Size(LastElement(*Object\Input()))
-  Protected Size_A_Buffer.q = Size_A - Position
-  Protected Size_B_Buffer.q = Size_B - Position
+  Protected Size_A_Buffer.q = Size_A - (Position + *Object_Binary_Operation\A_Offset)
+  Protected Size_B_Buffer.q = Size_B - (Position + *Object_Binary_Operation\B_Offset)
   Protected Temp_Pos.q, Temp_Size.i, Temp_Pos_Real.q
   
   ; #### Limit the output to the borders
@@ -507,9 +514,9 @@ Procedure Object_Binary_Operation_Output_Get_Data(*Object_Output.Object_Output, 
   If Size_A_Buffer > 0
     If *Object_Binary_Operation\A_Repeat
       If Size_A > 0
-        For i = Position/Size_A To (Position+Size)/Size_A
+        For i = (Position+*Object_Binary_Operation\A_Offset)/Size_A To (Position+Size+*Object_Binary_Operation\A_Offset)/Size_A
           Temp_Pos_Real = 0
-          Temp_Pos = i * Size_A
+          Temp_Pos = i * Size_A - *Object_Binary_Operation\A_Offset
           Temp_Size = Size_A
           If Temp_Pos < Position
             Temp_Size + Temp_Pos - Position
@@ -525,7 +532,7 @@ Procedure Object_Binary_Operation_Output_Get_Data(*Object_Output.Object_Output, 
         Next
       EndIf
     Else
-      Object_Input_Get_Data(FirstElement(*Object\Input()), Position, Size_A_Buffer, *Temp_Data_A, *Temp_Metadata_A)
+      Object_Input_Get_Data(FirstElement(*Object\Input()), Position+*Object_Binary_Operation\A_Offset, Size_A_Buffer, *Temp_Data_A, *Temp_Metadata_A)
     EndIf
   EndIf
   
@@ -533,9 +540,9 @@ Procedure Object_Binary_Operation_Output_Get_Data(*Object_Output.Object_Output, 
   If Size_B_Buffer > 0
     If *Object_Binary_Operation\B_Repeat
       If Size_B > 0
-        For i = Position/Size_B To (Position+Size)/Size_B
+        For i = (Position+*Object_Binary_Operation\B_Offset)/Size_B To (Position+Size+*Object_Binary_Operation\B_Offset)/Size_B
           Temp_Pos_Real = 0
-          Temp_Pos = i * Size_B
+          Temp_Pos = i * Size_B - *Object_Binary_Operation\B_Offset
           Temp_Size = Size_B
           If Temp_Pos < Position
             Temp_Size + Temp_Pos - Position
@@ -551,13 +558,11 @@ Procedure Object_Binary_Operation_Output_Get_Data(*Object_Output.Object_Output, 
         Next
       EndIf
     Else
-      Object_Input_Get_Data(LastElement(*Object\Input()), Position, Size_B_Buffer, *Temp_Data_B, *Temp_Metadata_B)
+      Object_Input_Get_Data(LastElement(*Object\Input()), Position+*Object_Binary_Operation\B_Offset, Size_B_Buffer, *Temp_Data_B, *Temp_Metadata_B)
     EndIf
   EndIf
   
-  ;TODO: Add Offset stuff
-  
-  ; #### Possibly not the fastest method doing this, but still better than peeking and poking the shit out of it
+  ; #### Probably not the fastest method doing this, but still better than peeking and poking the shit out of it
   *Pointer_Data = *Data
   *Pointer_Metadata = *Metadata
   *Pointer_Data_A = *Temp_Data_A
@@ -741,12 +746,24 @@ Procedure Object_Binary_Operation_Window_Event_String()
   Select Event_Gadget
     Case *Object_Binary_Operation\String[0]
       *Object_Binary_Operation\A_Offset = Val(GetGadgetText(Event_Gadget))
+      If *Object_Binary_Operation\A_Offset < 0
+        *Object_Binary_Operation\A_Offset = 0
+        SetGadgetText(Event_Gadget, Str(0))
+      EndIf
       
     Case *Object_Binary_Operation\String[1]
       *Object_Binary_Operation\B_Offset = Val(GetGadgetText(Event_Gadget))
+      If *Object_Binary_Operation\B_Offset < 0
+        *Object_Binary_Operation\B_Offset = 0
+        SetGadgetText(Event_Gadget, Str(0))
+      EndIf
       
     Case *Object_Binary_Operation\String[2]
       *Object_Binary_Operation\Size_Custom = Val(GetGadgetText(Event_Gadget))
+      If *Object_Binary_Operation\Size_Custom < 0
+        *Object_Binary_Operation\Size_Custom = 0
+        SetGadgetText(Event_Gadget, Str(0))
+      EndIf
       
   EndSelect
   
@@ -1037,11 +1054,11 @@ If Object_Binary_Operation_Main\Object_Type
   Object_Binary_Operation_Main\Object_Type\UID = "D3_BINOP"
   Object_Binary_Operation_Main\Object_Type\Author = "David Vogel (Dadido3)"
   Object_Binary_Operation_Main\Object_Type\Date_Creation = Date(2014,08,11,14,32,00)
-  Object_Binary_Operation_Main\Object_Type\Date_Modification = Date(2014,08,13,01,08,00)
+  Object_Binary_Operation_Main\Object_Type\Date_Modification = Date(2014,08,13,15,33,00)
   Object_Binary_Operation_Main\Object_Type\Date_Compilation = #PB_Compiler_Date
   Object_Binary_Operation_Main\Object_Type\Description = "Combines data per binary operation."
   Object_Binary_Operation_Main\Object_Type\Function_Create = @Object_Binary_Operation_Create()
-  Object_Binary_Operation_Main\Object_Type\Version = 800
+  Object_Binary_Operation_Main\Object_Type\Version = 900
 EndIf
 
 ; ##################################################### Main ########################################################
@@ -1050,8 +1067,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 1043
-; FirstLine = 992
+; CursorPosition = 286
+; FirstLine = 244
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP
