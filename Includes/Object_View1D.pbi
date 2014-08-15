@@ -169,20 +169,17 @@ Procedure Object_View1D_Create(Requester)
   *Object\Name = "View1D"
   *Object\Color = RGBA(200, 127, 127, 255)
   
-  *Object_View1D = AllocateMemory(SizeOf(Object_View1D))
-  *Object\Custom_Data = *Object_View1D
-  InitializeStructure(*Object_View1D, Object_View1D)
+  *Object\Custom_Data = AllocateStructure(Object_View1D)
+  *Object_View1D = *Object\Custom_Data
   
-  *Object_View1D\Settings = AllocateMemory(SizeOf(Object_View1D_Settings))
-  InitializeStructure(*Object_View1D\Settings, Object_View1D_Settings)
+  *Object_View1D\Settings = AllocateStructure(Object_View1D_Settings)
   
   *Object_View1D\Zoom_X = 1
   *Object_View1D\Zoom_Y = 1
   
   ; #### Add Input
   *Object_Input = Object_Input_Add(*Object)
-  *Object_Input\Custom_Data = AllocateMemory(SizeOf(Object_View1D_Input))
-  InitializeStructure(*Object_Input\Custom_Data, Object_View1D_Input)
+  *Object_Input\Custom_Data = AllocateStructure(Object_View1D_Input)
   *Object_Input\Function_Event = @Object_View1D_Input_Event()
   
   ProcedureReturn *Object
@@ -202,16 +199,16 @@ Procedure _Object_View1D_Delete(*Object.Object)
   
   ForEach *Object\Input()
     If *Object\Input()\Custom_Data
-      ClearStructure(*Object\Input()\Custom_Data, Object_View1D_Input)
-      FreeMemory(*Object\Input()\Custom_Data)
+      FreeStructure(*Object\Input()\Custom_Data)
+      *Object\Input()\Custom_Data = #Null
     EndIf
   Next
   
-  ClearStructure(*Object_View1D\Settings, Object_View1D_Settings)
-  FreeMemory(*Object_View1D\Settings)
+  FreeStructure(*Object_View1D\Settings)
+  *Object_View1D\Settings = #Null
   
-  ClearStructure(*Object_View1D, Object_View1D)
-  FreeMemory(*Object_View1D)
+  FreeStructure(*Object_View1D)
+  *Object\Custom_Data = #Null
   
   ProcedureReturn #True
 EndProcedure
@@ -286,8 +283,8 @@ Procedure Object_View1D_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
   ; #### Delete all inputs
   While FirstElement(*Object\Input())
     If *Object\Input()\Custom_Data
-      ClearStructure(*Object\Input()\Custom_Data, Object_View1D_Input)
-      FreeMemory(*Object\Input()\Custom_Data)
+      FreeStructure(*Object\Input()\Custom_Data)
+      *Object\Input()\Custom_Data = #Null
     EndIf
     Object_Input_Delete(*Object, *Object\Input())
   Wend
@@ -302,8 +299,7 @@ Procedure Object_View1D_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
         
         ; #### Add Input
         *Object_Input = Object_Input_Add(*Object)
-        *Object_Input\Custom_Data = AllocateMemory(SizeOf(Object_View1D_Input))
-        InitializeStructure(*Object_Input\Custom_Data, Object_View1D_Input)
+        *Object_Input\Custom_Data = AllocateStructure(Object_View1D_Input)
         *Object_Input\Function_Event = @Object_View1D_Input_Event()
         *Object_View1D_Input = *Object_Input\Custom_Data
         If *Object_View1D_Input
@@ -1255,6 +1251,7 @@ DataSection
   Object_View1D_Icon_Normalize_Y: : IncludeBinary "../Data/Icons/Graph_Normalize_Y.png"
 EndDataSection
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 18
+; CursorPosition = 301
+; FirstLine = 272
 ; Folding = ----
 ; EnableXP

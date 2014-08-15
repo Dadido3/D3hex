@@ -137,9 +137,8 @@ Procedure Object_Binary_Operation_Create(Requester)
   *Object\Name = "Binary Operation"
   *Object\Color = RGBA(180,200,250,255)
   
-  *Object_Binary_Operation = AllocateMemory(SizeOf(Object_Binary_Operation))
-  *Object\Custom_Data = *Object_Binary_Operation
-  InitializeStructure(*Object_Binary_Operation, Object_Binary_Operation)
+  *Object\Custom_Data = AllocateStructure(Object_Binary_Operation)
+  *Object_Binary_Operation = *Object\Custom_Data
   
   ; #### Add Input
   *Object_Input_A = Object_Input_Add(*Object, "A", "A")
@@ -176,8 +175,8 @@ Procedure _Object_Binary_Operation_Delete(*Object.Object)
   
   Object_Binary_Operation_Window_Close(*Object)
   
-  ClearStructure(*Object_Binary_Operation, Object_Binary_Operation)
-  FreeMemory(*Object_Binary_Operation)
+  FreeStructure(*Object_Binary_Operation)
+  *Object\Custom_Data = #Null
   
   ProcedureReturn #True
 EndProcedure
@@ -1067,8 +1066,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 286
-; FirstLine = 244
+; CursorPosition = 140
+; FirstLine = 122
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

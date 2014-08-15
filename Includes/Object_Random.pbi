@@ -102,9 +102,8 @@ Procedure Object_Random_Create(Requester)
   *Object\Name = "Random"
   *Object\Color = RGBA(Random(100)+50,Random(100)+50,Random(100)+50,255)
   
-  *Object_Random = AllocateMemory(SizeOf(Object_Random))
-  *Object\Custom_Data = *Object_Random
-  InitializeStructure(*Object_Random, Object_Random)
+  *Object\Custom_Data = AllocateStructure(Object_Random)
+  *Object_Random = *Object\Custom_Data
   
   *Object_Random\Size = 1000000
   
@@ -137,8 +136,8 @@ Procedure _Object_Random_Delete(*Object.Object)
   
   Object_Random_Window_Close(*Object)
   
-  ClearStructure(*Object_Random, Object_Random)
-  FreeMemory(*Object_Random)
+  FreeStructure(*Object_Random)
+  *Object\Custom_Data = #Null
   
   ProcedureReturn #True
 EndProcedure
@@ -566,7 +565,7 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 265
-; FirstLine = 236
+; CursorPosition = 138
+; FirstLine = 101
 ; Folding = ----
 ; EnableXP

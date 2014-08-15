@@ -228,15 +228,12 @@ Procedure Object_Editor_Create(Requester)
   *Object\Name = "Editor"
   *Object\Color = RGBA(127, 127, 127, 255)
   
-  *Object_Editor = AllocateMemory(SizeOf(Object_Editor))
-  *Object\Custom_Data = *Object_Editor
-  InitializeStructure(*Object_Editor, Object_Editor)
+  *Object\Custom_Data = AllocateStructure(Object_Editor)
+  *Object_Editor = *Object\Custom_Data
   
-  *Object_Editor\Window_Goto = AllocateMemory(SizeOf(Object_Editor_Goto))
-  InitializeStructure(*Object_Editor\Window_Goto, Object_Editor_Goto)
+  *Object_Editor\Window_Goto = AllocateStructure(Object_Editor_Goto)
   
-  *Object_Editor\Window_Search = AllocateMemory(SizeOf(Object_Editor_Search))
-  InitializeStructure(*Object_Editor\Window_Search, Object_Editor_Search)
+  *Object_Editor\Window_Search = AllocateStructure(Object_Editor_Search)
   
   ; #### Add Input
   *Object_Input = Object_Input_Add(*Object)
@@ -276,14 +273,14 @@ Procedure _Object_Editor_Delete(*Object.Object)
     EndIf
   Next
   
-  ClearStructure(*Object_Editor\Window_Goto, Object_Editor_Goto)
-  FreeMemory(*Object_Editor\Window_Goto)
+  FreeStructure(*Object_Editor\Window_Goto)
+  *Object_Editor\Window_Goto = #Null
   
-  ClearStructure(*Object_Editor\Window_Search, Object_Editor_Search)
-  FreeMemory(*Object_Editor\Window_Search)
+  FreeStructure(*Object_Editor\Window_Search)
+  *Object_Editor\Window_Search = #Null
   
-  ClearStructure(*Object_Editor, Object_Editor)
-  FreeMemory(*Object_Editor)
+  FreeStructure(*Object_Editor)
+  *Object\Custom_Data = #Null
   
   ProcedureReturn #True
 EndProcedure
@@ -2404,8 +2401,8 @@ MenuItem(#Object_Editor_PopupMenu_Select_All, "Select All", ImageID(Icon_Select_
 
 
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 624
-; FirstLine = 502
+; CursorPosition = 280
+; FirstLine = 219
 ; Folding = -------
 ; EnableUnicode
 ; EnableXP

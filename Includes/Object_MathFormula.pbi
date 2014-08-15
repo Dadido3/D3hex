@@ -148,9 +148,8 @@ Procedure Object_MathFormula_Create(Requester)
   *Object\Name = "Math"
   *Object\Color = RGBA(150,150,200,255)
   
-  *Object_MathFormula = AllocateMemory(SizeOf(Object_MathFormula))
-  *Object\Custom_Data = *Object_MathFormula
-  InitializeStructure(*Object_MathFormula, Object_MathFormula)
+  *Object\Custom_Data = AllocateStructure(Object_MathFormula)
+  *Object_MathFormula = *Object\Custom_Data
   
   ; #### Add Input
   *Object_Input = Object_Input_Add(*Object)
@@ -183,8 +182,8 @@ Procedure _Object_MathFormula_Delete(*Object.Object)
   
   Object_MathFormula_Window_Close(*Object)
   
-  ClearStructure(*Object_MathFormula, Object_MathFormula)
-  FreeMemory(*Object_MathFormula)
+  FreeStructure(*Object_MathFormula)
+  *Object\Custom_Data = #Null
   
   ProcedureReturn #True
 EndProcedure
@@ -648,6 +647,7 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 18
+; CursorPosition = 185
+; FirstLine = 146
 ; Folding = ----
 ; EnableXP

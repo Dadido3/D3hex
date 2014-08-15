@@ -43,7 +43,7 @@
 ;   - Hilbert-Viewer
 ;   - Dateianalyse (Byteverteilung...)
 ;   - Vergleich
-;   - Mathematische/Logische operation (OR, AND, XOR, +, -, *, ...)
+;   - Mathematische operations (+, -, *, /, ...)
 ;   - Korellation / Autokorellation
 ;   - Checksum
 ;   - Diskrete Fourier Transformation (bzw. FFT)
@@ -60,7 +60,6 @@
 ; - Strukturelemente
 ;   - Split
 ;   - Array Split
-;   - Copy (Input to Input)
 ;   - Netzwerk
 ;   - Lua-Element
 ;   
@@ -124,6 +123,8 @@
 ;
 ; - V0.930 (indev)
 ;   - Added Object_Binary_Operation
+;   - Added Object_Copy
+;   - Update every structure allocation to AllocateStructure(...) and FreeStructure(...)
 ;   
 ; ##################################################### Begin #######################################################
 
@@ -322,6 +323,7 @@ XIncludeFile "Includes/Object_Network_Terminal.pbi"
 ;XIncludeFile "Includes/Object_MathFormula.pbi"
 XIncludeFile "Includes/Object_Datatypes.pbi"
 XIncludeFile "Includes/Object_Binary_Operation.pbi"
+XIncludeFile "Includes/Object_Copy.pbi"
 
 ; ##################################################### Procedures ##################################################
 
@@ -837,8 +839,8 @@ DataSection
   
 EndDataSection
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 125
-; FirstLine = 98
+; CursorPosition = 59
+; FirstLine = 19
 ; Folding = --
 ; EnableUnicode
 ; EnableXP

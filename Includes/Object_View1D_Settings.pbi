@@ -367,8 +367,7 @@ Procedure Object_View1D_Settings_Window_Event_Button_In_Add()
   
   ; #### Add Input
   *Object_Input = Object_Input_Add(*Object)
-  *Object_Input\Custom_Data = AllocateMemory(SizeOf(Object_View1D_Input))
-  InitializeStructure(*Object_Input\Custom_Data, Object_View1D_Input)
+  *Object_Input\Custom_Data = AllocateStructure(Object_View1D_Input)
   *Object_Input\Function_Event = @Object_View1D_Input_Event()
   
   *Object_View1D_Settings\Update_ListIcon = #True
@@ -404,8 +403,8 @@ Procedure Object_View1D_Settings_Window_Event_Button_In_Delete()
   ForEach *Object\Input()
     If *Object\Input() = *Object_Input
       If *Object\Input()\Custom_Data
-        ClearStructure(*Object\Input()\Custom_Data, Object_View1D_Input)
-        FreeMemory(*Object\Input()\Custom_Data)
+        FreeStructure(*Object\Input()\Custom_Data)
+        *Object\Input()\Custom_Data = #Null
       EndIf
       Object_Input_Delete(*Object, *Object\Input())
       
@@ -576,6 +575,7 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 18
+; CursorPosition = 369
+; FirstLine = 354
 ; Folding = ---
 ; EnableXP

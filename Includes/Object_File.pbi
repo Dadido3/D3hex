@@ -258,9 +258,8 @@ Procedure Object_File_Create(Requester)
   *Object\Name = "File"
   *Object\Color = RGBA(176,137,0,255)
   
-  *Object_File = AllocateMemory(SizeOf(Object_File))
-  *Object\Custom_Data = *Object_File
-  InitializeStructure(*Object_File, Object_File)
+  *Object\Custom_Data = AllocateStructure(Object_File)
+  *Object_File = *Object\Custom_Data
   
   ; #### Add Output
   *Object_Output = Object_Output_Add(*Object)
@@ -302,8 +301,8 @@ Procedure _Object_File_Delete(*Object.Object)
   
   Object_File_Window_Close(*Object)
   
-  ClearStructure(*Object_File, Object_File)
-  FreeMemory(*Object_File)
+  FreeStructure(*Object_File)
+  *Object\Custom_Data = #Null
   
   ProcedureReturn #True
 EndProcedure
@@ -1136,8 +1135,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 1006
-; FirstLine = 978
+; CursorPosition = 303
+; FirstLine = 257
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

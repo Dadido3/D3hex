@@ -83,9 +83,8 @@ Procedure Object_Dummy_Create(Requester)
   *Object\Name = "Dummy"
   *Object\Color = RGBA(127, 127, 100, 255)
   
-  *Object_Dummy = AllocateMemory(SizeOf(Object_Dummy))
-  *Object\Custom_Data = *Object_Dummy
-  InitializeStructure(*Object_Dummy, Object_Dummy)
+  *Object\Custom_Data = AllocateStructure(Object_Dummy)
+  *Object_Dummy = *Object\Custom_Data
   
   *Object_Dummy\Raw_Data = AllocateMemory(#Object_Dummy_MemoryAllocation_Step)
   
@@ -126,8 +125,8 @@ Procedure _Object_Dummy_Delete(*Object.Object)
     FreeMemory(*Object_Dummy\Raw_Data)
   EndIf
   
-  ClearStructure(*Object_Dummy, Object_Dummy)
-  FreeMemory(*Object_Dummy)
+  FreeStructure(*Object_Dummy)
+  *Object\Custom_Data = #Null
   
   ProcedureReturn #True
 EndProcedure
@@ -366,7 +365,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 18
+; CursorPosition = 127
+; FirstLine = 90
 ; Folding = --
 ; EnableUnicode
 ; EnableXP

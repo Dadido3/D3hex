@@ -186,9 +186,8 @@ Procedure Object_Process_Create(Requester)
   *Object\Name = "Process"
   *Object\Color = RGBA(100,100,255,255)
   
-  *Object_Process = AllocateMemory(SizeOf(Object_Process))
-  *Object\Custom_Data = *Object_Process
-  InitializeStructure(*Object_Process, Object_Process)
+  *Object\Custom_Data = AllocateStructure(Object_Process)
+  *Object_Process = *Object\Custom_Data
   
   ; #### Add Output
   *Object_Output = Object_Output_Add(*Object)
@@ -226,8 +225,8 @@ Procedure _Object_Process_Delete(*Object.Object)
   
   Object_Process_Window_Close(*Object)
   
-  ClearStructure(*Object_Process, Object_Process)
-  FreeMemory(*Object_Process)
+  FreeStructure(*Object_Process)
+  *Object\Custom_Data = #Null
   
   ProcedureReturn #True
 EndProcedure
@@ -965,7 +964,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 18
+; CursorPosition = 228
+; FirstLine = 191
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

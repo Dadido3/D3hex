@@ -237,9 +237,8 @@ Procedure Object_Network_Terminal_Create(Requester)
   *Object\Name = "Network Terminal"
   *Object\Color = RGBA(200,150,250,255)
   
-  *Object_Network_Terminal = AllocateMemory(SizeOf(Object_Network_Terminal))
-  *Object\Custom_Data = *Object_Network_Terminal
-  InitializeStructure(*Object_Network_Terminal, Object_Network_Terminal)
+  *Object\Custom_Data = AllocateStructure(Object_Network_Terminal)
+  *Object_Network_Terminal =  *Object\Custom_Data
   
   ; #### Add Output "Output"
   *Object_Output = Object_Output_Add(*Object, "Send", "Send")
@@ -302,8 +301,8 @@ Procedure _Object_Network_Terminal_Delete(*Object.Object)
   
   Object_Network_Terminal_Window_Close(*Object)
   
-  ClearStructure(*Object_Network_Terminal, Object_Network_Terminal)
-  FreeMemory(*Object_Network_Terminal)
+  FreeStructure(*Object_Network_Terminal)
+  *Object\Custom_Data = #Null
   
   ProcedureReturn #True
 EndProcedure
@@ -1201,7 +1200,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 18
+; CursorPosition = 303
+; FirstLine = 263
 ; Folding = ------
 ; EnableUnicode
 ; EnableXP

@@ -122,9 +122,8 @@ Procedure Object_Datatypes_Create(Requester)
   *Object\Name = "Datatype Editor"
   *Object\Color = RGBA(150,100,150,255)
   
-  *Object_Datatypes = AllocateMemory(SizeOf(Object_Datatypes))
-  *Object\Custom_Data = *Object_Datatypes
-  InitializeStructure(*Object_Datatypes, Object_Datatypes)
+  *Object\Custom_Data = AllocateStructure(Object_Datatypes)
+  *Object_Datatypes = *Object\Custom_Data
   
   ; #### Add Input
   *Object_Input = Object_Input_Add(*Object)
@@ -145,8 +144,8 @@ Procedure _Object_Datatypes_Delete(*Object.Object)
   
   Object_Datatypes_Window_Close(*Object)
   
-  ClearStructure(*Object_Datatypes, Object_Datatypes)
-  FreeMemory(*Object_Datatypes)
+  FreeStructure(*Object_Datatypes)
+  *Object\Custom_Data = #Null
   
   ProcedureReturn #True
 EndProcedure
@@ -948,8 +947,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 106
-; FirstLine = 90
+; CursorPosition = 125
+; FirstLine = 102
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP
