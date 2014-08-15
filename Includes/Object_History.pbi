@@ -348,9 +348,8 @@ Procedure Object_History_Create(Requester)
   *Object\Name = "History"
   *Object\Color = RGBA(127,100,50,255)
   
-  *Object_History = AllocateMemory(SizeOf(Object_History))
-  *Object\Custom_Data = *Object_History
-  InitializeStructure(*Object_History, Object_History)
+  *Object\Custom_Data = AllocateStructure(Object_History)
+  *Object_History = *Object\Custom_Data
   
   ; #### Add Input
   *Object_Input = Object_Input_Add(*Object)
@@ -383,8 +382,22 @@ Procedure _Object_History_Delete(*Object.Object)
   
   Object_History_Window_Close(*Object)
   
-  ClearStructure(*Object_History, Object_History)
-  FreeMemory(*Object_History)
+  ; #### Free the data of all events
+  ForEach *Object_History\Operation_Past()
+    If *Object_History\Operation_Past()\Data
+      FreeMemory(*Object_History\Operation_Past()\Data)
+      *Object_History\Operation_Past()\Data = #Null
+    EndIf
+  Next
+  ForEach *Object_History\Operation_Future()
+    If *Object_History\Operation_Future()\Data
+      FreeMemory(*Object_History\Operation_Future()\Data)
+      *Object_History\Operation_Future()\Data = #Null
+    EndIf
+  Next
+  
+  FreeStructure(*Object_History)
+  *Object\Custom_Data = #Null
   
   ProcedureReturn #True
 EndProcedure
@@ -1253,6 +1266,7 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 18
+; CursorPosition = 397
+; FirstLine = 352
 ; Folding = ------
 ; EnableXP
