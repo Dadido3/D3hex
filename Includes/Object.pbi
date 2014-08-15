@@ -226,6 +226,7 @@ Procedure Object_Delete(*Object.Object)
   *Object\Function_Delete(*Object)
   
   ForEach *Object\Input()
+    *Object\Input()\Function_Event = #Null  ; Don't call the eventhandler of the (half) deleted object
     Object_Link_Disconnect(*Object\Input())
   Next
   
@@ -640,6 +641,7 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 18
+; CursorPosition = 228
+; FirstLine = 220
 ; Folding = ----
 ; EnableXP
