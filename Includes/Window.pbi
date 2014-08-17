@@ -81,7 +81,7 @@ Procedure Window_Get_hWnd(hWnd.i)
   PushListPosition(Window())
   
   ForEach Window()
-    If WindowID(Window()\ID) = hWnd
+    If Window()\ID And WindowID(Window()\ID) = hWnd
       *Result = Window()
       Break
     EndIf
@@ -277,7 +277,8 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 18
+; CursorPosition = 83
+; FirstLine = 40
 ; Folding = --
 ; EnableUnicode
 ; EnableXP

@@ -623,7 +623,7 @@ Procedure Object_Editor_Search_Prepare_Replacement(*Object.Object)
         *Object_Editor_Search\Raw_Replacement_Size + 1
       EndIf
       If *Object_Editor_Search\Raw_Replacement_Size > 0
-        *Object_Editor_Search\Raw_Replacement = AllocateMemory(*Object_Editor_Search\Raw_Replacement_Size)
+        *Object_Editor_Search\Raw_Replacement = AllocateMemory(*Object_Editor_Search\Raw_Replacement_Size+1)
         If *Object_Editor_Search\Raw_Replacement
           PokeS(*Object_Editor_Search\Raw_Replacement, *Object_Editor_Search\Replacement, -1, #PB_Ascii)
         EndIf
@@ -635,7 +635,7 @@ Procedure Object_Editor_Search_Prepare_Replacement(*Object.Object)
         *Object_Editor_Search\Raw_Replacement_Size + 1
       EndIf
       If *Object_Editor_Search\Raw_Replacement_Size > 0
-        *Object_Editor_Search\Raw_Replacement = AllocateMemory(*Object_Editor_Search\Raw_Replacement_Size)
+        *Object_Editor_Search\Raw_Replacement = AllocateMemory(*Object_Editor_Search\Raw_Replacement_Size+1)
         If *Object_Editor_Search\Raw_Replacement
           PokeS(*Object_Editor_Search\Raw_Replacement, *Object_Editor_Search\Replacement, -1, #PB_UTF8)
         EndIf
@@ -647,7 +647,7 @@ Procedure Object_Editor_Search_Prepare_Replacement(*Object.Object)
         *Object_Editor_Search\Raw_Replacement_Size + 2
       EndIf
       If *Object_Editor_Search\Raw_Replacement_Size > 0
-        *Object_Editor_Search\Raw_Replacement = AllocateMemory(*Object_Editor_Search\Raw_Replacement_Size)
+        *Object_Editor_Search\Raw_Replacement = AllocateMemory(*Object_Editor_Search\Raw_Replacement_Size+2)
         If *Object_Editor_Search\Raw_Replacement
           PokeS(*Object_Editor_Search\Raw_Replacement, *Object_Editor_Search\Replacement, -1, #PB_Unicode)
         EndIf
@@ -1902,7 +1902,8 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 18
+; CursorPosition = 336
+; FirstLine = 317
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP
