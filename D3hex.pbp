@@ -7,7 +7,7 @@
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2014-08-15 17:20" user="David Vogel" host="DAVIDS"/>
+    <lastopen date="2014-08-17 21:08" user="David Vogel" host="DAVIDS"/>
   </section>
   <section name="files">
     <file name="Includes\About.pbi">
@@ -64,7 +64,7 @@
     </file>
     <file name="Includes\Object_Editor_Search.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
-      <fingerprint md5="fe0924bfcf378f31154eb6543c4095d6"/>
+      <fingerprint md5="72fd4ab01ea7aa0cbf4ed98476b8aa70"/>
     </file>
     <file name="Includes\Object_File.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
@@ -112,7 +112,7 @@
     </file>
     <file name="Includes\Window.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
-      <fingerprint md5="7f609a6f3f6201085b68c89bf38bcfcb"/>
+      <fingerprint md5="471dee848b31f1af231fd12a5a01bd34"/>
     </file>
     <file name="Includes\ZLib.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
@@ -126,13 +126,13 @@
   <section name="targets">
     <target name="x86" enabled="1" default="0">
       <inputfile value="Main.pb"/>
-      <outputfile value="D3hex.x86.exe"/>
+      <outputfile value="Distribution\D3hex.x86.exe"/>
       <compiler version="PureBasic 5.30 (Windows - x86)"/>
-      <executable value="D3hex.x86.exe"/>
+      <executable value="Distribution\D3hex.x86.exe"/>
       <options unicode="1" xpskin="1" user="1" onerror="1"/>
       <icon enable="1">Data\Images\Icon.ico</icon>
-      <compilecount enable="1" value="221"/>
-      <buildcount enable="1" value="33"/>
+      <compilecount enable="1" value="223"/>
+      <buildcount enable="1" value="35"/>
       <versioninfo enable="1">
         <field3 value="D3hex"/>
         <field14 value="D3nexus.de"/>
@@ -141,14 +141,14 @@
     </target>
     <target name="x64" enabled="1" default="1">
       <inputfile value="Main.pb"/>
-      <outputfile value="D3hex.x64.exe"/>
+      <outputfile value="Distribution\D3hex.x64.exe"/>
       <compiler version="PureBasic 5.30 (Windows - x64)"/>
-      <executable value="D3hex.x64.exe"/>
+      <executable value="Distribution\D3hex.x64.exe"/>
       <options unicode="1" xpskin="1" user="1" onerror="1"/>
       <purifier enable="0" granularity="1,1,1,1"/>
       <icon enable="1">Data\Images\Icon.ico</icon>
-      <compilecount enable="1" value="2332"/>
-      <buildcount enable="1" value="40"/>
+      <compilecount enable="1" value="2340"/>
+      <buildcount enable="1" value="42"/>
       <versioninfo enable="1">
         <field3 value="D3hex"/>
         <field14 value="D3nexus.de"/>
