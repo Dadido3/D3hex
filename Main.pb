@@ -121,10 +121,17 @@
 ;   - Added Object_Datatypes
 ;   - Fixed crash because of wrong pointer returned from Window_Create(...)
 ;
-; - V0.930 (indev)
+; - V0.930 (15.08.2014)
 ;   - Added Object_Binary_Operation
 ;   - Added Object_Copy
 ;   - Update every structure allocation to AllocateStructure(...) and FreeStructure(...)
+;
+; - V0.932 (indev)
+;   - Fixed possible crash with Object_Editor (String generation wrote Null-Bytes outside of the memory)
+;   - NBT loading and saving is a bit faster
+;   - Object_Copy also displays values
+;   - Added a unit engine to format numbers with SI-prefixes...
+;   - Object_View1D doesn't scroll away anymore when normalizing the x-axis
 ;   
 ; ##################################################### Begin #######################################################
 
@@ -139,10 +146,11 @@ XIncludeFile "Includes/TabBarGadget.pbi"
 XIncludeFile "Includes/Memory.pbi"
 XIncludeFile "Includes/D3NBT.pbi"
 XIncludeFile "Includes/Crash.pbi"
+XIncludeFile "Includes/UnitEngine.pbi"
 
 ; ##################################################### Constants ###################################################
 
-#Version = 0930
+#Version = 0932
 
 Enumeration
   #Data_Raw
@@ -839,8 +847,8 @@ DataSection
   
 EndDataSection
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 59
-; FirstLine = 19
+; CursorPosition = 133
+; FirstLine = 114
 ; Folding = --
 ; EnableUnicode
 ; EnableXP

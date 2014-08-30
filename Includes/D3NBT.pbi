@@ -62,7 +62,7 @@ Enumeration
   #NBT_Tag_Long_Array
 EndEnumeration
 
-#NBT_Buffer_Step_Size = 1024
+#NBT_Buffer_Step_Size = 1024*1024*10
 
 Enumeration
   #NBT_Compression_None
@@ -1202,6 +1202,7 @@ EndProcedure
 
 ; #################################################### Datasections ##############################################
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 6
+; CursorPosition = 64
+; FirstLine = 26
 ; Folding = -----
 ; EnableXP

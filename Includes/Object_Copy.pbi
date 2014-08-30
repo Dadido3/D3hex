@@ -34,7 +34,7 @@
 
 ; ##################################################### Constants ###################################################
 
-#Object_Copy_Chunk_Size = 1000000
+#Object_Copy_Chunk_Size = 1024*1024*10
 
 Enumeration
   #Object_Copy_State_Off
@@ -66,6 +66,7 @@ Structure Object_Copy
   Option.i[10]
   CheckBox.i[10]
   ProgressBar.i
+  Text.i
   
   ; #### Settings
   
@@ -383,7 +384,7 @@ Procedure Object_Copy_Window_Open(*Object.Object)
   If Not *Object_Copy\Window
     
     Width = 210
-    Height = 170
+    Height = 190
     
     *Object_Copy\Window = Window_Create(*Object, "Copy", "Copy", #False, 0, 0, Width, Height, #False)
     
@@ -400,6 +401,7 @@ Procedure Object_Copy_Window_Open(*Object.Object)
     *Object_Copy\CheckBox[1] = CheckBoxGadget(#PB_Any, 90, 100, 100, 20, "Truncate")
     
     *Object_Copy\ProgressBar = ProgressBarGadget(#PB_Any, 10, 140, Width-20, 20, 0, 1000, #PB_ProgressBar_Smooth)
+    *Object_Copy\Text = TextGadget(#PB_Any, 10, 160, Width-20, 20, "")
     
     ; #### Initialise states
     SetGadgetState(*Object_Copy\CheckBox[0], *Object_Copy\Append)
@@ -475,6 +477,7 @@ Procedure Object_Copy_Set_State(*Object.Object, State.i)
       DisableGadget(*Object_Copy\Option[0],   #False)
       DisableGadget(*Object_Copy\Option[1],   #False)
       SetGadgetState(*Object_Copy\ProgressBar, 0)
+      SetGadgetText(*Object_Copy\Text, "")
       
     Case #Object_Copy_State_B_2_A
       *Object_Copy\Position_Read = 0
@@ -491,6 +494,7 @@ Procedure Object_Copy_Set_State(*Object.Object, State.i)
       DisableGadget(*Object_Copy\Option[0],   #True)
       DisableGadget(*Object_Copy\Option[1],   #True)
       SetGadgetState(*Object_Copy\ProgressBar, 0)
+      SetGadgetText(*Object_Copy\Text, "")
       
     Case #Object_Copy_State_A_2_B
       *Object_Copy\Position_Read = 0
@@ -507,6 +511,7 @@ Procedure Object_Copy_Set_State(*Object.Object, State.i)
       DisableGadget(*Object_Copy\Option[0],   #True)
       DisableGadget(*Object_Copy\Option[1],   #True)
       SetGadgetState(*Object_Copy\ProgressBar, 0)
+      SetGadgetText(*Object_Copy\Text, "")
       
   EndSelect
 EndProcedure
@@ -596,7 +601,7 @@ Procedure Object_Copy_ProgressBar_Update(*Object.Object)
     ProcedureReturn #False
   EndIf
   
-  Protected Size.q
+  Protected Size.q, Text.s
   
   Select *Object_Copy\State
     Case #Object_Copy_State_A_2_B, #Object_Copy_State_B_2_A
@@ -608,7 +613,10 @@ Procedure Object_Copy_ProgressBar_Update(*Object.Object)
           Size = Object_Input_Get_Size(LastElement(*Object\Input()))
       EndSelect
       
+      Text = UnitEngine_Format_Integer(*Object_Copy\Position_Read, #UnitEngine_SiPrefix, "B")+"/"+UnitEngine_Format_Integer(Size, #UnitEngine_SiPrefix, "B")
+      
       SetGadgetState(*Object_Copy\ProgressBar, *Object_Copy\Position_Read*1000/Size)
+      SetGadgetText(*Object_Copy\Text, Text)
       
   EndSelect
 EndProcedure
@@ -658,8 +666,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 647
-; FirstLine = 600
+; CursorPosition = 478
+; FirstLine = 463
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP

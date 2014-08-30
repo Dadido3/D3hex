@@ -1037,6 +1037,7 @@ Procedure Object_View1D_Window_Event_Menu()
       Object_View1D_Settings_Window_Open(*Object)
       
     Case #Object_View1D_Menu_X_Normalize
+      *Object_View1D\Offset_X - (1.0/*Object_View1D\Zoom_X - 1) * ( - *Object_View1D\Offset_X)
       *Object_View1D\Zoom_X = 1
       *Object_View1D\Redraw = #True
       
@@ -1251,7 +1252,7 @@ DataSection
   Object_View1D_Icon_Normalize_Y: : IncludeBinary "../Data/Icons/Graph_Normalize_Y.png"
 EndDataSection
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 301
-; FirstLine = 272
+; CursorPosition = 1039
+; FirstLine = 1012
 ; Folding = ----
 ; EnableXP

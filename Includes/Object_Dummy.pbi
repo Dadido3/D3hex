@@ -34,7 +34,7 @@
 
 ; ##################################################### Constants ###################################################
 
-#Object_Dummy_MemoryAllocation_Step = 1000000
+#Object_Dummy_MemoryAllocation_Step = 1024*1024*1
 
 ; ##################################################### Structures ##################################################
 
@@ -365,8 +365,7 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 127
-; FirstLine = 90
+; CursorPosition = 36
 ; Folding = --
 ; EnableUnicode
 ; EnableXP

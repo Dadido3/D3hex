@@ -7,7 +7,7 @@
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2014-08-17 21:08" user="David Vogel" host="DAVIDS"/>
+    <lastopen date="2014-08-31 01:12" user="David Vogel" host="DAVIDS"/>
   </section>
   <section name="files">
     <file name="Includes\About.pbi">
@@ -20,7 +20,7 @@
     </file>
     <file name="Includes\D3NBT.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
-      <fingerprint md5="9bfc5e01ce97c61a00ae1a9f3cba64c2"/>
+      <fingerprint md5="60f3ec6bf190d689be2b3ffdfa922c43"/>
     </file>
     <file name="Includes\Logging.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
@@ -44,7 +44,7 @@
     </file>
     <file name="Includes\Object_Copy.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
-      <fingerprint md5="cfdccc71e58c558deb77c5b570e2494a"/>
+      <fingerprint md5="85807ed0f5cc36e2aeaf502eb2d83ebc"/>
     </file>
     <file name="Includes\Object_Datatypes.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
@@ -52,7 +52,7 @@
     </file>
     <file name="Includes\Object_Dummy.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
-      <fingerprint md5="85d8e8dc007fb9de7cb000c0ce31ad07"/>
+      <fingerprint md5="6ec2a912e4bdf019d48d33b43b0df3bb"/>
     </file>
     <file name="Includes\Object_Editor.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
@@ -100,7 +100,7 @@
     </file>
     <file name="Includes\Object_View1D.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
-      <fingerprint md5="3dac5182bd1d4c66d5fc668bef3f9ad4"/>
+      <fingerprint md5="f32e59d00e11192de98359738e330088"/>
     </file>
     <file name="Includes\Object_View1D_Settings.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
@@ -112,7 +112,7 @@
     </file>
     <file name="Includes\Window.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
-      <fingerprint md5="471dee848b31f1af231fd12a5a01bd34"/>
+      <fingerprint md5="a5dcadf18e3500f9a00bce0e9e98a5d7"/>
     </file>
     <file name="Includes\ZLib.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
@@ -120,7 +120,11 @@
     </file>
     <file name="Main.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="978a10327d78005780b8f06fb2060cab"/>
+      <fingerprint md5="a23295fd873e6b796dbdb75f7fc15e16"/>
+    </file>
+    <file name="Includes\UnitEngine.pbi">
+      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
+      <fingerprint md5="fde3c10ec9a2de29c4714e4340f05d55"/>
     </file>
   </section>
   <section name="targets">
@@ -131,8 +135,8 @@
       <executable value="Distribution\D3hex.x86.exe"/>
       <options unicode="1" xpskin="1" user="1" onerror="1"/>
       <icon enable="1">Data\Images\Icon.ico</icon>
-      <compilecount enable="1" value="223"/>
-      <buildcount enable="1" value="35"/>
+      <compilecount enable="1" value="224"/>
+      <buildcount enable="1" value="36"/>
       <versioninfo enable="1">
         <field3 value="D3hex"/>
         <field14 value="D3nexus.de"/>
@@ -147,8 +151,8 @@
       <options unicode="1" xpskin="1" user="1" onerror="1"/>
       <purifier enable="0" granularity="1,1,1,1"/>
       <icon enable="1">Data\Images\Icon.ico</icon>
-      <compilecount enable="1" value="2340"/>
-      <buildcount enable="1" value="42"/>
+      <compilecount enable="1" value="2353"/>
+      <buildcount enable="1" value="43"/>
       <versioninfo enable="1">
         <field3 value="D3hex"/>
         <field14 value="D3nexus.de"/>

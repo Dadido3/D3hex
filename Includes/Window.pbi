@@ -232,6 +232,9 @@ Procedure Window_Create(*Object.Object, Name.s, Name_Short.s, MDI, X=#PB_Ignore,
     AddTabBarGadgetItem(Main_Window\Panel, #PB_Default, Name_Short, #Null, *Window\ID)
     SetWindowState(*Window\ID, #PB_Window_Maximize)
     Main_Window_Refresh_Active()
+  ;Else
+    ; #### Test
+  ;  SetParent_(WindowID(*Window\ID ), WindowID(Main_Window\ID))
   EndIf
   
   PostEvent(#PB_Event_SizeWindow, *Window\ID, 0)
@@ -277,8 +280,8 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 83
-; FirstLine = 40
+; CursorPosition = 235
+; FirstLine = 198
 ; Folding = --
 ; EnableUnicode
 ; EnableXP
