@@ -105,7 +105,7 @@ Declare   Object_History_Input_Event(*Object_Input.Object_Input, *Object_Event.O
 Declare   Object_History_Output_Event(*Object_Output.Object_Output, *Object_Event.Object_Event)
 
 Declare   Object_History_Get_Segments(*Object_Output.Object_Output, List Segment.Object_Output_Segment())
-Declare.s Object_History_Get_Descriptor(*Object_Output.Object_Output)
+Declare   Object_History_Get_Descriptor(*Object_Output.Object_Output)
 Declare.q Object_History_Get_Size(*Object_Output.Object_Output)
 Declare   Object_History_Get_Data(*Object_Output.Object_Output, Position.q, Size.i, *Data, *Metadata)
 Declare   Object_History_Set_Data(*Object_Output.Object_Output, Position.q, Size.i, *Data)
@@ -524,18 +524,17 @@ Procedure Object_History_Get_Segments(*Object_Output.Object_Output, List Segment
   ProcedureReturn Object_Input_Get_Segments(FirstElement(*Object\Input()), Segment())
 EndProcedure
 
-Procedure.s Object_History_Get_Descriptor(*Object_Output.Object_Output)
-  Protected Descriptor.s
+Procedure Object_History_Get_Descriptor(*Object_Output.Object_Output)
   If Not *Object_Output
-    ProcedureReturn ""
+    ProcedureReturn #Null
   EndIf
   Protected *Object.Object = *Object_Output\Object
   If Not *Object
-    ProcedureReturn ""
+    ProcedureReturn #Null
   EndIf
   Protected *Object_History.Object_History = *Object\Custom_Data
   If Not *Object_History
-    ProcedureReturn ""
+    ProcedureReturn #Null
   EndIf
   
   ProcedureReturn Object_Input_Get_Descriptor(FirstElement(*Object\Input()))
@@ -1265,8 +1264,8 @@ EndIf
 ; ##################################################### End #########################################################
 
 
-; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 397
-; FirstLine = 352
+; IDE Options = PureBasic 5.30 Beta 2 (Windows - x64)
+; CursorPosition = 107
+; FirstLine = 83
 ; Folding = ------
 ; EnableXP

@@ -1245,14 +1245,14 @@ EndIf
 ; ##################################################### Data Sections ###############################################
 
 DataSection
-  Object_View1D_Icon_Dots:        : IncludeBinary "../Data/Icons/Graph_Dots.png"
-  Object_View1D_Icon_Lines:       : IncludeBinary "../Data/Icons/Graph_Lines.png"
-  Object_View1D_Icon_Fit_Y:       : IncludeBinary "../Data/Icons/Graph_Fit_Y.png"
-  Object_View1D_Icon_Normalize_X: : IncludeBinary "../Data/Icons/Graph_Normalize_X.png"
-  Object_View1D_Icon_Normalize_Y: : IncludeBinary "../Data/Icons/Graph_Normalize_Y.png"
+  Object_View1D_Icon_Dots:        : IncludeBinary "../../../Data/Icons/Graph_Dots.png"
+  Object_View1D_Icon_Lines:       : IncludeBinary "../../../Data/Icons/Graph_Lines.png"
+  Object_View1D_Icon_Fit_Y:       : IncludeBinary "../../../Data/Icons/Graph_Fit_Y.png"
+  Object_View1D_Icon_Normalize_X: : IncludeBinary "../../../Data/Icons/Graph_Normalize_X.png"
+  Object_View1D_Icon_Normalize_Y: : IncludeBinary "../../../Data/Icons/Graph_Normalize_Y.png"
 EndDataSection
-; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 1039
-; FirstLine = 1012
+; IDE Options = PureBasic 5.30 Beta 2 (Windows - x64)
+; CursorPosition = 1251
+; FirstLine = 1211
 ; Folding = ----
 ; EnableXP

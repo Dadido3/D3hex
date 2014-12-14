@@ -132,6 +132,8 @@
 ;   - Object_Copy also displays values
 ;   - Added a unit engine to format numbers with SI-prefixes...
 ;   - Object_View1D doesn't scroll away anymore when normalizing the x-axis
+;   - Renamed and moved all object-includes
+;   - Renamed the object "Datatypes" to "Data Inspector"
 ;   
 ; ##################################################### Begin #######################################################
 
@@ -319,19 +321,19 @@ XIncludeFile "Includes/Object.pbi"
 XIncludeFile "Includes/About.pbi"
 XIncludeFile "Includes/Window.pbi"
 XIncludeFile "Includes/Node_Editor.pbi"
-XIncludeFile "Includes/Object_File.pbi"
-XIncludeFile "Includes/Object_Dummy.pbi"
-XIncludeFile "Includes/Object_Editor.pbi"
-XIncludeFile "Includes/Object_View1D.pbi"
-XIncludeFile "Includes/Object_Random.pbi"
-XIncludeFile "Includes/Object_History.pbi"
-XIncludeFile "Includes/Object_Process.pbi"
-XIncludeFile "Includes/Object_Network_Terminal.pbi"
-;XIncludeFile "Includes/Object_Math.pbi"
-;XIncludeFile "Includes/Object_MathFormula.pbi"
-XIncludeFile "Includes/Object_Datatypes.pbi"
-XIncludeFile "Includes/Object_Binary_Operation.pbi"
-XIncludeFile "Includes/Object_Copy.pbi"
+XIncludeFile "Includes/Object/File/Object_File.pbi"
+XIncludeFile "Includes/Object/Dummy/Object_Dummy.pbi"
+XIncludeFile "Includes/Object/Editor/Object_Editor.pbi"
+XIncludeFile "Includes/Object/View1D/Object_View1D.pbi"
+XIncludeFile "Includes/Object/Random/Object_Random.pbi"
+XIncludeFile "Includes/Object/History/Object_History.pbi"
+XIncludeFile "Includes/Object/Process/Object_Process.pbi"
+XIncludeFile "Includes/Object/Network_Terminal/Object_Network_Terminal.pbi"
+;XIncludeFile "Includes/Object/Math/Object_Math.pbi"
+;XIncludeFile "Includes/Object/MathFormula/Object_MathFormula.pbi"
+XIncludeFile "Includes/Object/Data_Inspector/Object_Data_Inspector.pbi"
+XIncludeFile "Includes/Object/Binary_Operation/Object_Binary_Operation.pbi"
+XIncludeFile "Includes/Object/Copy/Object_Copy.pbi"
 
 ; ##################################################### Procedures ##################################################
 
@@ -846,9 +848,9 @@ DataSection
   Icon_Goto: : IncludeBinary "Data/Icons/Goto.png"
   
 EndDataSection
-; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 133
-; FirstLine = 114
+; IDE Options = PureBasic 5.30 Beta 2 (Windows - x64)
+; CursorPosition = 135
+; FirstLine = 116
 ; Folding = --
 ; EnableUnicode
 ; EnableXP
