@@ -51,7 +51,7 @@ Prototype   Object_Function_Event(*Object, *Object_Event)
 Prototype   Object_Function_Link_Event(*Object_InOut, *Object_Event)
 
 Prototype   Object_Function_Get_Segments(*Object_Output, List Range.Object_Output_Segment())
-Prototype.s Object_Function_Get_Descriptor(*Object_Output)
+Prototype   Object_Function_Get_Descriptor(*Object_Output)
 Prototype.q Object_Function_Get_Size(*Object_Output)
 Prototype   Object_Function_Get_Data(*Object_Output, Position.q, Size.i, *Data, *Metadata)
 Prototype   Object_Function_Set_Data(*Object_Output, Position.q, Size.i, *Data)
@@ -226,7 +226,7 @@ Procedure Object_Delete(*Object.Object)
   *Object\Function_Delete(*Object)
   
   ForEach *Object\Input()
-    *Object\Input()\Function_Event = #Null  ; Don't call the eventhandler of the (half) deleted object
+    *Object\Input()\Function_Event = #Null  ; Prevent the eventhandler, of the (half) deleted object, of being called.
     Object_Link_Disconnect(*Object\Input())
   Next
   
@@ -285,6 +285,8 @@ Procedure Object_Output_Add(*Object.Object, Name.s="", Short_Name.s="")
   Next
   PopListPosition(*Object\Output())
   
+  *Object\Output()\Descriptor = NBT_Element_Add()
+  
   *Object\Redraw = #True
   
   ProcedureReturn *Object\Output()
@@ -322,6 +324,8 @@ Procedure Object_Output_Delete(*Object.Object, *Object_Output.Object_Output)
   ForEach *Object_Output\Linked()
     Object_Link_Disconnect(*Object_Output\Linked())
   Next
+  
+  NBT_Element_Delete(*Object\Output()\Descriptor)
   
   ForEach *Object\Output()
     If *Object\Output() = *Object_Output
@@ -466,22 +470,22 @@ Procedure Object_Output_Event(*Object_Output.Object_Output, *Object_Event.Object
 EndProcedure
 
 ; #### This function calls the corresponding function in the others object output.
-Procedure.s Object_Input_Get_Descriptor(*Object_Input.Object_Input)
+Procedure Object_Input_Get_Descriptor(*Object_Input.Object_Input)
   If Not *Object_Input
-    ProcedureReturn ""
+    ProcedureReturn #Null
   EndIf
   
   Protected *Object_Output.Object_Output = *Object_Input\Linked
   
   If Not *Object_Output
-    ProcedureReturn ""
+    ProcedureReturn #Null
   EndIf
   
   If *Object_Output\Function_Get_Descriptor
     ProcedureReturn *Object_Output\Function_Get_Descriptor(*Object_Output)
   EndIf
   
-  ProcedureReturn ""
+  ProcedureReturn #Null
 EndProcedure
 
 ; #### This function calls the corresponding function in the others object output.
@@ -640,8 +644,8 @@ EndProcedure
 ; ##################################################### End #########################################################
 
 
-; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 228
-; FirstLine = 220
+; IDE Options = PureBasic 5.30 Beta 2 (Windows - x64)
+; CursorPosition = 484
+; FirstLine = 30
 ; Folding = ----
 ; EnableXP
