@@ -505,8 +505,6 @@ Procedure Object_View1D_Canvas_Redraw(*Object.Object)
   Protected Text.s, Text_Width, Text_Height
   Protected *Color_Temp.Object_View1D_RGB
   
-  Debug "Test"
-  
   If Not *Object
     ProcedureReturn #False
   EndIf
@@ -1251,8 +1249,8 @@ DataSection
   Object_View1D_Icon_Normalize_X: : IncludeBinary "../../../Data/Icons/Graph_Normalize_X.png"
   Object_View1D_Icon_Normalize_Y: : IncludeBinary "../../../Data/Icons/Graph_Normalize_Y.png"
 EndDataSection
-; IDE Options = PureBasic 5.30 Beta 2 (Windows - x64)
-; CursorPosition = 1251
-; FirstLine = 1211
+; IDE Options = PureBasic 5.31 (Windows - x64)
+; CursorPosition = 505
+; FirstLine = 551
 ; Folding = ----
 ; EnableXP

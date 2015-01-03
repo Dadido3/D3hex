@@ -1201,8 +1201,8 @@ EndProcedure
 ; #################################################### Initstuff #################################################
 
 ; #################################################### Datasections ##############################################
-; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 64
-; FirstLine = 26
+; IDE Options = PureBasic 5.31 (Windows - x64)
+; CursorPosition = 40
+; FirstLine = 21
 ; Folding = -----
 ; EnableXP

@@ -217,8 +217,9 @@ Procedure Memory_Mirror(*Memory, Memory_Size)
   
   ProcedureReturn #True
 EndProcedure
-; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 18
+; IDE Options = PureBasic 5.31 (Windows - x64)
+; CursorPosition = 190
+; FirstLine = 177
 ; Folding = -
 ; EnableXP
 ; DisableDebugger

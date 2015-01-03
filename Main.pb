@@ -325,6 +325,7 @@ XIncludeFile "Includes/Object/File/Object_File.pbi"
 XIncludeFile "Includes/Object/Dummy/Object_Dummy.pbi"
 XIncludeFile "Includes/Object/Editor/Object_Editor.pbi"
 XIncludeFile "Includes/Object/View1D/Object_View1D.pbi"
+XIncludeFile "Includes/Object/View2D/Object_View2D.pbi"
 XIncludeFile "Includes/Object/Random/Object_Random.pbi"
 XIncludeFile "Includes/Object/History/Object_History.pbi"
 XIncludeFile "Includes/Object/Process/Object_Process.pbi"
@@ -849,8 +850,8 @@ DataSection
   
 EndDataSection
 ; IDE Options = PureBasic 5.30 Beta 2 (Windows - x64)
-; CursorPosition = 135
-; FirstLine = 116
+; CursorPosition = 327
+; FirstLine = 308
 ; Folding = --
 ; EnableUnicode
 ; EnableXP
