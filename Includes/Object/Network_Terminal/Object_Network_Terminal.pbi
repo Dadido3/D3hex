@@ -1,7 +1,7 @@
 ﻿; ##################################################### License / Copyright #########################################
 ; 
 ;     D3hex
-;     Copyright (C) 2014  David Vogel
+;     Copyright (C) 2014-2015  David Vogel
 ; 
 ;     This program is free software; you can redistribute it and/or modify
 ;     it under the terms of the GNU General Public License As published by
@@ -1199,9 +1199,8 @@ EndIf
 ; ##################################################### End #########################################################
 
 
-; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 303
-; FirstLine = 263
+; IDE Options = PureBasic 5.31 (Windows - x64)
+; CursorPosition = 3
 ; Folding = ------
 ; EnableUnicode
 ; EnableXP

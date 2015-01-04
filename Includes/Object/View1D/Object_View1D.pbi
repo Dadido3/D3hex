@@ -1,7 +1,7 @@
 ﻿; ##################################################### License / Copyright #########################################
 ; 
 ;     D3hex
-;     Copyright (C) 2014  David Vogel
+;     Copyright (C) 2014-2015  David Vogel
 ; 
 ;     This program is free software; you can redistribute it and/or modify
 ;     it under the terms of the GNU General Public License As published by
@@ -1250,7 +1250,6 @@ DataSection
   Object_View1D_Icon_Normalize_Y: : IncludeBinary "../../../Data/Icons/Graph_Normalize_Y.png"
 EndDataSection
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 505
-; FirstLine = 551
+; CursorPosition = 3
 ; Folding = ----
 ; EnableXP

@@ -1,7 +1,7 @@
 ; ##################################################### License / Copyright #########################################
 ; 
 ;     D3hex
-;     Copyright (C) 2014  David Vogel
+;     Copyright (C) 2014-2015  David Vogel
 ; 
 ;     This program is free software; you can redistribute it and/or modify
 ;     it under the terms of the GNU General Public License As published by
@@ -218,8 +218,7 @@ Procedure Memory_Mirror(*Memory, Memory_Size)
   ProcedureReturn #True
 EndProcedure
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 190
-; FirstLine = 177
+; CursorPosition = 3
 ; Folding = -
 ; EnableXP
 ; DisableDebugger

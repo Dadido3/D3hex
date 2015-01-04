@@ -1,7 +1,7 @@
 ﻿; ##################################################### License / Copyright #########################################
 ; 
 ;     D3hex
-;     Copyright (C) 2014  David Vogel
+;     Copyright (C) 2014-2015  David Vogel
 ; 
 ;     This program is free software; you can redistribute it and/or modify
 ;     it under the terms of the GNU General Public License As published by
@@ -45,11 +45,10 @@ Structure Object_View2D_Settings
   ; #### Input
   Frame_In.i
   ListIcon_In.i
-  CheckBox_In.i
-  Canvas_In.i
-  Text_In.i [5]
+  CheckBox_In.i [5]
+  Text_In.i [10]
   ComboBox_In.i
-  Spin_In.i
+  Spin_In.i [5]
   Button_In_Set.i
   Button_In_Add.i
   Button_In_Delete.i
@@ -95,8 +94,9 @@ Procedure Object_View2D_Settings_Update_ListIcon(*Object.Object)
     EndIf
     AddGadgetItem(*Object_View2D_Settings\ListIcon_In, ListIndex(*Object\Input()), Str(*Object\Input()\i))
     SetGadgetItemText(*Object_View2D_Settings\ListIcon_In, ListIndex(*Object\Input()), Str(*Object_View2D_Input\Manually), 1)
-    ;SetGadgetItemText(*Object_View2D_Settings\ListIcon_In, ListIndex(*Object\Input()), Str(*Object_View2D_Input\ElementType), 2)
-    ;SetGadgetItemText(*Object_View2D_Settings\ListIcon_In, ListIndex(*Object\Input()), Str(*Object_View2D_Input\Offset), 3)
+    SetGadgetItemText(*Object_View2D_Settings\ListIcon_In, ListIndex(*Object\Input()), Str(*Object_View2D_Input\Pixel_Format), 2)
+    SetGadgetItemText(*Object_View2D_Settings\ListIcon_In, ListIndex(*Object\Input()), Str(*Object_View2D_Input\Width), 3)
+    SetGadgetItemText(*Object_View2D_Settings\ListIcon_In, ListIndex(*Object\Input()), Str(*Object_View2D_Input\Offset), 4)
     SetGadgetItemData(*Object_View2D_Settings\ListIcon_In, ListIndex(*Object\Input()), *Object\Input())
     
     ;Temp_Image = CreateImage(#PB_Any, 16, 16, 24, *Object_View2D_Input\Color)
@@ -147,29 +147,35 @@ Procedure Object_View2D_Settings_Update_Data(*Object.Object)
             ProcedureReturn #False
           EndIf
           
-          ;SetGadgetData(*Object_View2D_Settings\Canvas_In, *Object_View2D_Input\Color)
-          If StartDrawing(CanvasOutput(*Object_View2D_Settings\Canvas_In))
-            Box(0, 0, GadgetWidth(*Object_View2D_Settings\Canvas_In), GadgetHeight(*Object_View2D_Settings\Canvas_In), GetGadgetData(*Object_View2D_Settings\Canvas_In))
-            StopDrawing()
-          EndIf
+          SetGadgetState(*Object_View2D_Settings\CheckBox_In[0], *Object_View2D_Input\Manually)
           
-          SetGadgetState(*Object_View2D_Settings\CheckBox_In, *Object_View2D_Input\Manually)
+          SetGadgetState(*Object_View2D_Settings\Spin_In[0], *Object_View2D_Input\Width)
           
-          ;SetGadgetState(*Object_View2D_Settings\Spin_In, *Object_View2D_Input\Offset)
-          ;For i = 0 To CountGadgetItems(*Object_View2D_Settings\ComboBox_In) - 1
-            ;If GetGadgetItemData(*Object_View2D_Settings\ComboBox_In, i) = *Object_View2D_Input\ElementType
-            ;  SetGadgetState(*Object_View2D_Settings\ComboBox_In, i)
-            ;  Break
-            ;EndIf
-          ;Next
-          If GetGadgetState(*Object_View2D_Settings\CheckBox_In)
-            ;DisableGadget(*Object_View2D_Settings\Canvas_In, #False)
+          SetGadgetState(*Object_View2D_Settings\Spin_In[1], *Object_View2D_Input\Offset)
+          
+          SetGadgetState(*Object_View2D_Settings\Spin_In[2], *Object_View2D_Input\Line_Offset)
+          
+          SetGadgetState(*Object_View2D_Settings\CheckBox_In[1], *Object_View2D_Input\Reverse_Y)
+          
+          For i = 0 To CountGadgetItems(*Object_View2D_Settings\ComboBox_In) - 1
+            If GetGadgetItemData(*Object_View2D_Settings\ComboBox_In, i) = *Object_View2D_Input\Pixel_Format
+              SetGadgetState(*Object_View2D_Settings\ComboBox_In, i)
+              Break
+            EndIf
+          Next
+          
+          If GetGadgetState(*Object_View2D_Settings\CheckBox_In[0])
             DisableGadget(*Object_View2D_Settings\ComboBox_In, #False)
-            DisableGadget(*Object_View2D_Settings\Spin_In, #False)
+            DisableGadget(*Object_View2D_Settings\Spin_In[0], #False)
+            DisableGadget(*Object_View2D_Settings\Spin_In[1], #False)
+            DisableGadget(*Object_View2D_Settings\Spin_In[2], #False)
+            DisableGadget(*Object_View2D_Settings\CheckBox_In[1], #False)
           Else
-            ;DisableGadget(*Object_View2D_Settings\Canvas_In, #True)
             DisableGadget(*Object_View2D_Settings\ComboBox_In, #True)
-            DisableGadget(*Object_View2D_Settings\Spin_In, #True)
+            DisableGadget(*Object_View2D_Settings\Spin_In[0], #True)
+            DisableGadget(*Object_View2D_Settings\Spin_In[1], #True)
+            DisableGadget(*Object_View2D_Settings\Spin_In[2], #True)
+            DisableGadget(*Object_View2D_Settings\CheckBox_In[1], #True)
           EndIf
           
           ProcedureReturn #True
@@ -229,52 +235,19 @@ Procedure Object_View2D_Settings_Window_Event_CheckBox_In()
     ProcedureReturn
   EndIf
   
-  If GetGadgetState(*Object_View2D_Settings\CheckBox_In)
-    DisableGadget(*Object_View2D_Settings\Canvas_In, #False)
+  If GetGadgetState(*Object_View2D_Settings\CheckBox_In[0])
     DisableGadget(*Object_View2D_Settings\ComboBox_In, #False)
-    DisableGadget(*Object_View2D_Settings\Spin_In, #False)
+    DisableGadget(*Object_View2D_Settings\Spin_In[0], #False)
+    DisableGadget(*Object_View2D_Settings\Spin_In[1], #False)
+    DisableGadget(*Object_View2D_Settings\Spin_In[2], #False)
+    DisableGadget(*Object_View2D_Settings\CheckBox_In[1], #False)
   Else
-    DisableGadget(*Object_View2D_Settings\Canvas_In, #True)
     DisableGadget(*Object_View2D_Settings\ComboBox_In, #True)
-    DisableGadget(*Object_View2D_Settings\Spin_In, #True)
+    DisableGadget(*Object_View2D_Settings\Spin_In[0], #True)
+    DisableGadget(*Object_View2D_Settings\Spin_In[1], #True)
+    DisableGadget(*Object_View2D_Settings\Spin_In[2], #True)
+    DisableGadget(*Object_View2D_Settings\CheckBox_In[1], #True)
   EndIf
-  
-EndProcedure
-
-Procedure Object_View2D_Settings_Window_Event_Canvas_In()
-  Protected Event_Window = EventWindow()
-  Protected Event_Gadget = EventGadget()
-  Protected Event_Type = EventType()
-  
-  Protected *Object_Input.Object_Input
-  Protected *Object_View2D_Input.Object_View2D_Input
-  
-  Protected *Window.Window = Window_Get(Event_Window)
-  If Not *Window
-    ProcedureReturn 
-  EndIf
-  Protected *Object.Object = *Window\Object
-  If Not *Object
-    ProcedureReturn
-  EndIf
-  Protected *Object_View2D.Object_View2D = *Object\Custom_Data
-  If Not *Object_View2D
-    ProcedureReturn
-  EndIf
-  Protected *Object_View2D_Settings.Object_View2D_Settings = *Object_View2D\Settings
-  If Not *Object_View2D_Settings
-    ProcedureReturn
-  EndIf
-  
-  Select Event_Type
-    Case #PB_EventType_LeftClick
-      SetGadgetData(*Object_View2D_Settings\Canvas_In, ColorRequester(GetGadgetData(*Object_View2D_Settings\Canvas_In)))
-      If StartDrawing(CanvasOutput(*Object_View2D_Settings\Canvas_In))
-        Box(0, 0, GadgetWidth(*Object_View2D_Settings\Canvas_In), GadgetHeight(*Object_View2D_Settings\Canvas_In), GetGadgetData(*Object_View2D_Settings\Canvas_In))
-        StopDrawing()
-      EndIf
-      
-  EndSelect
   
 EndProcedure
 
@@ -313,25 +286,23 @@ Procedure Object_View2D_Settings_Window_Event_Button_In_Set()
         ProcedureReturn #False
       EndIf
       
-      *Object_View2D_Input\Manually = GetGadgetState(*Object_View2D_Settings\CheckBox_In)
+      *Object_View2D_Input\Manually = GetGadgetState(*Object_View2D_Settings\CheckBox_In[0])
+      
       If GetGadgetState(*Object_View2D_Settings\ComboBox_In) >= 0
-        Select GetGadgetItemData(*Object_View2D_Settings\ComboBox_In, GetGadgetState(*Object_View2D_Settings\ComboBox_In))
-;           Case #PB_Ascii    : *Object_View2D_Input\ElementSize = 1 : *Object_View2D_Input\ElementType = #PB_Ascii
-;           Case #PB_Byte     : *Object_View2D_Input\ElementSize = 1 : *Object_View2D_Input\ElementType = #PB_Byte
-;           Case #PB_Unicode  : *Object_View2D_Input\ElementSize = 2 : *Object_View2D_Input\ElementType = #PB_Unicode
-;           Case #PB_Word     : *Object_View2D_Input\ElementSize = 2 : *Object_View2D_Input\ElementType = #PB_Word
-;           Case #PB_Long     : *Object_View2D_Input\ElementSize = 4 : *Object_View2D_Input\ElementType = #PB_Long
-;           Case #PB_Quad     : *Object_View2D_Input\ElementSize = 8 : *Object_View2D_Input\ElementType = #PB_Quad
-;           Case #PB_Float    : *Object_View2D_Input\ElementSize = 4 : *Object_View2D_Input\ElementType = #PB_Float
-;           Case #PB_Double   : *Object_View2D_Input\ElementSize = 8 : *Object_View2D_Input\ElementType = #PB_Double
-        EndSelect
+        *Object_View2D_Input\Pixel_Format = GetGadgetItemData(*Object_View2D_Settings\ComboBox_In, GetGadgetState(*Object_View2D_Settings\ComboBox_In))
       EndIf
       
-      ;*Object_View2D_Input\Color = GetGadgetData(*Object_View2D_Settings\Canvas_In)
+      *Object_View2D_Input\Width = GetGadgetState(*Object_View2D_Settings\Spin_In[0])
+      *Object_View2D_Input\Offset = GetGadgetState(*Object_View2D_Settings\Spin_In[1])
+      *Object_View2D_Input\Line_Offset = GetGadgetState(*Object_View2D_Settings\Spin_In[2])
       
-      ;*Object_View2D_Input\Offset = GetGadgetState(*Object_View2D_Settings\Spin_In)
+      *Object_View2D_Input\Reverse_Y = GetGadgetState(*Object_View2D_Settings\CheckBox_In[1])
       
       *Object_View2D\Redraw = #True
+      
+      ForEach *Object_View2D_Input\Chunk()
+        *Object_View2D_Input\Chunk()\Redraw = #True
+      Next
       
       *Object_View2D_Settings\Update_ListIcon = #True
       
@@ -370,6 +341,9 @@ Procedure Object_View2D_Settings_Window_Event_Button_In_Add()
   *Object_Input\Custom_Data = AllocateStructure(Object_View2D_Input)
   *Object_Input\Function_Event = @Object_View2D_Input_Event()
   
+  *Object_View2D_Input = *Object_Input\Custom_Data
+  *Object_View2D_Input\D3HT_Chunk = D3HT_Create(SizeOf(Object_View2D_Input_Chunk_ID), SizeOf(Integer), 65536)
+  
   *Object_View2D_Settings\Update_ListIcon = #True
 EndProcedure
 
@@ -379,6 +353,7 @@ Procedure Object_View2D_Settings_Window_Event_Button_In_Delete()
   Protected Event_Type = EventType()
   
   Protected *Object_Input.Object_Input
+  Protected *Object_View2D_Input.Object_View2D_Input
   
   Protected *Window.Window = Window_Get(Event_Window)
   If Not *Window
@@ -403,6 +378,15 @@ Procedure Object_View2D_Settings_Window_Event_Button_In_Delete()
   ForEach *Object\Input()
     If *Object\Input() = *Object_Input
       If *Object\Input()\Custom_Data
+        *Object_View2D_Input = *Object\Input()\Custom_Data
+        
+        ForEach *Object_View2D_Input\Chunk()
+          FreeImage(*Object_View2D_Input\Chunk()\Image_ID)
+          *Object_View2D_Input\Chunk()\Image_ID = #Null
+        Next
+        
+        D3HT_Destroy(*Object_View2D_Input\D3HT_Chunk)
+        
         FreeStructure(*Object\Input()\Custom_Data)
         *Object\Input()\Custom_Data = #Null
       EndIf
@@ -458,44 +442,59 @@ Procedure Object_View2D_Settings_Window_Open(*Object.Object)
   If Not *Object_View2D_Settings\Window
     
     Width = 270
-    Height = 410
+    Height = 470
     
     *Object_View2D_Settings\Window = Window_Create(*Object, "View2D_Settings", "View2D_Settings", #False, 0, 0, Width, Height)
     
     ; #### Gadgets
     
-    *Object_View2D_Settings\Frame_In = FrameGadget(#PB_Any, 10, 10, 250, 390, "Inputs")
+    *Object_View2D_Settings\Frame_In = FrameGadget(#PB_Any, 10, 10, 250, 450, "Inputs")
     *Object_View2D_Settings\ListIcon_In = ListIconGadget(#PB_Any, 20, 30, 230, 200, "Input", 40, #PB_ListIcon_AlwaysShowSelection | #PB_ListIcon_FullRowSelect)
     AddGadgetColumn(*Object_View2D_Settings\ListIcon_In, 1, "Manually", 60)
-    AddGadgetColumn(*Object_View2D_Settings\ListIcon_In, 2, "Type", 50)
-    AddGadgetColumn(*Object_View2D_Settings\ListIcon_In, 3, "Offset", 50)
+    AddGadgetColumn(*Object_View2D_Settings\ListIcon_In, 2, "Format", 50)
+    AddGadgetColumn(*Object_View2D_Settings\ListIcon_In, 3, "Width", 50)
+    AddGadgetColumn(*Object_View2D_Settings\ListIcon_In, 4, "Offset", 50)
     
-    *Object_View2D_Settings\CheckBox_In = CheckBoxGadget(#PB_Any, 20, 240, 230, 20, "Manually")
+    *Object_View2D_Settings\CheckBox_In[0] = CheckBoxGadget(#PB_Any, 20, 240, 230, 20, "Manually")
     
-    *Object_View2D_Settings\Text_In[0] = TextGadget(#PB_Any, 20, 270, 50, 20, "Color:", #PB_Text_Right)
-    *Object_View2D_Settings\Canvas_In = CanvasGadget(#PB_Any, 80, 270, 170, 20)
+    *Object_View2D_Settings\Text_In[0] = TextGadget(#PB_Any, 20, 270, 50, 20, "Width:", #PB_Text_Right)
+    *Object_View2D_Settings\Spin_In[0] = SpinGadget(#PB_Any, 80, 270, 170, 20, 1, 2147483647, #PB_Spin_Numeric)
     
     *Object_View2D_Settings\Text_In[1] = TextGadget(#PB_Any, 20, 300, 50, 20, "Type:", #PB_Text_Right)
     *Object_View2D_Settings\ComboBox_In = ComboBoxGadget(#PB_Any, 80, 300, 170, 20)
-    AddGadgetItem(*Object_View2D_Settings\ComboBox_In, 0, "uint8")  : SetGadgetItemData(*Object_View2D_Settings\ComboBox_In, 0, #PB_Ascii)
-    AddGadgetItem(*Object_View2D_Settings\ComboBox_In, 1, "int8")   : SetGadgetItemData(*Object_View2D_Settings\ComboBox_In, 1, #PB_Byte)
-    AddGadgetItem(*Object_View2D_Settings\ComboBox_In, 2, "uint16") : SetGadgetItemData(*Object_View2D_Settings\ComboBox_In, 2, #PB_Unicode)
-    AddGadgetItem(*Object_View2D_Settings\ComboBox_In, 3, "int16")  : SetGadgetItemData(*Object_View2D_Settings\ComboBox_In, 3, #PB_Word)
-    AddGadgetItem(*Object_View2D_Settings\ComboBox_In, 4, "int32")  : SetGadgetItemData(*Object_View2D_Settings\ComboBox_In, 4, #PB_Long)
-    AddGadgetItem(*Object_View2D_Settings\ComboBox_In, 5, "int64")  : SetGadgetItemData(*Object_View2D_Settings\ComboBox_In, 5, #PB_Quad)
-    AddGadgetItem(*Object_View2D_Settings\ComboBox_In, 6, "float32"): SetGadgetItemData(*Object_View2D_Settings\ComboBox_In, 6, #PB_Float)
-    AddGadgetItem(*Object_View2D_Settings\ComboBox_In, 7, "float64"): SetGadgetItemData(*Object_View2D_Settings\ComboBox_In, 7, #PB_Double)
+    AddGadgetItem(*Object_View2D_Settings\ComboBox_In, 0,  "1 bbp Gray")        : SetGadgetItemData(*Object_View2D_Settings\ComboBox_In, 0,  #PixelFormat_1_Gray)
+    AddGadgetItem(*Object_View2D_Settings\ComboBox_In, 1,  "1 bbp Indexed")     : SetGadgetItemData(*Object_View2D_Settings\ComboBox_In, 1,  #PixelFormat_1_Indexed)
+    AddGadgetItem(*Object_View2D_Settings\ComboBox_In, 2,  "2 bbp Gray")        : SetGadgetItemData(*Object_View2D_Settings\ComboBox_In, 2,  #PixelFormat_2_Gray)
+    AddGadgetItem(*Object_View2D_Settings\ComboBox_In, 3,  "2 bbp Indexed")     : SetGadgetItemData(*Object_View2D_Settings\ComboBox_In, 3,  #PixelFormat_2_Indexed)
+    AddGadgetItem(*Object_View2D_Settings\ComboBox_In, 4,  "4 bbp Gray")        : SetGadgetItemData(*Object_View2D_Settings\ComboBox_In, 4,  #PixelFormat_4_Gray)
+    AddGadgetItem(*Object_View2D_Settings\ComboBox_In, 5,  "4 bbp Indexed")     : SetGadgetItemData(*Object_View2D_Settings\ComboBox_In, 5,  #PixelFormat_4_Indexed)
+    AddGadgetItem(*Object_View2D_Settings\ComboBox_In, 6,  "8 bbp Gray")        : SetGadgetItemData(*Object_View2D_Settings\ComboBox_In, 6,  #PixelFormat_8_Gray)
+    AddGadgetItem(*Object_View2D_Settings\ComboBox_In, 7,  "8 bbp Indexed")     : SetGadgetItemData(*Object_View2D_Settings\ComboBox_In, 7,  #PixelFormat_8_Indexed)
+    AddGadgetItem(*Object_View2D_Settings\ComboBox_In, 8,  "16 bbp Gray")       : SetGadgetItemData(*Object_View2D_Settings\ComboBox_In, 8,  #PixelFormat_16_Gray)
+    AddGadgetItem(*Object_View2D_Settings\ComboBox_In, 9,  "16 bbp RGB 555")    : SetGadgetItemData(*Object_View2D_Settings\ComboBox_In, 9,  #PixelFormat_16_RGB_555)
+    AddGadgetItem(*Object_View2D_Settings\ComboBox_In, 10, "16 bbp RGB 565")    : SetGadgetItemData(*Object_View2D_Settings\ComboBox_In, 10, #PixelFormat_16_RGB_565)
+    AddGadgetItem(*Object_View2D_Settings\ComboBox_In, 11, "16 bbp ARGB 1555")  : SetGadgetItemData(*Object_View2D_Settings\ComboBox_In, 11, #PixelFormat_16_ARGB_1555)
+    AddGadgetItem(*Object_View2D_Settings\ComboBox_In, 12, "16 bbp Indexed")    : SetGadgetItemData(*Object_View2D_Settings\ComboBox_In, 12, #PixelFormat_16_Indexed)
+    AddGadgetItem(*Object_View2D_Settings\ComboBox_In, 13, "24 bbp RGB")        : SetGadgetItemData(*Object_View2D_Settings\ComboBox_In, 13, #PixelFormat_24_RGB)
+    AddGadgetItem(*Object_View2D_Settings\ComboBox_In, 14, "24 bbp BGR")        : SetGadgetItemData(*Object_View2D_Settings\ComboBox_In, 14, #PixelFormat_24_BGR)
+    AddGadgetItem(*Object_View2D_Settings\ComboBox_In, 15, "32 bbp ARGB")       : SetGadgetItemData(*Object_View2D_Settings\ComboBox_In, 15, #PixelFormat_32_ARGB)
+    AddGadgetItem(*Object_View2D_Settings\ComboBox_In, 16, "32 bbp ABGR")       : SetGadgetItemData(*Object_View2D_Settings\ComboBox_In, 16, #PixelFormat_32_ABGR)
     
     *Object_View2D_Settings\Text_In[2] = TextGadget(#PB_Any, 20, 330, 50, 20, "Offset:", #PB_Text_Right)
-    *Object_View2D_Settings\Spin_In = SpinGadget(#PB_Any, 80, 330, 170, 20, 0, 1000000000, #PB_Spin_Numeric)
-    ;*Object_View2D_Settings\Button_In_Color = ButtonGadget(#PB_Any, )
-    *Object_View2D_Settings\Button_In_Set = ButtonGadget(#PB_Any, 20, 360, 70, 30, "Set")
-    *Object_View2D_Settings\Button_In_Add = ButtonGadget(#PB_Any, 100, 360, 70, 30, "Add")
-    *Object_View2D_Settings\Button_In_Delete = ButtonGadget(#PB_Any, 180, 360, 70, 30, "Delete")
+    *Object_View2D_Settings\Spin_In[1] = SpinGadget(#PB_Any, 80, 330, 170, 20, -2147483648, 2147483647, #PB_Spin_Numeric)
+    
+    *Object_View2D_Settings\Text_In[3] = TextGadget(#PB_Any, 20, 360, 50, 20, "L.-Offset:", #PB_Text_Right)
+    *Object_View2D_Settings\Spin_In[2] = SpinGadget(#PB_Any, 80, 360, 170, 20, -2147483648, 2147483647, #PB_Spin_Numeric)
+    
+    *Object_View2D_Settings\Text_In[4] = TextGadget(#PB_Any, 20, 390, 50, 20, "Direction:", #PB_Text_Right)
+    *Object_View2D_Settings\CheckBox_In[1] = CheckBoxGadget(#PB_Any, 80, 390, 170, 20, "Reverse Y")
+    
+    *Object_View2D_Settings\Button_In_Set = ButtonGadget(#PB_Any, 20, 420, 70, 30, "Set")
+    *Object_View2D_Settings\Button_In_Add = ButtonGadget(#PB_Any, 100, 420, 70, 30, "Add")
+    *Object_View2D_Settings\Button_In_Delete = ButtonGadget(#PB_Any, 180, 420, 70, 30, "Delete")
     
     BindGadgetEvent(*Object_View2D_Settings\ListIcon_In, @Object_View2D_Settings_Window_Event_ListIcon_In())
-    BindGadgetEvent(*Object_View2D_Settings\CheckBox_in, @Object_View2D_Settings_Window_Event_CheckBox_In())
-    BindGadgetEvent(*Object_View2D_Settings\Canvas_In, @Object_View2D_Settings_Window_Event_Canvas_In())
+    BindGadgetEvent(*Object_View2D_Settings\CheckBox_In[0], @Object_View2D_Settings_Window_Event_CheckBox_In())
     BindGadgetEvent(*Object_View2D_Settings\Button_In_Set, @Object_View2D_Settings_Window_Event_Button_In_Set())
     BindGadgetEvent(*Object_View2D_Settings\Button_In_Add, @Object_View2D_Settings_Window_Event_Button_In_Add())
     BindGadgetEvent(*Object_View2D_Settings\Button_In_Delete, @Object_View2D_Settings_Window_Event_Button_In_Delete())
@@ -524,8 +523,7 @@ Procedure Object_View2D_Settings_Window_Close(*Object.Object)
   If *Object_View2D_Settings\Window
     
     UnbindGadgetEvent(*Object_View2D_Settings\ListIcon_In, @Object_View2D_Settings_Window_Event_ListIcon_In())
-    UnbindGadgetEvent(*Object_View2D_Settings\CheckBox_in, @Object_View2D_Settings_Window_Event_CheckBox_In())
-    UnbindGadgetEvent(*Object_View2D_Settings\Canvas_In, @Object_View2D_Settings_Window_Event_Canvas_In())
+    UnbindGadgetEvent(*Object_View2D_Settings\CheckBox_In[0], @Object_View2D_Settings_Window_Event_CheckBox_In())
     UnbindGadgetEvent(*Object_View2D_Settings\Button_In_Set, @Object_View2D_Settings_Window_Event_Button_In_Set())
     UnbindGadgetEvent(*Object_View2D_Settings\Button_In_Add, @Object_View2D_Settings_Window_Event_Button_In_Add())
     UnbindGadgetEvent(*Object_View2D_Settings\Button_In_Delete, @Object_View2D_Settings_Window_Event_Button_In_Delete())
@@ -575,7 +573,7 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 331
-; FirstLine = 316
-; Folding = ---
+; CursorPosition = 472
+; FirstLine = 426
+; Folding = --
 ; EnableXP

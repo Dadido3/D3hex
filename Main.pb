@@ -1,7 +1,7 @@
 ﻿; ##################################################### License / Copyright #########################################
 ; 
 ;     D3hex
-;     Copyright (C) 2014  David Vogel
+;     Copyright (C) 2014-2015  David Vogel
 ; 
 ;     This program is free software; you can redistribute it and/or modify
 ;     it under the terms of the GNU General Public License As published by
@@ -146,6 +146,7 @@ UsePNGImageEncoder()
 
 XIncludeFile "Includes/TabBarGadget.pbi"
 XIncludeFile "Includes/Memory.pbi"
+XIncludeFile "Includes/D3HT.pbi"
 XIncludeFile "Includes/D3NBT.pbi"
 XIncludeFile "Includes/Crash.pbi"
 XIncludeFile "Includes/UnitEngine.pbi"
@@ -172,6 +173,26 @@ Enumeration
   #String_UTF32
   #String_UCS2
   #String_UCS4
+EndEnumeration
+
+Enumeration ; Image Pixelformat. Number is in bpp
+  #PixelFormat_1_Gray
+  #PixelFormat_1_Indexed
+  #PixelFormat_2_Gray
+  #PixelFormat_2_Indexed
+  #PixelFormat_4_Gray
+  #PixelFormat_4_Indexed
+  #PixelFormat_8_Gray
+  #PixelFormat_8_Indexed
+  #PixelFormat_16_Gray
+  #PixelFormat_16_RGB_555
+  #PixelFormat_16_RGB_565
+  #PixelFormat_16_ARGB_1555
+  #PixelFormat_16_Indexed
+  #PixelFormat_24_RGB
+  #PixelFormat_24_BGR
+  #PixelFormat_32_ARGB
+  #PixelFormat_32_ABGR
 EndEnumeration
 
 #Metadata_Readable   = %00000001
@@ -849,9 +870,9 @@ DataSection
   Icon_Goto: : IncludeBinary "Data/Icons/Goto.png"
   
 EndDataSection
-; IDE Options = PureBasic 5.30 Beta 2 (Windows - x64)
-; CursorPosition = 327
-; FirstLine = 308
+; IDE Options = PureBasic 5.31 (Windows - x64)
+; CursorPosition = 194
+; FirstLine = 156
 ; Folding = --
 ; EnableUnicode
 ; EnableXP

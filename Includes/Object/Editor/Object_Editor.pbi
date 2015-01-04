@@ -1,7 +1,7 @@
 ﻿; ##################################################### License / Copyright #########################################
 ; 
 ;     D3hex
-;     Copyright (C) 2014  David Vogel
+;     Copyright (C) 2014-2015  David Vogel
 ; 
 ;     This program is free software; you can redistribute it and/or modify
 ;     it under the terms of the GNU General Public License As published by
@@ -2400,9 +2400,8 @@ MenuItem(#Object_Editor_PopupMenu_Select_All, "Select All", ImageID(Icon_Select_
 ; ##################################################### End #########################################################
 
 
-; IDE Options = PureBasic 5.30 (Windows - x64)
-; CursorPosition = 280
-; FirstLine = 219
+; IDE Options = PureBasic 5.31 (Windows - x64)
+; CursorPosition = 3
 ; Folding = -------
 ; EnableUnicode
 ; EnableXP

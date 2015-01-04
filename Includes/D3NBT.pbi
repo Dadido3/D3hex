@@ -1,7 +1,7 @@
 ; ##################################################### License / Copyright #########################################
 ; 
 ;     D3NBT
-;     Copyright (C) 2012-2014  David Vogel
+;     Copyright (C) 2012-2015  David Vogel
 ; 
 ;     This library is free software; you can redistribute it and/or
 ;     modify it under the terms of the GNU Lesser General Public
@@ -1202,7 +1202,6 @@ EndProcedure
 
 ; #################################################### Datasections ##############################################
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 40
-; FirstLine = 21
+; CursorPosition = 3
 ; Folding = -----
 ; EnableXP

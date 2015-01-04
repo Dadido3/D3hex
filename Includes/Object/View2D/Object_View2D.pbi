@@ -1,7 +1,7 @@
 ﻿; ##################################################### License / Copyright #########################################
 ; 
 ;     D3hex
-;     Copyright (C) 2014  David Vogel
+;     Copyright (C) 2014-2015  David Vogel
 ; 
 ;     This program is free software; you can redistribute it and/or modify
 ;     it under the terms of the GNU General Public License As published by
@@ -34,19 +34,12 @@
 
 #Object_View2D_Timeout = 50        ; in ms
 
-#Object_View2D_Chunk_Size_X = 256
-#Object_View2D_Chunk_Size_Y = 256
+#Object_View2D_Chunk_Size_X = 512
+#Object_View2D_Chunk_Size_Y = 128
 
 Enumeration
   #Object_View2D_Menu_Settings
   #Object_View2D_Menu_Normalize
-EndEnumeration
-
-Enumeration
-  #Object_View2D_Pixel_Format_24_RGB
-  #Object_View2D_Pixel_Format_24_BGR
-  #Object_View2D_Pixel_Format_32_RGBA
-  #Object_View2D_Pixel_Format_32_BGRA
 EndEnumeration
 
 ; ##################################################### Structures ##################################################
@@ -63,7 +56,14 @@ Structure Object_View2D_Main
 EndStructure
 Global Object_View2D_Main.Object_View2D_Main
 
+Structure Object_View2D_Input_Chunk_ID
+  X.q
+  Y.q
+EndStructure
+
 Structure Object_View2D_Input_Chunk
+  ID.Object_View2D_Input_Chunk_ID
+  
   X.q
   Y.q
   
@@ -85,10 +85,13 @@ Structure Object_View2D_Input
   Offset.q          ; in Bytes
   Line_Offset.q     ; in Bytes
   
+  Reverse_Y.l
+  
   Width.q           ; Width of the Image in Pixels
   
   ; #### Image Chunks
-  Map Chunk.Object_View2D_Input_Chunk()
+  List Chunk.Object_View2D_Input_Chunk()
+  *D3HT_Chunk
 EndStructure
 
 Structure Object_View2D
@@ -152,6 +155,7 @@ Procedure Object_View2D_Create(Requester)
   Protected *Object.Object = _Object_Create()
   Protected *Object_View2D.Object_View2D
   Protected *Object_Input.Object_Input
+  Protected *Object_View2D_Input.Object_View2D_Input
   
   If Not *Object
     ProcedureReturn #Null
@@ -181,10 +185,15 @@ Procedure Object_View2D_Create(Requester)
   *Object_Input\Custom_Data = AllocateStructure(Object_View2D_Input)
   *Object_Input\Function_Event = @Object_View2D_Input_Event()
   
+  *Object_View2D_Input = *Object_Input\Custom_Data
+  *Object_View2D_Input\D3HT_Chunk = D3HT_Create(SizeOf(Object_View2D_Input_Chunk_ID), SizeOf(Integer), 65536)
+  
   ProcedureReturn *Object
 EndProcedure
 
 Procedure _Object_View2D_Delete(*Object.Object)
+  Protected *Object_View2D_Input.Object_View2D_Input
+  
   If Not *Object
     ProcedureReturn #False
   EndIf
@@ -198,8 +207,14 @@ Procedure _Object_View2D_Delete(*Object.Object)
   
   ForEach *Object\Input()
     If *Object\Input()\Custom_Data
+      *Object_View2D_Input = *Object\Input()\Custom_Data
       
-      ;TODO: Free chunk images!
+      ForEach *Object_View2D_Input\Chunk()
+        FreeImage(*Object_View2D_Input\Chunk()\Image_ID)
+        *Object_View2D_Input\Chunk()\Image_ID = #Null
+      Next
+      
+      D3HT_Destroy(*Object_View2D_Input\D3HT_Chunk)
       
       FreeStructure(*Object\Input()\Custom_Data)
       *Object\Input()\Custom_Data = #Null
@@ -243,11 +258,12 @@ Procedure Object_View2D_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
       
       *NBT_Tag_Compound = NBT_Tag_Add(*NBT_Tag_List, "", #NBT_Tag_Compound)
       If *NBT_Tag_Compound
-        ;*NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "ElementType", #NBT_Tag_Long) : NBT_Tag_Set_Number(*NBT_Tag, *Object_View2D_Input\ElementType)
-        ;*NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "ElementSize", #NBT_Tag_Long) : NBT_Tag_Set_Number(*NBT_Tag, *Object_View2D_Input\ElementSize)
-        ;*NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "Manually", #NBT_Tag_Long)    : NBT_Tag_Set_Number(*NBT_Tag, *Object_View2D_Input\Manually)
-        ;*NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "Offset", #NBT_Tag_Quad)      : NBT_Tag_Set_Number(*NBT_Tag, *Object_View2D_Input\Offset)
-        ;*NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "Color", #NBT_Tag_Long)       : NBT_Tag_Set_Number(*NBT_Tag, *Object_View2D_Input\Color)
+        *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "Manually", #NBT_Tag_Long)      : NBT_Tag_Set_Number(*NBT_Tag, *Object_View2D_Input\Manually)
+        *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "Pixel_Format", #NBT_Tag_Long)  : NBT_Tag_Set_Number(*NBT_Tag, *Object_View2D_Input\Pixel_Format)
+        *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "Width", #NBT_Tag_Quad)         : NBT_Tag_Set_Number(*NBT_Tag, *Object_View2D_Input\Width)
+        *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "Offset", #NBT_Tag_Quad)        : NBT_Tag_Set_Number(*NBT_Tag, *Object_View2D_Input\Offset)
+        *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "Line_Offset", #NBT_Tag_Quad)   : NBT_Tag_Set_Number(*NBT_Tag, *Object_View2D_Input\Line_Offset)
+        *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "Reverse_Y", #NBT_Tag_Byte)     : NBT_Tag_Set_Number(*NBT_Tag, *Object_View2D_Input\Reverse_Y)
       EndIf
     Next
   EndIf
@@ -281,6 +297,15 @@ Procedure Object_View2D_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
   ; #### Delete all inputs
   While FirstElement(*Object\Input())
     If *Object\Input()\Custom_Data
+      *Object_View2D_Input = *Object\Input()\Custom_Data
+      
+      ForEach *Object_View2D_Input\Chunk()
+        FreeImage(*Object_View2D_Input\Chunk()\Image_ID)
+        *Object_View2D_Input\Chunk()\Image_ID = #Null
+      Next
+      
+      D3HT_Destroy(*Object_View2D_Input\D3HT_Chunk)
+      
       FreeStructure(*Object\Input()\Custom_Data)
       *Object\Input()\Custom_Data = #Null
     EndIf
@@ -301,11 +326,13 @@ Procedure Object_View2D_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
         *Object_Input\Function_Event = @Object_View2D_Input_Event()
         *Object_View2D_Input = *Object_Input\Custom_Data
         If *Object_View2D_Input
-          ;*NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "ElementType") : *Object_View2D_Input\ElementType = NBT_Tag_Get_Number(*NBT_Tag)
-          ;*NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "ElementSize") : *Object_View2D_Input\ElementSize = NBT_Tag_Get_Number(*NBT_Tag)
-          ;*NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Manually")    : *Object_View2D_Input\Manually = NBT_Tag_Get_Number(*NBT_Tag)
-          ;*NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Offset")      : *Object_View2D_Input\Offset = NBT_Tag_Get_Number(*NBT_Tag)
-          ;*NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Color")       : *Object_View2D_Input\Color = NBT_Tag_Get_Number(*NBT_Tag)
+          *Object_View2D_Input\D3HT_Chunk = D3HT_Create(SizeOf(Object_View2D_Input_Chunk_ID), SizeOf(Integer), 65536)
+          *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Manually")     : *Object_View2D_Input\Manually = NBT_Tag_Get_Number(*NBT_Tag)
+          *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Pixel_Format") : *Object_View2D_Input\Pixel_Format = NBT_Tag_Get_Number(*NBT_Tag)
+          *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Width")        : *Object_View2D_Input\Width = NBT_Tag_Get_Number(*NBT_Tag)
+          *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Offset")       : *Object_View2D_Input\Offset = NBT_Tag_Get_Number(*NBT_Tag)
+          *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Line_Offset")  : *Object_View2D_Input\Line_Offset = NBT_Tag_Get_Number(*NBT_Tag)
+          *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Reverse_Y")    : *Object_View2D_Input\Reverse_Y = NBT_Tag_Get_Number(*NBT_Tag)
         EndIf
         
       EndIf
@@ -382,10 +409,11 @@ EndProcedure
 Procedure Object_View2D_Organize(*Object.Object)
   Protected *Object_View2D_Input.Object_View2D_Input
   Protected Width, Height
-  Protected ix, iy, ix_1, iy_1
+  Protected ix, iy, ix_1, iy_1, ix_2, iy_2
   Protected X_M.d, Y_M.d, X_M_2.d, Y_M_2.d
   Protected X_R_1.d, Y_R_1.d, X_R_2.d, Y_R_2.d
   Protected Found
+  Protected Object_View2D_Input_Chunk_ID.Object_View2D_Input_Chunk_ID
   
   If Not *Object
     ProcedureReturn #False
@@ -411,23 +439,32 @@ Procedure Object_View2D_Organize(*Object.Object)
       
       ; #### Get the settings from the data descriptor of the output
       If Not *Object_View2D_Input\Manually
-        ;*Object_View2D_Input\ElementSize = 1
-        ;*Object_View2D_Input\ElementType = #PB_Ascii
-        *Object_View2D_Input\Width = 1920  ; ################################################ Delete Me!
-        *Object_View2D_Input\Line_Offset = 0
-        *Object_View2D_Input\Pixel_Format = #Object_View2D_Pixel_Format_24_BGR
+        ;*Object_View2D_Input\Width = 1920  ; ################################################ Delete Me!
+        ;*Object_View2D_Input\Line_Offset = 0
+        ;*Object_View2D_Input\Pixel_Format = #PixelFormat_24_BGR
+        ;*Object_View2D_Input\Reverse_Y = #True
+      EndIf
+      
+      If *Object_View2D_Input\Width < 1
+        *Object_View2D_Input\Width = 1
       EndIf
       
       ; #### Set Bits_Per_Pixel accordingly to the Pixel_Format
       Select *Object_View2D_Input\Pixel_Format
-        Case #Object_View2D_Pixel_Format_24_RGB, #Object_View2D_Pixel_Format_24_BGR
+        Case #PixelFormat_1_Gray, #PixelFormat_1_Indexed
+          *Object_View2D_Input\Bits_Per_Pixel = 1
+        Case #PixelFormat_2_Gray, #PixelFormat_2_Indexed
+          *Object_View2D_Input\Bits_Per_Pixel = 2
+        Case #PixelFormat_4_Gray, #PixelFormat_4_Indexed
+          *Object_View2D_Input\Bits_Per_Pixel = 4
+        Case #PixelFormat_8_Gray, #PixelFormat_8_Indexed
+          *Object_View2D_Input\Bits_Per_Pixel = 8
+        Case #PixelFormat_16_Gray, #PixelFormat_16_RGB_555, #PixelFormat_16_RGB_565, #PixelFormat_16_ARGB_1555, #PixelFormat_16_Indexed
+          *Object_View2D_Input\Bits_Per_Pixel = 16
+        Case #PixelFormat_24_RGB, #PixelFormat_24_BGR
           *Object_View2D_Input\Bits_Per_Pixel = 24
-        Case #Object_View2D_Pixel_Format_32_RGBA, #Object_View2D_Pixel_Format_32_BGRA
+        Case #PixelFormat_32_ARGB, #PixelFormat_32_ABGR
           *Object_View2D_Input\Bits_Per_Pixel = 32
-          
-        Default
-          *Object_View2D_Input\Bits_Per_Pixel = 24
-          *Object_View2D_Input\Pixel_Format = #Object_View2D_Pixel_Format_24_RGB
       EndSelect
       
       ; #### Delete chunks which are outside of the viewport
@@ -440,7 +477,8 @@ Procedure Object_View2D_Organize(*Object.Object)
           If *Object_View2D_Input\Chunk()\Image_ID
             FreeImage(*Object_View2D_Input\Chunk()\Image_ID)
           EndIf
-          DeleteMapElement(*Object_View2D_Input\Chunk())
+          D3HT_Element_Free(*Object_View2D_Input\D3HT_Chunk, *Object_View2D_Input\Chunk()\ID)
+          DeleteElement(*Object_View2D_Input\Chunk())
         EndIf
       Next
       
@@ -449,14 +487,26 @@ Procedure Object_View2D_Organize(*Object.Object)
       Y_R_1 = - *Object_View2D\Offset_Y / *Object_View2D\Zoom
       X_R_2 = (Width - *Object_View2D\Offset_X) / *Object_View2D\Zoom
       Y_R_2 = (Height - *Object_View2D\Offset_Y) / *Object_View2D\Zoom
-      ix_1 = Round(X_R_1 / #Object_View2D_Chunk_Size_X, #PB_Round_Down)
-      iy_1 = Round(Y_R_1 / #Object_View2D_Chunk_Size_Y, #PB_Round_Down)
-      If ix_1 < 0 : ix_1 = 0 : EndIf
-      If iy_1 < 0 : iy_1 = 0 : EndIf
+      
+      If X_R_1 < 0 : X_R_1 = 1 : EndIf
       If X_R_2 > *Object_View2D_Input\Width : X_R_2 = *Object_View2D_Input\Width : EndIf
       
-      For iy = iy_1 To Round(Y_R_2 / #Object_View2D_Chunk_Size_Y, #PB_Round_Down) ;TODO: Use integer rounding
-        For ix = ix_1 To Round(X_R_2 / #Object_View2D_Chunk_Size_X, #PB_Round_Down)
+      ix_1 = Round(X_R_1 / #Object_View2D_Chunk_Size_X, #PB_Round_Down)
+      iy_1 = Round(Y_R_1 / #Object_View2D_Chunk_Size_Y, #PB_Round_Down)
+      
+      ix_2 = Round(X_R_2 / #Object_View2D_Chunk_Size_X, #PB_Round_Down) ;TODO: Use integer rounding
+      iy_2 = Round(Y_R_2 / #Object_View2D_Chunk_Size_Y, #PB_Round_Down) ;TODO: Use integer rounding
+      
+      If *Object_View2D_Input\Reverse_Y
+        If iy_2 > -1 : iy_2 = -1 : EndIf
+      Else
+        If iy_1 < 0 : iy_1 = 0 : EndIf
+      EndIf
+      
+      ResetList(*Object_View2D_Input\Chunk())
+      
+      For iy = iy_1 To iy_2
+        For ix = ix_1 To ix_2
           ;Found = #False
           ;ForEach *Object_View2D_Input\Chunk()
           ;  If *Object_View2D_Input\Chunk()\X = ix * #Object_View2D_Chunk_Size_X And *Object_View2D_Input\Chunk()\Y = iy * #Object_View2D_Chunk_Size_X
@@ -466,14 +516,21 @@ Procedure Object_View2D_Organize(*Object.Object)
           ;Next
           ;If Not Found
           
-          If Not FindMapElement(*Object_View2D_Input\Chunk(), Str(iy)+"|"+Str(ix))
-            AddMapElement(*Object_View2D_Input\Chunk(), Str(iy)+"|"+Str(ix), #PB_Map_NoElementCheck)
+          Object_View2D_Input_Chunk_ID\X = ix
+          Object_View2D_Input_Chunk_ID\Y = iy
+          
+          If Not D3HT_Element_Get(*Object_View2D_Input\D3HT_Chunk, Object_View2D_Input_Chunk_ID, #Null)
+            AddElement(*Object_View2D_Input\Chunk())
             
+            *Object_View2D_Input\Chunk()\ID = Object_View2D_Input_Chunk_ID
             *Object_View2D_Input\Chunk()\X = ix * #Object_View2D_Chunk_Size_X
             *Object_View2D_Input\Chunk()\Y = iy * #Object_View2D_Chunk_Size_Y
             *Object_View2D_Input\Chunk()\Width = *Object_View2D_Input\Width - ix * #Object_View2D_Chunk_Size_X
             *Object_View2D_Input\Chunk()\Height = #Object_View2D_Chunk_Size_Y
             If *Object_View2D_Input\Chunk()\Width > #Object_View2D_Chunk_Size_X : *Object_View2D_Input\Chunk()\Width = #Object_View2D_Chunk_Size_X : EndIf
+            If *Object_View2D_Input\Chunk()\Width < 1 : *Object_View2D_Input\Chunk()\Width = 1 : EndIf
+            
+            D3HT_Element_Set(*Object_View2D_Input\D3HT_Chunk, Object_View2D_Input_Chunk_ID, *Object_View2D_Input\Chunk(), #False)
           EndIf
         Next
       Next
@@ -535,8 +592,12 @@ Procedure Object_View2D_Get_Data(*Object.Object)
               
               X_Start = *Object_View2D_Input\Chunk()\X
               For iy = 0 To *Object_View2D_Input\Chunk()\Height - 1
-                Y_Start = *Object_View2D_Input\Chunk()\Y + iy
-                Position = (X_Start + Y_Start * *Object_View2D_Input\Width) * *Object_View2D_Input\Bits_Per_Pixel / 8 + Y_Start * *Object_View2D_Input\Line_Offset
+                If *Object_View2D_Input\Reverse_Y
+                  Y_Start = - *Object_View2D_Input\Chunk()\Y - iy
+                Else
+                  Y_Start = *Object_View2D_Input\Chunk()\Y + iy
+                EndIf
+                Position = (X_Start + Y_Start * *Object_View2D_Input\Width) * *Object_View2D_Input\Bits_Per_Pixel / 8 + Y_Start * *Object_View2D_Input\Line_Offset + *Object_View2D_Input\Offset
                 
                 If Object_Input_Get_Data(*Object\Input(), Position, Data_Size, *Data, *Metadata)
                   *Pointer = *Data
@@ -545,10 +606,23 @@ Procedure Object_View2D_Get_Data(*Object.Object)
                   For ix = 0 To *Object_View2D_Input\Chunk()\Width - 1
                     If *Pointer_Metadata\a & #Metadata_Readable
                       Select *Object_View2D_Input\Pixel_Format
-                        Case #Object_View2D_Pixel_Format_24_RGB : Color = RGBA(*Pointer\A, *Pointer\B, *Pointer\C, 255) : *Pointer + 3 : *Pointer_Metadata + 3
-                        Case #Object_View2D_Pixel_Format_24_BGR : Color = RGBA(*Pointer\C, *Pointer\B, *Pointer\A, 255) : *Pointer + 3 : *Pointer_Metadata + 3
-                        Case #Object_View2D_Pixel_Format_32_RGBA : Color = RGBA(*Pointer\A, *Pointer\B, *Pointer\C, *Pointer\D) : *Pointer + 4 : *Pointer_Metadata + 4
-                        Case #Object_View2D_Pixel_Format_32_BGRA : Color = RGBA(*Pointer\C, *Pointer\B, *Pointer\A, *Pointer\D) : *Pointer + 4 : *Pointer_Metadata + 4
+                        Case #PixelFormat_1_Gray
+                        Case #PixelFormat_1_Indexed
+                        Case #PixelFormat_2_Gray
+                        Case #PixelFormat_2_Indexed
+                        Case #PixelFormat_4_Gray
+                        Case #PixelFormat_4_Indexed
+                        Case #PixelFormat_8_Gray        : Color = RGBA(*Pointer\A, *Pointer\A, *Pointer\A, 255) : *Pointer + 1 : *Pointer_Metadata + 1
+                        Case #PixelFormat_8_Indexed
+                        Case #PixelFormat_16_Gray       : Color = RGBA(*Pointer\B, *Pointer\B, *Pointer\B, 255) : *Pointer + 2 : *Pointer_Metadata + 2
+                        Case #PixelFormat_16_RGB_555
+                        Case #PixelFormat_16_RGB_565
+                        Case #PixelFormat_16_ARGB_1555
+                        Case #PixelFormat_16_Indexed    : Color = RGBA(*Pointer\A, *Pointer\B, *Pointer\C, 255) : *Pointer + 2 : *Pointer_Metadata + 2
+                        Case #PixelFormat_24_RGB        : Color = RGBA(*Pointer\A, *Pointer\B, *Pointer\C, 255) : *Pointer + 3 : *Pointer_Metadata + 3
+                        Case #PixelFormat_24_BGR        : Color = RGBA(*Pointer\C, *Pointer\B, *Pointer\A, 255) : *Pointer + 3 : *Pointer_Metadata + 3
+                        Case #PixelFormat_32_ARGB       : Color = RGBA(*Pointer\A, *Pointer\B, *Pointer\C, *Pointer\D) : *Pointer + 4 : *Pointer_Metadata + 4
+                        Case #PixelFormat_32_ABGR       : Color = RGBA(*Pointer\C, *Pointer\B, *Pointer\A, *Pointer\D) : *Pointer + 4 : *Pointer_Metadata + 4
                       EndSelect
                       
                       Plot(ix, iy, Color)
@@ -657,15 +731,17 @@ Procedure Object_View2D_Canvas_Redraw(*Object.Object)
         X_M = *Object_View2D_Input\Chunk()\X * *Object_View2D\Zoom + *Object_View2D\Offset_X
         Y_M = *Object_View2D_Input\Chunk()\Y * *Object_View2D\Zoom + *Object_View2D\Offset_Y
         
-        If ImageWidth(*Object_View2D_Input\Chunk()\Image_ID) <> *Object_View2D_Input\Chunk()\Width * *Object_View2D\Zoom Or ImageHeight(*Object_View2D_Input\Chunk()\Image_ID) <> *Object_View2D_Input\Chunk()\Height * *Object_View2D\Zoom
-          ResizeImage(*Object_View2D_Input\Chunk()\Image_ID, *Object_View2D_Input\Chunk()\Width * *Object_View2D\Zoom, *Object_View2D_Input\Chunk()\Height * *Object_View2D\Zoom, #PB_Image_Raw)
-          *Object_View2D_Input\Chunk()\Redraw = #True
-          *Object_View2D\Redraw = #True
+        If *Object_View2D_Input\Chunk()\Image_ID
+          If ImageWidth(*Object_View2D_Input\Chunk()\Image_ID) <> *Object_View2D_Input\Chunk()\Width * *Object_View2D\Zoom Or ImageHeight(*Object_View2D_Input\Chunk()\Image_ID) <> *Object_View2D_Input\Chunk()\Height * *Object_View2D\Zoom
+            ResizeImage(*Object_View2D_Input\Chunk()\Image_ID, *Object_View2D_Input\Chunk()\Width * *Object_View2D\Zoom, *Object_View2D_Input\Chunk()\Height * *Object_View2D\Zoom, #PB_Image_Raw)
+            *Object_View2D_Input\Chunk()\Redraw = #True
+            *Object_View2D\Redraw = #True
+          EndIf
+          
+          DrawImage(ImageID(*Object_View2D_Input\Chunk()\Image_ID), X_M, Y_M)
         EndIf
         
-        DrawImage(ImageID(*Object_View2D_Input\Chunk()\Image_ID), X_M, Y_M)
-        
-        If *Object_View2D_Input\Chunk()\Redraw
+        If *Object_View2D_Input\Chunk()\Redraw Or *Object_View2D_Input\Chunk()\Image_ID = #Null
           Box(X_M, Y_M, *Object_View2D_Input\Chunk()\Width * *Object_View2D\Zoom, *Object_View2D_Input\Chunk()\Height * *Object_View2D\Zoom, RGBA(255,0,0,50))
         EndIf
       Next
@@ -1077,10 +1153,10 @@ If Object_View2D_Main\Object_Type
   Object_View2D_Main\Object_Type\Name = "View2D"
   Object_View2D_Main\Object_Type\UID = "D3VIEW2D"
   Object_View2D_Main\Object_Type\Author = "David Vogel (Dadido3)"
-  Object_View2D_Main\Object_Type\Date_Creation = Date(2014,01,28,14,42,00)
-  Object_View2D_Main\Object_Type\Date_Modification = Date(2014,01,28,14,42,00)
+  Object_View2D_Main\Object_Type\Date_Creation = Date(2014,12,14,21,55,00)
+  Object_View2D_Main\Object_Type\Date_Modification = Date(2015,01,04,03,03,00)
   Object_View2D_Main\Object_Type\Date_Compilation = #PB_Compiler_Date
-  Object_View2D_Main\Object_Type\Description = "Just a normal Graph viewer."
+  Object_View2D_Main\Object_Type\Description = "Viewer for 2D Data, mostly images."
   Object_View2D_Main\Object_Type\Function_Create = @Object_View2D_Create()
   Object_View2D_Main\Object_Type\Version = 0900
 EndIf
@@ -1103,7 +1179,7 @@ DataSection
   Object_View2D_Icon_Normalize:   : IncludeBinary "../../../Data/Icons/Graph_Normalize.png"
 EndDataSection
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 468
-; FirstLine = 423
+; CursorPosition = 1160
+; FirstLine = 47
 ; Folding = ----
 ; EnableXP
