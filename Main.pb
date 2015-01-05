@@ -126,7 +126,7 @@
 ;   - Added Object_Copy
 ;   - Update every structure allocation to AllocateStructure(...) and FreeStructure(...)
 ;
-; - V0.932 (indev)
+; - V0.940 (indev)
 ;   - Fixed possible crash with Object_Editor (String generation wrote Null-Bytes outside of the memory)
 ;   - NBT loading and saving is a bit faster
 ;   - Object_Copy also displays values
@@ -134,6 +134,10 @@
 ;   - Object_View1D doesn't scroll away anymore when normalizing the x-axis
 ;   - Renamed and moved all object-includes
 ;   - Renamed the object "Datatypes" to "Data Inspector"
+;   - Added View2D
+;   - Object descriptor changed to NBT
+;   - Object_Editor: limited marked output to selection
+;   - Object_Random: limited output to size
 ;   
 ; ##################################################### Begin #######################################################
 
@@ -153,7 +157,7 @@ XIncludeFile "Includes/UnitEngine.pbi"
 
 ; ##################################################### Constants ###################################################
 
-#Version = 0932
+#Version = 0940
 
 Enumeration
   #Data_Raw
@@ -871,8 +875,8 @@ DataSection
   
 EndDataSection
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 194
-; FirstLine = 156
+; CursorPosition = 138
+; FirstLine = 100
 ; Folding = --
 ; EnableUnicode
 ; EnableXP

@@ -7,7 +7,7 @@
   <section name="data">
     <explorer view="Includes\Object\Data_Inspector\" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2015-01-04 03:04" user="David Vogel" host="DAVIDS"/>
+    <lastopen date="2015-01-05 06:41" user="David Vogel" host="DAVIDS"/>
   </section>
   <section name="files">
     <file name="Includes\About.pbi">
@@ -17,6 +17,10 @@
     <file name="Includes\Crash.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
       <fingerprint md5="669f28e67281bb3b3b976eda18badf04"/>
+    </file>
+    <file name="Includes\D3HT.pbi">
+      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
+      <fingerprint md5="1bf299c6e2b261ec70f908499decc723"/>
     </file>
     <file name="Includes\D3NBT.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
@@ -51,12 +55,12 @@
       <fingerprint md5="bad35a427a079131a213222df40c83d3"/>
     </file>
     <file name="Includes\Object\Dummy\Object_Dummy.pbi">
-      <config load="0" scan="1" panel="1" warn="1" lastopen="0" panelstate="++++"/>
-      <fingerprint md5="35f0b3c7fe38dd4e651731dffcea87dd"/>
+      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
+      <fingerprint md5="234451cdbf5bff2a7dd0f25547525651"/>
     </file>
     <file name="Includes\Object\Editor\Object_Editor.pbi">
-      <config load="0" scan="1" panel="1" warn="1" lastopen="0" panelstate="++++"/>
-      <fingerprint md5="3975d4c8b870957028d6d018afbb9a7c"/>
+      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
+      <fingerprint md5="14f8d6ad8077281397144af9e5c9a586"/>
     </file>
     <file name="Includes\Object\Editor\Object_Editor_Goto.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="0" panelstate="++++"/>
@@ -71,7 +75,7 @@
       <fingerprint md5="2cd5fbfd4faa8eb4981d1b7c60769f36"/>
     </file>
     <file name="Includes\Object\History\Object_History.pbi">
-      <config load="0" scan="1" panel="1" warn="1" lastopen="0" panelstate="++++"/>
+      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
       <fingerprint md5="8475f5b1d1fba81e656304264dc6d127"/>
     </file>
     <file name="Includes\Object\Math\Object_Math.pbi">
@@ -91,8 +95,8 @@
       <fingerprint md5="1830c540ddbf2b4c39bc02e700b6443d"/>
     </file>
     <file name="Includes\Object\Random\Object_Random.pbi">
-      <config load="0" scan="1" panel="1" warn="1" lastopen="0" panelstate="++++"/>
-      <fingerprint md5="4e48fc1fe16fecfde623a841b673ecfa"/>
+      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
+      <fingerprint md5="b7eac96d1ac23c5800507d8609735a73"/>
     </file>
     <file name="Includes\Object\View1D\Object_View1D.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
@@ -104,11 +108,11 @@
     </file>
     <file name="Includes\Object\View2D\Object_View2D.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
-      <fingerprint md5="932f75918c58aac057177b6c09430c5a"/>
+      <fingerprint md5="b4cfcc28e635da0d576d0b47b6eff907"/>
     </file>
     <file name="Includes\Object\View2D\Object_View2D_Settings.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
-      <fingerprint md5="a5804a7ec5babf72785536489837e315"/>
+      <fingerprint md5="278266b3e4b57ffc7a6f3bc52aeb5ed9"/>
     </file>
     <file name="Includes\Object_Type.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
@@ -132,11 +136,7 @@
     </file>
     <file name="Main.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="77022590afdec323df02dd8186d154ed"/>
-    </file>
-    <file name="Includes\D3HT.pbi">
-      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
-      <fingerprint md5="1bf299c6e2b261ec70f908499decc723"/>
+      <fingerprint md5="30ce88e128efd445a2f55f0014909d42"/>
     </file>
   </section>
   <section name="targets">
@@ -163,7 +163,7 @@
       <options unicode="1" xpskin="1" user="1" onerror="1"/>
       <purifier enable="0" granularity="1,1,1,1"/>
       <icon enable="1">Data\Images\Icon.ico</icon>
-      <compilecount enable="1" value="2588"/>
+      <compilecount enable="1" value="2655"/>
       <buildcount enable="1" value="43"/>
       <versioninfo enable="1">
         <field3 value="D3hex"/>
