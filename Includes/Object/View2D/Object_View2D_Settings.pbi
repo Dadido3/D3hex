@@ -49,7 +49,6 @@ Structure Object_View2D_Settings
   Text_In.i [10]
   ComboBox_In.i
   Spin_In.i [5]
-  Button_In_Set.i
   Button_In_Add.i
   Button_In_Delete.i
 EndStructure
@@ -213,45 +212,7 @@ Procedure Object_View2D_Settings_Window_Event_ListIcon_In()
   
 EndProcedure
 
-Procedure Object_View2D_Settings_Window_Event_CheckBox_In()
-  Protected Event_Window = EventWindow()
-  Protected Event_Gadget = EventGadget()
-  Protected Event_Type = EventType()
-  
-  Protected *Window.Window = Window_Get(Event_Window)
-  If Not *Window
-    ProcedureReturn 
-  EndIf
-  Protected *Object.Object = *Window\Object
-  If Not *Object
-    ProcedureReturn
-  EndIf
-  Protected *Object_View2D.Object_View2D = *Object\Custom_Data
-  If Not *Object_View2D
-    ProcedureReturn
-  EndIf
-  Protected *Object_View2D_Settings.Object_View2D_Settings = *Object_View2D\Settings
-  If Not *Object_View2D_Settings
-    ProcedureReturn
-  EndIf
-  
-  If GetGadgetState(*Object_View2D_Settings\CheckBox_In[0])
-    DisableGadget(*Object_View2D_Settings\ComboBox_In, #False)
-    DisableGadget(*Object_View2D_Settings\Spin_In[0], #False)
-    DisableGadget(*Object_View2D_Settings\Spin_In[1], #False)
-    DisableGadget(*Object_View2D_Settings\Spin_In[2], #False)
-    DisableGadget(*Object_View2D_Settings\CheckBox_In[1], #False)
-  Else
-    DisableGadget(*Object_View2D_Settings\ComboBox_In, #True)
-    DisableGadget(*Object_View2D_Settings\Spin_In[0], #True)
-    DisableGadget(*Object_View2D_Settings\Spin_In[1], #True)
-    DisableGadget(*Object_View2D_Settings\Spin_In[2], #True)
-    DisableGadget(*Object_View2D_Settings\CheckBox_In[1], #True)
-  EndIf
-  
-EndProcedure
-
-Procedure Object_View2D_Settings_Window_Event_Button_In_Set()
+Procedure Object_View2D_Settings_Window_Event_Value_Change()
   Protected Event_Window = EventWindow()
   Protected Event_Gadget = EventGadget()
   Protected Event_Type = EventType()
@@ -286,17 +247,42 @@ Procedure Object_View2D_Settings_Window_Event_Button_In_Set()
         ProcedureReturn #False
       EndIf
       
-      *Object_View2D_Input\Manually = GetGadgetState(*Object_View2D_Settings\CheckBox_In[0])
-      
-      If GetGadgetState(*Object_View2D_Settings\ComboBox_In) >= 0
-        *Object_View2D_Input\Pixel_Format = GetGadgetItemData(*Object_View2D_Settings\ComboBox_In, GetGadgetState(*Object_View2D_Settings\ComboBox_In))
-      EndIf
-      
-      *Object_View2D_Input\Width = GetGadgetState(*Object_View2D_Settings\Spin_In[0])
-      *Object_View2D_Input\Offset = GetGadgetState(*Object_View2D_Settings\Spin_In[1])
-      *Object_View2D_Input\Line_Offset = GetGadgetState(*Object_View2D_Settings\Spin_In[2])
-      
-      *Object_View2D_Input\Reverse_Y = GetGadgetState(*Object_View2D_Settings\CheckBox_In[1])
+      Select Event_Gadget
+        Case *Object_View2D_Settings\CheckBox_In[0]
+          *Object_View2D_Input\Manually = GetGadgetState(*Object_View2D_Settings\CheckBox_In[0])
+          
+          If GetGadgetState(*Object_View2D_Settings\CheckBox_In[0])
+            DisableGadget(*Object_View2D_Settings\ComboBox_In, #False)
+            DisableGadget(*Object_View2D_Settings\Spin_In[0], #False)
+            DisableGadget(*Object_View2D_Settings\Spin_In[1], #False)
+            DisableGadget(*Object_View2D_Settings\Spin_In[2], #False)
+            DisableGadget(*Object_View2D_Settings\CheckBox_In[1], #False)
+          Else
+            DisableGadget(*Object_View2D_Settings\ComboBox_In, #True)
+            DisableGadget(*Object_View2D_Settings\Spin_In[0], #True)
+            DisableGadget(*Object_View2D_Settings\Spin_In[1], #True)
+            DisableGadget(*Object_View2D_Settings\Spin_In[2], #True)
+            DisableGadget(*Object_View2D_Settings\CheckBox_In[1], #True)
+          EndIf
+          
+        Case *Object_View2D_Settings\Spin_In[0]
+          *Object_View2D_Input\Width = GetGadgetState(*Object_View2D_Settings\Spin_In[0])
+          
+        Case *Object_View2D_Settings\Spin_In[1]
+          *Object_View2D_Input\Offset = GetGadgetState(*Object_View2D_Settings\Spin_In[1])
+          
+        Case *Object_View2D_Settings\Spin_In[2]
+          *Object_View2D_Input\Line_Offset = GetGadgetState(*Object_View2D_Settings\Spin_In[2])
+          
+        Case *Object_View2D_Settings\ComboBox_In
+          If GetGadgetState(*Object_View2D_Settings\ComboBox_In) >= 0
+            *Object_View2D_Input\Pixel_Format = GetGadgetItemData(*Object_View2D_Settings\ComboBox_In, GetGadgetState(*Object_View2D_Settings\ComboBox_In))
+          EndIf
+          
+        Case *Object_View2D_Settings\CheckBox_In[1]
+          *Object_View2D_Input\Reverse_Y = GetGadgetState(*Object_View2D_Settings\CheckBox_In[1])
+          
+      EndSelect
       
       *Object_View2D\Redraw = #True
       
@@ -489,13 +475,16 @@ Procedure Object_View2D_Settings_Window_Open(*Object.Object)
     *Object_View2D_Settings\Text_In[4] = TextGadget(#PB_Any, 20, 390, 50, 20, "Direction:", #PB_Text_Right)
     *Object_View2D_Settings\CheckBox_In[1] = CheckBoxGadget(#PB_Any, 80, 390, 170, 20, "Reverse Y")
     
-    *Object_View2D_Settings\Button_In_Set = ButtonGadget(#PB_Any, 20, 420, 70, 30, "Set")
     *Object_View2D_Settings\Button_In_Add = ButtonGadget(#PB_Any, 100, 420, 70, 30, "Add")
     *Object_View2D_Settings\Button_In_Delete = ButtonGadget(#PB_Any, 180, 420, 70, 30, "Delete")
     
     BindGadgetEvent(*Object_View2D_Settings\ListIcon_In, @Object_View2D_Settings_Window_Event_ListIcon_In())
-    BindGadgetEvent(*Object_View2D_Settings\CheckBox_In[0], @Object_View2D_Settings_Window_Event_CheckBox_In())
-    BindGadgetEvent(*Object_View2D_Settings\Button_In_Set, @Object_View2D_Settings_Window_Event_Button_In_Set())
+    BindGadgetEvent(*Object_View2D_Settings\CheckBox_In[0], @Object_View2D_Settings_Window_Event_Value_Change())
+    BindGadgetEvent(*Object_View2D_Settings\Spin_In[0], @Object_View2D_Settings_Window_Event_Value_Change())
+    BindGadgetEvent(*Object_View2D_Settings\Spin_In[1], @Object_View2D_Settings_Window_Event_Value_Change())
+    BindGadgetEvent(*Object_View2D_Settings\Spin_In[2], @Object_View2D_Settings_Window_Event_Value_Change())
+    BindGadgetEvent(*Object_View2D_Settings\ComboBox_In, @Object_View2D_Settings_Window_Event_Value_Change())
+    BindGadgetEvent(*Object_View2D_Settings\CheckBox_In[1], @Object_View2D_Settings_Window_Event_Value_Change())
     BindGadgetEvent(*Object_View2D_Settings\Button_In_Add, @Object_View2D_Settings_Window_Event_Button_In_Add())
     BindGadgetEvent(*Object_View2D_Settings\Button_In_Delete, @Object_View2D_Settings_Window_Event_Button_In_Delete())
     
@@ -523,8 +512,12 @@ Procedure Object_View2D_Settings_Window_Close(*Object.Object)
   If *Object_View2D_Settings\Window
     
     UnbindGadgetEvent(*Object_View2D_Settings\ListIcon_In, @Object_View2D_Settings_Window_Event_ListIcon_In())
-    UnbindGadgetEvent(*Object_View2D_Settings\CheckBox_In[0], @Object_View2D_Settings_Window_Event_CheckBox_In())
-    UnbindGadgetEvent(*Object_View2D_Settings\Button_In_Set, @Object_View2D_Settings_Window_Event_Button_In_Set())
+    UnbindGadgetEvent(*Object_View2D_Settings\CheckBox_In[0], @Object_View2D_Settings_Window_Event_Value_Change())
+    UnbindGadgetEvent(*Object_View2D_Settings\Spin_In[0], @Object_View2D_Settings_Window_Event_Value_Change())
+    UnbindGadgetEvent(*Object_View2D_Settings\Spin_In[1], @Object_View2D_Settings_Window_Event_Value_Change())
+    UnbindGadgetEvent(*Object_View2D_Settings\Spin_In[2], @Object_View2D_Settings_Window_Event_Value_Change())
+    UnbindGadgetEvent(*Object_View2D_Settings\ComboBox_In, @Object_View2D_Settings_Window_Event_Value_Change())
+    UnbindGadgetEvent(*Object_View2D_Settings\CheckBox_In[1], @Object_View2D_Settings_Window_Event_Value_Change())
     UnbindGadgetEvent(*Object_View2D_Settings\Button_In_Add, @Object_View2D_Settings_Window_Event_Button_In_Add())
     UnbindGadgetEvent(*Object_View2D_Settings\Button_In_Delete, @Object_View2D_Settings_Window_Event_Button_In_Delete())
     
@@ -573,7 +566,7 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 472
-; FirstLine = 426
+; CursorPosition = 519
+; FirstLine = 475
 ; Folding = --
 ; EnableXP

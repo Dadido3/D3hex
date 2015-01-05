@@ -51,6 +51,21 @@ Structure Object_View2D_32
   D.a
 EndStructure
 
+Structure Object_View2D_ARGB
+  B.a
+  G.a
+  R.a
+  A.a
+EndStructure
+
+Structure Object_View2D_32_Union
+  StructureUnion
+    ABCD.Object_View2D_32
+    RGBA.Object_View2D_ARGB
+    Long.l
+  EndStructureUnion
+EndStructure
+
 Structure Object_View2D_Main
   *Object_Type.Object_Type
 EndStructure
@@ -88,6 +103,7 @@ Structure Object_View2D_Input
   Reverse_Y.l
   
   Width.q           ; Width of the Image in Pixels
+  Height.q          ; Calculated out of Bits_Per_Pixel and the data size
   
   ; #### Image Chunks
   List Chunk.Object_View2D_Input_Chunk()
@@ -408,7 +424,7 @@ EndProcedure
 
 Procedure Object_View2D_Organize(*Object.Object)
   Protected *Object_View2D_Input.Object_View2D_Input
-  Protected Width, Height
+  Protected Width, Height, Max_Width, Min_Width, Max_Height, Min_Height
   Protected ix, iy, ix_1, iy_1, ix_2, iy_2
   Protected X_M.d, Y_M.d, X_M_2.d, Y_M_2.d
   Protected X_R_1.d, Y_R_1.d, X_R_2.d, Y_R_2.d
@@ -467,13 +483,32 @@ Procedure Object_View2D_Organize(*Object.Object)
           *Object_View2D_Input\Bits_Per_Pixel = 32
       EndSelect
       
+      *Object_View2D_Input\Height = Quad_Divide_Ceil(Object_Input_Get_Size(*Object\Input()) * 8 - *Object_View2D_Input\Offset * 8, (*Object_View2D_Input\Width * *Object_View2D_Input\Bits_Per_Pixel + *Object_View2D_Input\Line_Offset * 8))
+      
+      ; #### Determine the square surrounding the images of all inputs
+      If Max_Width < *Object_View2D_Input\Width
+        Max_Width = *Object_View2D_Input\Width
+      EndIf
+      ;If Min_Width > 0
+      ;  Min_Width = 0 ; To be continued when the images are moveable
+      ;EndIf
+      If *Object_View2D_Input\Reverse_Y
+        If Min_Height > - *Object_View2D_Input\Height
+          Min_Height = - *Object_View2D_Input\Height
+        EndIf
+      Else
+        If Max_Height < *Object_View2D_Input\Height
+          Max_Height = *Object_View2D_Input\Height
+        EndIf
+      EndIf
+      
       ; #### Delete chunks which are outside of the viewport
       ForEach *Object_View2D_Input\Chunk()
         X_M.d = *Object_View2D_Input\Chunk()\X * *Object_View2D\Zoom + *Object_View2D\Offset_X
         Y_M.d = *Object_View2D_Input\Chunk()\Y * *Object_View2D\Zoom + *Object_View2D\Offset_Y
         X_M_2.d = (*Object_View2D_Input\Chunk()\X + *Object_View2D_Input\Chunk()\Width) * *Object_View2D\Zoom + *Object_View2D\Offset_X
         Y_M_2.d = (*Object_View2D_Input\Chunk()\Y + *Object_View2D_Input\Chunk()\Height) * *Object_View2D\Zoom + *Object_View2D\Offset_Y
-        If X_M >= Width Or Y_M >= Height Or X_M_2 < 0 Or Y_M_2 < 0 Or *Object_View2D_Input\Chunk()\X > *Object_View2D_Input\Width
+        If X_M >= Width Or Y_M >= Height Or X_M_2 < 0 Or Y_M_2 < 0 Or *Object_View2D_Input\Chunk()\X > *Object_View2D_Input\Width Or *Object_View2D_Input\Chunk()\Y > *Object_View2D_Input\Height Or *Object_View2D_Input\Chunk()\Y + *Object_View2D_Input\Chunk()\Height < - *Object_View2D_Input\Height
           If *Object_View2D_Input\Chunk()\Image_ID
             FreeImage(*Object_View2D_Input\Chunk()\Image_ID)
           EndIf
@@ -490,12 +525,14 @@ Procedure Object_View2D_Organize(*Object.Object)
       
       If X_R_1 < 0 : X_R_1 = 1 : EndIf
       If X_R_2 > *Object_View2D_Input\Width : X_R_2 = *Object_View2D_Input\Width : EndIf
+      If Y_R_1 < - *Object_View2D_Input\Height : Y_R_1 = - *Object_View2D_Input\Height : EndIf
+      If Y_R_2 > *Object_View2D_Input\Height : Y_R_2 = *Object_View2D_Input\Height : EndIf
       
-      ix_1 = Round(X_R_1 / #Object_View2D_Chunk_Size_X, #PB_Round_Down)
-      iy_1 = Round(Y_R_1 / #Object_View2D_Chunk_Size_Y, #PB_Round_Down)
+      ix_1 = Quad_Divide_Floor(X_R_1, #Object_View2D_Chunk_Size_X)
+      iy_1 = Quad_Divide_Floor(Y_R_1, #Object_View2D_Chunk_Size_Y)
       
-      ix_2 = Round(X_R_2 / #Object_View2D_Chunk_Size_X, #PB_Round_Down) ;TODO: Use integer rounding
-      iy_2 = Round(Y_R_2 / #Object_View2D_Chunk_Size_Y, #PB_Round_Down) ;TODO: Use integer rounding
+      ix_2 = Quad_Divide_Floor(X_R_2, #Object_View2D_Chunk_Size_X)
+      iy_2 = Quad_Divide_Floor(Y_R_2, #Object_View2D_Chunk_Size_Y)
       
       If *Object_View2D_Input\Reverse_Y
         If iy_2 > -1 : iy_2 = -1 : EndIf
@@ -525,10 +562,8 @@ Procedure Object_View2D_Organize(*Object.Object)
             *Object_View2D_Input\Chunk()\ID = Object_View2D_Input_Chunk_ID
             *Object_View2D_Input\Chunk()\X = ix * #Object_View2D_Chunk_Size_X
             *Object_View2D_Input\Chunk()\Y = iy * #Object_View2D_Chunk_Size_Y
-            *Object_View2D_Input\Chunk()\Width = *Object_View2D_Input\Width - ix * #Object_View2D_Chunk_Size_X
+            *Object_View2D_Input\Chunk()\Width = #Object_View2D_Chunk_Size_X
             *Object_View2D_Input\Chunk()\Height = #Object_View2D_Chunk_Size_Y
-            If *Object_View2D_Input\Chunk()\Width > #Object_View2D_Chunk_Size_X : *Object_View2D_Input\Chunk()\Width = #Object_View2D_Chunk_Size_X : EndIf
-            If *Object_View2D_Input\Chunk()\Width < 1 : *Object_View2D_Input\Chunk()\Width = 1 : EndIf
             
             D3HT_Element_Set(*Object_View2D_Input\D3HT_Chunk, Object_View2D_Input_Chunk_ID, *Object_View2D_Input\Chunk(), #False)
           EndIf
@@ -538,19 +573,26 @@ Procedure Object_View2D_Organize(*Object.Object)
     EndIf
   Next
   
-  ;SetGadgetAttribute(*Object_View2D\ScrollBar_X, #PB_ScrollBar_Maximum, *Object_View2D\Elements * *Object_View2D\Zoom_X)
-  ;SetGadgetAttribute(*Object_View2D\ScrollBar_X, #PB_ScrollBar_PageLength, Width)
-  ;SetGadgetState(*Object_View2D\ScrollBar_X, -*Object_View2D\Offset_X)
+  SetGadgetAttribute(*Object_View2D\ScrollBar_X, #PB_ScrollBar_Maximum, Max_Width * *Object_View2D\Zoom)
+  SetGadgetAttribute(*Object_View2D\ScrollBar_X, #PB_ScrollBar_Minimum, Min_Width * *Object_View2D\Zoom)
+  SetGadgetAttribute(*Object_View2D\ScrollBar_X, #PB_ScrollBar_PageLength, Width)
+  SetGadgetState(*Object_View2D\ScrollBar_X, -*Object_View2D\Offset_X)
+  
+  SetGadgetAttribute(*Object_View2D\ScrollBar_Y, #PB_ScrollBar_Maximum, Max_Height * *Object_View2D\Zoom)
+  SetGadgetAttribute(*Object_View2D\ScrollBar_Y, #PB_ScrollBar_Minimum, Min_Height * *Object_View2D\Zoom)
+  SetGadgetAttribute(*Object_View2D\ScrollBar_Y, #PB_ScrollBar_PageLength, Height)
+  SetGadgetState(*Object_View2D\ScrollBar_Y, -*Object_View2D\Offset_Y)
   
   ProcedureReturn #True
 EndProcedure
 
 Procedure Object_View2D_Get_Data(*Object.Object)
   Protected *Data, *Metadata, Data_Size
-  Protected *Pointer.Object_View2D_32, *Pointer_Metadata.Ascii
+  Protected *Pointer.Object_View2D_32_Union, *Pointer_Metadata.Ascii
   Protected Width, Height
   Protected *Object_View2D_Input.Object_View2D_Input
   Protected ix, iy, X_Start.q, Y_Start.q
+  Protected *DrawingBuffer, DrawingBufferPitch, *Drawing_Temp.Object_View2D_ARGB
   Protected Color.l
   Protected Position.q
   
@@ -583,6 +625,9 @@ Procedure Object_View2D_Get_Data(*Object.Object)
           If *Object_View2D_Input\Chunk()\Image_ID
             If StartDrawing(ImageOutput(*Object_View2D_Input\Chunk()\Image_ID))
               
+              *DrawingBuffer = DrawingBuffer()
+              DrawingBufferPitch = DrawingBufferPitch()
+              
               DrawingMode(#PB_2DDrawing_AllChannels)
               ;Box(0, 0, #Object_View2D_Chunk_Size_X, #Object_View2D_Chunk_Size_Y, RGBA(Random(255),Random(255),Random(255),255))
               
@@ -593,40 +638,105 @@ Procedure Object_View2D_Get_Data(*Object.Object)
               X_Start = *Object_View2D_Input\Chunk()\X
               For iy = 0 To *Object_View2D_Input\Chunk()\Height - 1
                 If *Object_View2D_Input\Reverse_Y
-                  Y_Start = - *Object_View2D_Input\Chunk()\Y - iy
+                  Y_Start = - *Object_View2D_Input\Chunk()\Y - iy - 1
                 Else
                   Y_Start = *Object_View2D_Input\Chunk()\Y + iy
                 EndIf
                 Position = (X_Start + Y_Start * *Object_View2D_Input\Width) * *Object_View2D_Input\Bits_Per_Pixel / 8 + Y_Start * *Object_View2D_Input\Line_Offset + *Object_View2D_Input\Offset
                 
+                FillMemory(*Metadata, Data_Size)
+                
                 If Object_Input_Get_Data(*Object\Input(), Position, Data_Size, *Data, *Metadata)
                   *Pointer = *Data
                   *Pointer_Metadata = *Metadata
                   
+                  *Drawing_Temp = *DrawingBuffer + (*Object_View2D_Input\Chunk()\Height - 1) * DrawingBufferPitch - iy * DrawingBufferPitch
+                  
                   For ix = 0 To *Object_View2D_Input\Chunk()\Width - 1
+                    If X_Start + ix >= *Object_View2D_Input\Width
+                      Break
+                    EndIf
+                    
                     If *Pointer_Metadata\a & #Metadata_Readable
                       Select *Object_View2D_Input\Pixel_Format
-                        Case #PixelFormat_1_Gray
-                        Case #PixelFormat_1_Indexed
-                        Case #PixelFormat_2_Gray
-                        Case #PixelFormat_2_Indexed
-                        Case #PixelFormat_4_Gray
-                        Case #PixelFormat_4_Indexed
-                        Case #PixelFormat_8_Gray        : Color = RGBA(*Pointer\A, *Pointer\A, *Pointer\A, 255) : *Pointer + 1 : *Pointer_Metadata + 1
-                        Case #PixelFormat_8_Indexed
-                        Case #PixelFormat_16_Gray       : Color = RGBA(*Pointer\B, *Pointer\B, *Pointer\B, 255) : *Pointer + 2 : *Pointer_Metadata + 2
+                        ;Case #PixelFormat_1_Gray
+                        ;Case #PixelFormat_1_Indexed
+                        ;Case #PixelFormat_2_Gray
+                        ;Case #PixelFormat_2_Indexed
+                        ;Case #PixelFormat_4_Gray
+                        ;Case #PixelFormat_4_Indexed
+                        Case #PixelFormat_8_Gray
+                          *Drawing_Temp\R = *Pointer\ABCD\A
+                          *Drawing_Temp\G = *Pointer\ABCD\A
+                          *Drawing_Temp\B = *Pointer\ABCD\A
+                          *Drawing_Temp\A = 255
+                          *Pointer + 1 : *Pointer_Metadata + 1
+                          
+                        ;Case #PixelFormat_8_Indexed
+                          
+                        Case #PixelFormat_16_Gray
+                          *Drawing_Temp\R = *Pointer\ABCD\B
+                          *Drawing_Temp\G = *Pointer\ABCD\B
+                          *Drawing_Temp\B = *Pointer\ABCD\B
+                          *Drawing_Temp\A = 255
+                          *Pointer + 2 : *Pointer_Metadata + 2
+                          
                         Case #PixelFormat_16_RGB_555
+                          *Drawing_Temp\R = (*Pointer\Long & $7C00) >> 7
+                          *Drawing_Temp\G = (*Pointer\Long & $03E0) >> 2
+                          *Drawing_Temp\B = (*Pointer\Long & $001F) << 3
+                          *Drawing_Temp\A = 255
+                          *Pointer + 2 : *Pointer_Metadata + 2
+                          
                         Case #PixelFormat_16_RGB_565
+                          *Drawing_Temp\R = (*Pointer\Long & $F800) >> 8
+                          *Drawing_Temp\G = (*Pointer\Long & $07E0) >> 3
+                          *Drawing_Temp\B = (*Pointer\Long & $001F) << 3
+                          *Drawing_Temp\A = 255
+                          *Pointer + 2 : *Pointer_Metadata + 2
+                          
                         Case #PixelFormat_16_ARGB_1555
-                        Case #PixelFormat_16_Indexed    : Color = RGBA(*Pointer\A, *Pointer\B, *Pointer\C, 255) : *Pointer + 2 : *Pointer_Metadata + 2
-                        Case #PixelFormat_24_RGB        : Color = RGBA(*Pointer\A, *Pointer\B, *Pointer\C, 255) : *Pointer + 3 : *Pointer_Metadata + 3
-                        Case #PixelFormat_24_BGR        : Color = RGBA(*Pointer\C, *Pointer\B, *Pointer\A, 255) : *Pointer + 3 : *Pointer_Metadata + 3
-                        Case #PixelFormat_32_ARGB       : Color = RGBA(*Pointer\A, *Pointer\B, *Pointer\C, *Pointer\D) : *Pointer + 4 : *Pointer_Metadata + 4
-                        Case #PixelFormat_32_ABGR       : Color = RGBA(*Pointer\C, *Pointer\B, *Pointer\A, *Pointer\D) : *Pointer + 4 : *Pointer_Metadata + 4
+                          *Drawing_Temp\R = (*Pointer\Long & $7C00) >> 7
+                          *Drawing_Temp\G = (*Pointer\Long & $03E0) >> 2
+                          *Drawing_Temp\B = (*Pointer\Long & $001F) << 3
+                          *Drawing_Temp\A = ((*Pointer\Long & $8000) >> 15) * 255 ;TODO: Check ARGB 1555 code!
+                          *Pointer + 2 : *Pointer_Metadata + 2
+                          
+                        ;Case #PixelFormat_16_Indexed
+                          
+                        Case #PixelFormat_24_RGB
+                          *Drawing_Temp\R = *Pointer\ABCD\A
+                          *Drawing_Temp\G = *Pointer\ABCD\B
+                          *Drawing_Temp\B = *Pointer\ABCD\C
+                          *Drawing_Temp\A = 255
+                          *Pointer + 3 : *Pointer_Metadata + 3
+                          
+                        Case #PixelFormat_24_BGR
+                          *Drawing_Temp\R = *Pointer\ABCD\C
+                          *Drawing_Temp\G = *Pointer\ABCD\B
+                          *Drawing_Temp\B = *Pointer\ABCD\A
+                          *Drawing_Temp\A = 255
+                          *Pointer + 3 : *Pointer_Metadata + 3
+                          
+                        Case #PixelFormat_32_ARGB
+                          *Drawing_Temp\R = *Pointer\ABCD\B
+                          *Drawing_Temp\G = *Pointer\ABCD\C
+                          *Drawing_Temp\B = *Pointer\ABCD\D
+                          *Drawing_Temp\A = *Pointer\ABCD\A
+                          *Pointer + 4 : *Pointer_Metadata + 4
+                          
+                        Case #PixelFormat_32_ABGR
+                          *Drawing_Temp\R = *Pointer\ABCD\D
+                          *Drawing_Temp\G = *Pointer\ABCD\C
+                          *Drawing_Temp\B = *Pointer\ABCD\B
+                          *Drawing_Temp\A = *Pointer\ABCD\A
+                          *Pointer + 4 : *Pointer_Metadata + 4
+                          
                       EndSelect
                       
-                      Plot(ix, iy, Color)
                     EndIf
+                    
+                    *Drawing_Temp + 4
                   Next
                   
                 EndIf
@@ -915,6 +1025,34 @@ Procedure Object_View2D_Window_Callback(hWnd, uMsg, wParam, lParam)
         Object_View2D_Canvas_Redraw(*Object)
       EndIf
       
+    Case #WM_VSCROLL
+      Select wParam & $FFFF
+        Case #SB_THUMBTRACK
+          SCROLLINFO\fMask = #SIF_TRACKPOS
+          SCROLLINFO\cbSize = SizeOf(SCROLLINFO)
+          GetScrollInfo_(lParam, #SB_CTL, @SCROLLINFO)
+          *Object_View2D\Offset_Y = - SCROLLINFO\nTrackPos
+          *Object_View2D\Redraw = #True
+        Case #SB_PAGEUP
+          *Object_View2D\Offset_Y + GadgetHeight(*Object_View2D\Canvas_Data)
+          *Object_View2D\Redraw = #True
+        Case #SB_PAGEDOWN
+          *Object_View2D\Offset_Y - GadgetHeight(*Object_View2D\Canvas_Data)
+          *Object_View2D\Redraw = #True
+        Case #SB_LINEUP
+          *Object_View2D\Offset_Y + 100
+          *Object_View2D\Redraw = #True
+        Case #SB_LINEDOWN
+          *Object_View2D\Offset_Y - 100
+          *Object_View2D\Redraw = #True
+      EndSelect
+      If *Object_View2D\Redraw
+        *Object_View2D\Redraw = #False
+        Object_View2D_Organize(*Object)
+        Object_View2D_Get_Data(*Object)
+        Object_View2D_Canvas_Redraw(*Object)
+      EndIf
+      
   EndSelect
   
   ProcedureReturn #PB_ProcessPureBasicEvents
@@ -952,7 +1090,7 @@ Procedure Object_View2D_Window_Event_SizeWindow()
   
   ; #### Gadgets
   ResizeGadget(*Object_View2D\ScrollBar_X, 0, Data_Height+ToolBarHeight, Data_Width, ScrollBar_X_Height)
-  ResizeGadget(*Object_View2D\ScrollBar_Y, Data_Width, 0, ScrollBar_Y_Width, Data_Height)
+  ResizeGadget(*Object_View2D\ScrollBar_Y, Data_Width, ToolBarHeight, ScrollBar_Y_Width, Data_Height)
   
   ResizeGadget(*Object_View2D\Canvas_Data, 0, ToolBarHeight, Data_Width, Data_Height)
   
@@ -1070,7 +1208,7 @@ Procedure Object_View2D_Window_Open(*Object.Object)
     
     ; #### Gadgets
     *Object_View2D\ScrollBar_X = ScrollBarGadget(#PB_Any, 0, Data_Height+ToolBarHeight, Data_Width, ScrollBar_X_Height, 0, 10, 1)
-    *Object_View2D\ScrollBar_Y = ScrollBarGadget(#PB_Any, Data_Width, 0, ScrollBar_Y_Width, Data_Height, 0, 10, 1, #PB_ScrollBar_Vertical)
+    *Object_View2D\ScrollBar_Y = ScrollBarGadget(#PB_Any, Data_Width, ToolBarHeight, ScrollBar_Y_Width, Data_Height, 0, 10, 1, #PB_ScrollBar_Vertical)
     
     *Object_View2D\Canvas_Data = CanvasGadget(#PB_Any, 0, 0, Data_Width, Data_Height, #PB_Canvas_Keyboard)
     
@@ -1154,7 +1292,7 @@ If Object_View2D_Main\Object_Type
   Object_View2D_Main\Object_Type\UID = "D3VIEW2D"
   Object_View2D_Main\Object_Type\Author = "David Vogel (Dadido3)"
   Object_View2D_Main\Object_Type\Date_Creation = Date(2014,12,14,21,55,00)
-  Object_View2D_Main\Object_Type\Date_Modification = Date(2015,01,04,03,03,00)
+  Object_View2D_Main\Object_Type\Date_Modification = Date(2015,01,05,06,41,00)
   Object_View2D_Main\Object_Type\Date_Compilation = #PB_Compiler_Date
   Object_View2D_Main\Object_Type\Description = "Viewer for 2D Data, mostly images."
   Object_View2D_Main\Object_Type\Function_Create = @Object_View2D_Create()
@@ -1179,7 +1317,7 @@ DataSection
   Object_View2D_Icon_Normalize:   : IncludeBinary "../../../Data/Icons/Graph_Normalize.png"
 EndDataSection
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1160
-; FirstLine = 47
+; CursorPosition = 1294
+; FirstLine = 1260
 ; Folding = ----
 ; EnableXP
