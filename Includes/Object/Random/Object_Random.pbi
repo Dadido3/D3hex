@@ -229,12 +229,19 @@ Procedure Object_Random_Get_Data(*Object_Output.Object_Output, Position.q, Size.
   If Position < 0
     ProcedureReturn #False
   EndIf
-  If Size <= 0
-    ProcedureReturn #False
-  EndIf
   
   Protected *Object_Random.Object_Random = *Object\Custom_Data
   If Not *Object_Random
+    ProcedureReturn #False
+  EndIf
+  
+  If Position > *Object_Random\Size
+    ProcedureReturn #False
+  EndIf
+  If Size > *Object_Random\Size - Position
+    Size = *Object_Random\Size - Position
+  EndIf
+  If Size <= 0
     ProcedureReturn #False
   EndIf
   
@@ -263,7 +270,6 @@ Procedure Object_Random_Get_Data(*Object_Output.Object_Output, Position.q, Size.
     EndIf
   EndIf
   
-  ;TODO: put in correct values!
   If *Metadata
     FillMemory(*Metadata, Size, #Metadata_NoError | #Metadata_Readable, #PB_Ascii)
   EndIf
@@ -565,6 +571,7 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 3
+; CursorPosition = 271
+; FirstLine = 244
 ; Folding = ----
 ; EnableXP

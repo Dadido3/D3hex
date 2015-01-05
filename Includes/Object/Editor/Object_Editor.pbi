@@ -570,6 +570,10 @@ Procedure Object_Editor_Output_Get_Data(*Object_Output.Object_Output, Position.q
     Length = *Object_Editor\Select_Start-*Object_Editor\Select_End
   EndIf
   
+  If Size > Length - Position
+    Size = Length - Position
+  EndIf
+  
   ProcedureReturn Object_Input_Get_Data(FirstElement(*Object\Input()), Start+Position, Size, *Data, *Metadata)
 EndProcedure
 
@@ -603,6 +607,10 @@ Procedure Object_Editor_Output_Set_Data(*Object_Output.Object_Output, Position.q
   Else
     Start = *Object_Editor\Select_End
     Length = *Object_Editor\Select_Start-*Object_Editor\Select_End
+  EndIf
+  
+  If Position > Length
+    ProcedureReturn #False
   EndIf
   
   If Start + Position <= Object_Input_Get_Size(FirstElement(*Object\Input()))
@@ -651,6 +659,10 @@ Procedure Object_Editor_Output_Convolute(*Object_Output.Object_Output, Position.
   
   If -Offset > Length - Position
     Offset = - Length + Position
+  EndIf
+  
+  If Position > Length
+    ProcedureReturn #False
   EndIf
   
   If Start + Position <= Object_Input_Get_Size(FirstElement(*Object\Input()))
@@ -2401,7 +2413,8 @@ MenuItem(#Object_Editor_PopupMenu_Select_All, "Select All", ImageID(Icon_Select_
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 3
+; CursorPosition = 663
+; FirstLine = 621
 ; Folding = -------
 ; EnableUnicode
 ; EnableXP

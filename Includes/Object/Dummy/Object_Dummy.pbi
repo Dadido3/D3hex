@@ -212,12 +212,19 @@ Procedure Object_Dummy_Get_Data(*Object_Output.Object_Output, Position.q, Size.i
   If Position < 0
     ProcedureReturn #False
   EndIf
-  If Size <= 0
-    ProcedureReturn #False
-  EndIf
   
   Protected *Object_Dummy.Object_Dummy = *Object\Custom_Data
   If Not *Object_Dummy
+    ProcedureReturn #False
+  EndIf
+  
+  If Position > *Object_Dummy\Raw_Data_Size
+    ProcedureReturn #False
+  EndIf
+  If Size > *Object_Dummy\Raw_Data_Size - Position
+    Size = *Object_Dummy\Raw_Data_Size - Position
+  EndIf
+  If Size <= 0
     ProcedureReturn #False
   EndIf
   
@@ -246,11 +253,15 @@ Procedure Object_Dummy_Set_Data(*Object_Output.Object_Output, Position.q, Size.i
   If Size <= 0
     ProcedureReturn #False
   EndIf
-  
   Protected *Object_Dummy.Object_Dummy = *Object\Custom_Data
   If Not *Object_Dummy
     ProcedureReturn #False
   EndIf
+  
+  If Position > *Object_Dummy\Raw_Data_Size
+    ProcedureReturn #False
+  EndIf
+  
   
   ; #### Reallocate if the operation increases the size of the object (Todo)
   Temp_Size = Position + Size - *Object_Dummy\Raw_Data_Size
@@ -365,7 +376,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 3
+; CursorPosition = 254
+; FirstLine = 225
 ; Folding = --
 ; EnableUnicode
 ; EnableXP
