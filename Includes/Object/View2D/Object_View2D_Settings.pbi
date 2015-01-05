@@ -220,6 +220,8 @@ Procedure Object_View2D_Settings_Window_Event_Value_Change()
   Protected *Object_Input.Object_Input
   Protected *Object_View2D_Input.Object_View2D_Input
   
+  Protected Bytes_Per_Line_1.q, Bytes_Per_Line_2.q
+  
   Protected *Window.Window = Window_Get(Event_Window)
   If Not *Window
     ProcedureReturn 
@@ -246,6 +248,8 @@ Procedure Object_View2D_Settings_Window_Event_Value_Change()
       If Not *Object_View2D_Input
         ProcedureReturn #False
       EndIf
+      
+      Bytes_Per_Line_1 = (*Object_View2D_Input\Width * *Object_View2D_Input\Bits_Per_Pixel) / 8 + *Object_View2D_Input\Line_Offset
       
       Select Event_Gadget
         Case *Object_View2D_Settings\CheckBox_In[0]
@@ -283,6 +287,10 @@ Procedure Object_View2D_Settings_Window_Event_Value_Change()
           *Object_View2D_Input\Reverse_Y = GetGadgetState(*Object_View2D_Settings\CheckBox_In[1])
           
       EndSelect
+      
+      Bytes_Per_Line_2 = (*Object_View2D_Input\Width * *Object_View2D_Input\Bits_Per_Pixel) / 8 + *Object_View2D_Input\Line_Offset
+      
+      *Object_View2D\Offset_Y = (*Object_View2D\Offset_Y) * Bytes_Per_Line_1 / Bytes_Per_Line_2
       
       *Object_View2D\Redraw = #True
       
@@ -331,6 +339,7 @@ Procedure Object_View2D_Settings_Window_Event_Button_In_Add()
   *Object_View2D_Input\D3HT_Chunk = D3HT_Create(SizeOf(Object_View2D_Input_Chunk_ID), SizeOf(Integer), 65536)
   
   *Object_View2D_Settings\Update_ListIcon = #True
+  *Object_View2D\Redraw = #True
 EndProcedure
 
 Procedure Object_View2D_Settings_Window_Event_Button_In_Delete()
@@ -379,6 +388,7 @@ Procedure Object_View2D_Settings_Window_Event_Button_In_Delete()
       Object_Input_Delete(*Object, *Object\Input())
       
       *Object_View2D_Settings\Update_ListIcon = #True
+      *Object_View2D\Redraw = #True
       Break
     EndIf
   Next
@@ -566,7 +576,7 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 519
-; FirstLine = 475
+; CursorPosition = 292
+; FirstLine = 256
 ; Folding = --
 ; EnableXP

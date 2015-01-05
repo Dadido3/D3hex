@@ -265,7 +265,7 @@ Procedure Object_View2D_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
   
   *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Offset_X", #NBT_Tag_Double)  : NBT_Tag_Set_Double(*NBT_Tag, *Object_View2D\Offset_X)
   *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Offset_Y", #NBT_Tag_Double)  : NBT_Tag_Set_Double(*NBT_Tag, *Object_View2D\Offset_Y)
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Zoom", #NBT_Tag_Double)    : NBT_Tag_Set_Double(*NBT_Tag, *Object_View2D\Zoom)
+  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Zoom", #NBT_Tag_Double)      : NBT_Tag_Set_Double(*NBT_Tag, *Object_View2D\Zoom)
   
   *NBT_Tag_List = NBT_Tag_Add(*Parent_Tag, "Inputs", #NBT_Tag_List, #NBT_Tag_Compound)
   If *NBT_Tag_List
@@ -274,12 +274,13 @@ Procedure Object_View2D_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
       
       *NBT_Tag_Compound = NBT_Tag_Add(*NBT_Tag_List, "", #NBT_Tag_Compound)
       If *NBT_Tag_Compound
-        *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "Manually", #NBT_Tag_Long)      : NBT_Tag_Set_Number(*NBT_Tag, *Object_View2D_Input\Manually)
-        *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "Pixel_Format", #NBT_Tag_Long)  : NBT_Tag_Set_Number(*NBT_Tag, *Object_View2D_Input\Pixel_Format)
-        *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "Width", #NBT_Tag_Quad)         : NBT_Tag_Set_Number(*NBT_Tag, *Object_View2D_Input\Width)
-        *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "Offset", #NBT_Tag_Quad)        : NBT_Tag_Set_Number(*NBT_Tag, *Object_View2D_Input\Offset)
-        *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "Line_Offset", #NBT_Tag_Quad)   : NBT_Tag_Set_Number(*NBT_Tag, *Object_View2D_Input\Line_Offset)
-        *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "Reverse_Y", #NBT_Tag_Byte)     : NBT_Tag_Set_Number(*NBT_Tag, *Object_View2D_Input\Reverse_Y)
+        *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "Manually", #NBT_Tag_Long)        : NBT_Tag_Set_Number(*NBT_Tag, *Object_View2D_Input\Manually)
+        *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "Pixel_Format", #NBT_Tag_Long)    : NBT_Tag_Set_Number(*NBT_Tag, *Object_View2D_Input\Pixel_Format)
+        *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "Bits_Per_Pixel", #NBT_Tag_Long)  : NBT_Tag_Set_Number(*NBT_Tag, *Object_View2D_Input\Bits_Per_Pixel)
+        *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "Width", #NBT_Tag_Quad)           : NBT_Tag_Set_Number(*NBT_Tag, *Object_View2D_Input\Width)
+        *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "Offset", #NBT_Tag_Quad)          : NBT_Tag_Set_Number(*NBT_Tag, *Object_View2D_Input\Offset)
+        *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "Line_Offset", #NBT_Tag_Quad)     : NBT_Tag_Set_Number(*NBT_Tag, *Object_View2D_Input\Line_Offset)
+        *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "Reverse_Y", #NBT_Tag_Byte)       : NBT_Tag_Set_Number(*NBT_Tag, *Object_View2D_Input\Reverse_Y)
       EndIf
     Next
   EndIf
@@ -308,7 +309,7 @@ Procedure Object_View2D_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
   
   *NBT_Tag = NBT_Tag(*Parent_Tag, "Offset_X") : *Object_View2D\Offset_X = NBT_Tag_Get_Double(*NBT_Tag)
   *NBT_Tag = NBT_Tag(*Parent_Tag, "Offset_Y") : *Object_View2D\Offset_Y = NBT_Tag_Get_Double(*NBT_Tag)
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Zoom")   : *Object_View2D\Zoom = NBT_Tag_Get_Double(*NBT_Tag)
+  *NBT_Tag = NBT_Tag(*Parent_Tag, "Zoom")     : *Object_View2D\Zoom = NBT_Tag_Get_Double(*NBT_Tag)
   
   ; #### Delete all inputs
   While FirstElement(*Object\Input())
@@ -343,12 +344,13 @@ Procedure Object_View2D_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
         *Object_View2D_Input = *Object_Input\Custom_Data
         If *Object_View2D_Input
           *Object_View2D_Input\D3HT_Chunk = D3HT_Create(SizeOf(Object_View2D_Input_Chunk_ID), SizeOf(Integer), 65536)
-          *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Manually")     : *Object_View2D_Input\Manually = NBT_Tag_Get_Number(*NBT_Tag)
-          *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Pixel_Format") : *Object_View2D_Input\Pixel_Format = NBT_Tag_Get_Number(*NBT_Tag)
-          *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Width")        : *Object_View2D_Input\Width = NBT_Tag_Get_Number(*NBT_Tag)
-          *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Offset")       : *Object_View2D_Input\Offset = NBT_Tag_Get_Number(*NBT_Tag)
-          *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Line_Offset")  : *Object_View2D_Input\Line_Offset = NBT_Tag_Get_Number(*NBT_Tag)
-          *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Reverse_Y")    : *Object_View2D_Input\Reverse_Y = NBT_Tag_Get_Number(*NBT_Tag)
+          *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Manually")       : *Object_View2D_Input\Manually = NBT_Tag_Get_Number(*NBT_Tag)
+          *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Pixel_Format")   : *Object_View2D_Input\Pixel_Format = NBT_Tag_Get_Number(*NBT_Tag)
+          *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Bits_Per_Pixel") : *Object_View2D_Input\Bits_Per_Pixel  = NBT_Tag_Get_Number(*NBT_Tag)
+          *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Width")          : *Object_View2D_Input\Width = NBT_Tag_Get_Number(*NBT_Tag)
+          *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Offset")         : *Object_View2D_Input\Offset = NBT_Tag_Get_Number(*NBT_Tag)
+          *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Line_Offset")    : *Object_View2D_Input\Line_Offset = NBT_Tag_Get_Number(*NBT_Tag)
+          *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Reverse_Y")      : *Object_View2D_Input\Reverse_Y = NBT_Tag_Get_Number(*NBT_Tag)
         EndIf
         
       EndIf
@@ -430,6 +432,7 @@ Procedure Object_View2D_Organize(*Object.Object)
   Protected X_R_1.d, Y_R_1.d, X_R_2.d, Y_R_2.d
   Protected Found
   Protected Object_View2D_Input_Chunk_ID.Object_View2D_Input_Chunk_ID
+  Protected Bytes_Per_Line_1.q, Bytes_Per_Line_2.q
   
   If Not *Object
     ProcedureReturn #False
@@ -465,6 +468,8 @@ Procedure Object_View2D_Organize(*Object.Object)
         *Object_View2D_Input\Width = 1
       EndIf
       
+      Bytes_Per_Line_1 = (*Object_View2D_Input\Width * *Object_View2D_Input\Bits_Per_Pixel) / 8 + *Object_View2D_Input\Line_Offset
+      
       ; #### Set Bits_Per_Pixel accordingly to the Pixel_Format
       Select *Object_View2D_Input\Pixel_Format
         Case #PixelFormat_1_Gray, #PixelFormat_1_Indexed
@@ -482,6 +487,9 @@ Procedure Object_View2D_Organize(*Object.Object)
         Case #PixelFormat_32_ARGB, #PixelFormat_32_ABGR
           *Object_View2D_Input\Bits_Per_Pixel = 32
       EndSelect
+      
+      Bytes_Per_Line_2 = (*Object_View2D_Input\Width * *Object_View2D_Input\Bits_Per_Pixel) / 8 + *Object_View2D_Input\Line_Offset
+      *Object_View2D\Offset_Y = (*Object_View2D\Offset_Y) * Bytes_Per_Line_1 / Bytes_Per_Line_2
       
       *Object_View2D_Input\Height = Quad_Divide_Ceil(Object_Input_Get_Size(*Object\Input()) * 8 - *Object_View2D_Input\Offset * 8, (*Object_View2D_Input\Width * *Object_View2D_Input\Bits_Per_Pixel + *Object_View2D_Input\Line_Offset * 8))
       
@@ -870,11 +878,13 @@ Procedure Object_View2D_Window_Event_Canvas_Data()
   Protected Event_Type = EventType()
   
   Protected M_X.l, M_Y.l
+  Protected R_X.q, R_Y.q
   Protected Key, Modifiers
   Protected Temp_Zoom.d
   Protected i
   Static Move_Active
   Static Move_X, Move_Y
+  Protected *Object_View2D_Input.Object_View2D_Input
   
   Protected *Window.Window = Window_Get(Event_Window)
   If Not *Window
@@ -920,6 +930,20 @@ Procedure Object_View2D_Window_Event_Canvas_Data()
         Move_X = GetGadgetAttribute(Event_Gadget, #PB_Canvas_MouseX)
         Move_Y = GetGadgetAttribute(Event_Gadget, #PB_Canvas_MouseY)
         *Object_View2D\Redraw = #True
+      EndIf
+      ; #### Calculate Position and stuff
+      R_X = Round((GetGadgetAttribute(Event_Gadget, #PB_Canvas_MouseX) - *Object_View2D\Offset_X) / *Object_View2D\Zoom, #PB_Round_Down)
+      R_Y = Round((GetGadgetAttribute(Event_Gadget, #PB_Canvas_MouseY) - *Object_View2D\Offset_Y) / *Object_View2D\Zoom, #PB_Round_Down)
+      StatusBarText(Main_Window\StatusBar_ID, 0, "X: "+Str(R_X)+" Y:"+Str(R_Y))
+      If FirstElement(*Object\Input())
+        *Object_View2D_Input = *Object\Input()\Custom_Data
+        If *Object_View2D_Input
+          If *Object_View2D_Input\Reverse_Y
+            StatusBarText(Main_Window\StatusBar_ID, 1, "Position (First image): "+Str((R_X * *Object_View2D_Input\Bits_Per_Pixel + (-1-R_Y) * (*Object_View2D_Input\Width * *Object_View2D_Input\Bits_Per_Pixel + *Object_View2D_Input\Line_Offset * 8)) / 8 + *Object_View2D_Input\Offset)+" B")
+          Else
+            StatusBarText(Main_Window\StatusBar_ID, 1, "Position (First image): "+Str((R_X * *Object_View2D_Input\Bits_Per_Pixel + R_Y * (*Object_View2D_Input\Width * *Object_View2D_Input\Bits_Per_Pixel + *Object_View2D_Input\Line_Offset * 8)) / 8 + *Object_View2D_Input\Offset)+" B")
+          EndIf
+        EndIf
       EndIf
       
     Case #PB_EventType_MouseWheel
@@ -1292,7 +1316,7 @@ If Object_View2D_Main\Object_Type
   Object_View2D_Main\Object_Type\UID = "D3VIEW2D"
   Object_View2D_Main\Object_Type\Author = "David Vogel (Dadido3)"
   Object_View2D_Main\Object_Type\Date_Creation = Date(2014,12,14,21,55,00)
-  Object_View2D_Main\Object_Type\Date_Modification = Date(2015,01,05,06,41,00)
+  Object_View2D_Main\Object_Type\Date_Modification = Date(2015,01,05,18,38,00)
   Object_View2D_Main\Object_Type\Date_Compilation = #PB_Compiler_Date
   Object_View2D_Main\Object_Type\Description = "Viewer for 2D Data, mostly images."
   Object_View2D_Main\Object_Type\Function_Create = @Object_View2D_Create()
@@ -1301,11 +1325,8 @@ EndIf
 
 ; #### Object Popup-Menu
 ;Object_View2D_Main\PopupMenu = CreatePopupImageMenu(#PB_Any, #PB_Menu_ModernLook)
-;MenuItem(#Object_View2D_PopupMenu_Cut, "Cut")
-;MenuItem(#Object_View2D_PopupMenu_Copy, "Copy")
-;MenuItem(#Object_View2D_PopupMenu_Paste, "Paste")
-;MenuBar()
-;MenuItem(#Object_View2D_PopupMenu_Close, "Close")
+;MenuItem(#Object_View2D_PopupMenu_Copy_Position, "Copy Address")
+;MenuItem(#Object_View2D_PopupMenu_Lock_To_Line, "Lock to this line")
 
 ; ##################################################### Main ########################################################
 
@@ -1317,7 +1338,7 @@ DataSection
   Object_View2D_Icon_Normalize:   : IncludeBinary "../../../Data/Icons/Graph_Normalize.png"
 EndDataSection
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1294
-; FirstLine = 1260
+; CursorPosition = 1318
+; FirstLine = 1298
 ; Folding = ----
 ; EnableXP

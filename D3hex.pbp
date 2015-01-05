@@ -7,7 +7,7 @@
   <section name="data">
     <explorer view="Includes\Object\Data_Inspector\" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2015-01-05 06:41" user="David Vogel" host="DAVIDS"/>
+    <lastopen date="2015-01-05 19:02" user="David Vogel" host="DAVIDS_NOTEBOOK"/>
   </section>
   <section name="files">
     <file name="Includes\About.pbi">
@@ -108,11 +108,11 @@
     </file>
     <file name="Includes\Object\View2D\Object_View2D.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
-      <fingerprint md5="b4cfcc28e635da0d576d0b47b6eff907"/>
+      <fingerprint md5="b3aef93482ae69059514d6207b5f70d5"/>
     </file>
     <file name="Includes\Object\View2D\Object_View2D_Settings.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
-      <fingerprint md5="278266b3e4b57ffc7a6f3bc52aeb5ed9"/>
+      <fingerprint md5="38d25698c2f9ab4b9a027ad71a1b5d54"/>
     </file>
     <file name="Includes\Object_Type.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
@@ -147,8 +147,8 @@
       <executable value="Distribution\D3hex.x86.exe"/>
       <options unicode="1" xpskin="1" user="1" onerror="1"/>
       <icon enable="1">Data\Images\Icon.ico</icon>
-      <compilecount enable="1" value="224"/>
-      <buildcount enable="1" value="36"/>
+      <compilecount enable="1" value="225"/>
+      <buildcount enable="1" value="37"/>
       <versioninfo enable="1">
         <field3 value="D3hex"/>
         <field14 value="D3nexus.de"/>
@@ -163,8 +163,8 @@
       <options unicode="1" xpskin="1" user="1" onerror="1"/>
       <purifier enable="0" granularity="1,1,1,1"/>
       <icon enable="1">Data\Images\Icon.ico</icon>
-      <compilecount enable="1" value="2655"/>
-      <buildcount enable="1" value="43"/>
+      <compilecount enable="1" value="2689"/>
+      <buildcount enable="1" value="44"/>
       <versioninfo enable="1">
         <field3 value="D3hex"/>
         <field14 value="D3nexus.de"/>
