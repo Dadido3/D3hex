@@ -7,7 +7,7 @@
   <section name="data">
     <explorer view="Includes\Object\Data_Inspector\" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2015-01-05 19:02" user="David Vogel" host="DAVIDS_NOTEBOOK"/>
+    <lastopen date="2015-01-05 19:50" user="David Vogel" host="DAVIDS_NOTEBOOK"/>
   </section>
   <section name="files">
     <file name="Includes\About.pbi">
@@ -136,7 +136,7 @@
     </file>
     <file name="Main.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="30ce88e128efd445a2f55f0014909d42"/>
+      <fingerprint md5="5128e617332564681be5ea92594c7db0"/>
     </file>
   </section>
   <section name="targets">
@@ -163,7 +163,7 @@
       <options unicode="1" xpskin="1" user="1" onerror="1"/>
       <purifier enable="0" granularity="1,1,1,1"/>
       <icon enable="1">Data\Images\Icon.ico</icon>
-      <compilecount enable="1" value="2689"/>
+      <compilecount enable="1" value="2690"/>
       <buildcount enable="1" value="44"/>
       <versioninfo enable="1">
         <field3 value="D3hex"/>

@@ -126,18 +126,18 @@
 ;   - Added Object_Copy
 ;   - Update every structure allocation to AllocateStructure(...) and FreeStructure(...)
 ;
-; - V0.940 (indev)
-;   - Fixed possible crash with Object_Editor (String generation wrote Null-Bytes outside of the memory)
-;   - NBT loading and saving is a bit faster
-;   - Object_Copy also displays values
-;   - Added a unit engine to format numbers with SI-prefixes...
-;   - Object_View1D doesn't scroll away anymore when normalizing the x-axis
-;   - Renamed and moved all object-includes
-;   - Renamed the object "Datatypes" to "Data Inspector"
-;   - Added View2D
-;   - Object descriptor changed to NBT
-;   - Object_Editor: limited marked output to selection
-;   - Object_Random: limited output to size
+; - V0.940 (05.01.2015)
+;   - Fixed possible crash with Object_Editor (String generation in search wrote Null-Bytes outside of the memory)
+;   - NBT loading And saving is a bit faster
+;   - Object_Copy: Display progress
+;   - Added a unit engine To format numbers With SI-prefixes...
+;   - Object_View1D: Fixed "Jumping out of the screen" when normalizing the x-axis
+;   - Renamed And moved all object-includes
+;   - Renamed the object "Datatypes" To "Data Inspector"
+;   - Added View2D, viewer For raster graphics
+;   - Object descriptor changed To NBT
+;   - Object_Editor: limited marked output To selection
+;   - Object_Random: limited output To size
 ;   
 ; ##################################################### Begin #######################################################
 
@@ -875,8 +875,8 @@ DataSection
   
 EndDataSection
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 138
-; FirstLine = 100
+; CursorPosition = 129
+; FirstLine = 108
 ; Folding = --
 ; EnableUnicode
 ; EnableXP
