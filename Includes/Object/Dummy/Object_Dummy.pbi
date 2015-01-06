@@ -262,7 +262,6 @@ Procedure Object_Dummy_Set_Data(*Object_Output.Object_Output, Position.q, Size.i
     ProcedureReturn #False
   EndIf
   
-  
   ; #### Reallocate if the operation increases the size of the object (Todo)
   Temp_Size = Position + Size - *Object_Dummy\Raw_Data_Size
   If Temp_Size > 0
@@ -376,8 +375,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 254
-; FirstLine = 225
+; CursorPosition = 203
+; FirstLine = 203
 ; Folding = --
 ; EnableUnicode
 ; EnableXP

@@ -203,6 +203,9 @@ Procedure Object_View2D_Create(Requester)
   
   *Object_View2D_Input = *Object_Input\Custom_Data
   *Object_View2D_Input\D3HT_Chunk = D3HT_Create(SizeOf(Object_View2D_Input_Chunk_ID), SizeOf(Integer), 65536)
+  *Object_View2D_Input\Pixel_Format = #PixelFormat_24_BGR
+  *Object_View2D_Input\Bits_Per_Pixel = 24
+  *Object_View2D_Input\Width = 1024
   
   ProcedureReturn *Object
 EndProcedure
@@ -1338,7 +1341,7 @@ DataSection
   Object_View2D_Icon_Normalize:   : IncludeBinary "../../../Data/Icons/Graph_Normalize.png"
 EndDataSection
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1318
-; FirstLine = 1298
+; CursorPosition = 205
+; FirstLine = 175
 ; Folding = ----
 ; EnableXP

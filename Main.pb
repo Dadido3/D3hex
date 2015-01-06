@@ -138,6 +138,10 @@
 ;   - Object descriptor changed To NBT
 ;   - Object_Editor: limited marked output To selection
 ;   - Object_Random: limited output To size
+;
+; - V0.941 (06.01.2015)
+;   - Object_Editor: Fixed writing at the end of data
+;   - Object_View2D: Added standard configuration
 ;   
 ; ##################################################### Begin #######################################################
 
@@ -157,7 +161,7 @@ XIncludeFile "Includes/UnitEngine.pbi"
 
 ; ##################################################### Constants ###################################################
 
-#Version = 0940
+#Version = 0941
 
 Enumeration
   #Data_Raw
@@ -875,8 +879,8 @@ DataSection
   
 EndDataSection
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 129
-; FirstLine = 108
+; CursorPosition = 143
+; FirstLine = 123
 ; Folding = --
 ; EnableUnicode
 ; EnableXP

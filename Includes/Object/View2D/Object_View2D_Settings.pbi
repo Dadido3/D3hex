@@ -337,6 +337,9 @@ Procedure Object_View2D_Settings_Window_Event_Button_In_Add()
   
   *Object_View2D_Input = *Object_Input\Custom_Data
   *Object_View2D_Input\D3HT_Chunk = D3HT_Create(SizeOf(Object_View2D_Input_Chunk_ID), SizeOf(Integer), 65536)
+  *Object_View2D_Input\Pixel_Format = #PixelFormat_24_BGR
+  *Object_View2D_Input\Bits_Per_Pixel = 24
+  *Object_View2D_Input\Width = 1024
   
   *Object_View2D_Settings\Update_ListIcon = #True
   *Object_View2D\Redraw = #True
@@ -576,7 +579,7 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 292
-; FirstLine = 256
+; CursorPosition = 341
+; FirstLine = 307
 ; Folding = --
 ; EnableXP

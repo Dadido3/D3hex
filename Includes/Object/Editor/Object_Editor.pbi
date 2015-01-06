@@ -1452,6 +1452,7 @@ Procedure Object_Editor_Write_Nibble(*Object.Object, Char.a, Abort.i=#False)
   Protected Select_Start.q, Select_Length.q
   Protected Result = #False
   Protected Temp_Char.a
+  Protected Found
   
   ; #### Determine the start and length of the selected range
   If *Object_Editor\Select_Start < *Object_Editor\Select_End
@@ -1488,10 +1489,14 @@ Procedure Object_Editor_Write_Nibble(*Object.Object, Char.a, Abort.i=#False)
     
     If *Object_Editor\Select_Nibble
       If Object_Input_Get_Data(FirstElement(*Object\Input()), Select_Start, 1, @Temp_Char, #Null)
-        If *Object_Editor\Temp_Nibble
-          Temp_Char & $0F
-          Temp_Char | *Object_Editor\Temp_Nibble_Value << 4
-        EndIf
+        Found = #True
+      EndIf
+      If *Object_Editor\Temp_Nibble
+        Temp_Char & $0F
+        Temp_Char | *Object_Editor\Temp_Nibble_Value << 4
+        Found = #True
+      EndIf
+      If Found
         Temp_Char & $F0
         Temp_Char | Char
         Result = Object_Input_Set_Data(FirstElement(*Object\Input()), Select_Start, 1, @Temp_Char)
@@ -2413,8 +2418,8 @@ MenuItem(#Object_Editor_PopupMenu_Select_All, "Select All", ImageID(Icon_Select_
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 663
-; FirstLine = 621
+; CursorPosition = 1493
+; FirstLine = 1481
 ; Folding = -------
 ; EnableUnicode
 ; EnableXP
