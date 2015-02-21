@@ -552,6 +552,7 @@ Procedure Object_Network_Terminal_Set_Data(*Object_Output.Object_Output, Positio
     ProcedureReturn #False
   EndIf
   
+  Protected Object_Event.Object_Event
   Protected *Temp
   
   Select *Object_Output\i
@@ -566,6 +567,11 @@ Procedure Object_Network_Terminal_Set_Data(*Object_Output.Object_Output, Positio
           *Object_Network_Terminal\Output_Chunk()\Size = Size
           *Object_Network_Terminal\Sent + Size
           CopyMemory(*Data, *Temp, Size)
+          
+          Object_Event\Type = #Object_Link_Event_Update
+          Object_Event\Position = *Object_Network_Terminal\Sent
+          Object_Event\Size = Size
+          Object_Output_Event(Object_Output_Get(*Object, 0), Object_Event)
         EndIf
         ProcedureReturn #True
       EndIf
@@ -982,11 +988,11 @@ Procedure Object_Network_Terminal_Window_Open(*Object.Object)
     *Object_Network_Terminal\Frame[0] = FrameGadget(#PB_Any, 120, 70, 100, 70, "Internet Protocol")
     *Object_Network_Terminal\Option[2] = OptionGadget(#PB_Any, 130, 90, 80, 20, "IPv4")
     *Object_Network_Terminal\Option[3] = OptionGadget(#PB_Any, 130, 110, 80, 20, "IPv6")
-    *Object_Network_Terminal\Frame[1] = FrameGadget(#PB_Any, 230, 70, 100, 70, "Show Segments")
-    *Object_Network_Terminal\CheckBox[0] = CheckBoxGadget(#PB_Any, 240, 90, 80, 20, "Output")
-    *Object_Network_Terminal\CheckBox[1] = CheckBoxGadget(#PB_Any, 240, 110, 80, 20, "Input")
-    *Object_Network_Terminal\Button_Clear_Output = ButtonGadget(#PB_Any, Width-90, Height-80, 80, 20, "Clear Output")
-    *Object_Network_Terminal\Button_Clear_Input = ButtonGadget(#PB_Any, Width-90, Height-60, 80, 20, "Clear Input")
+    *Object_Network_Terminal\Frame[1] = FrameGadget(#PB_Any, 230, 70, 100, 70, "Show Segments in")
+    *Object_Network_Terminal\CheckBox[0] = CheckBoxGadget(#PB_Any, 240, 90, 80, 20, "Sent")
+    *Object_Network_Terminal\CheckBox[1] = CheckBoxGadget(#PB_Any, 240, 110, 80, 20, "Received")
+    *Object_Network_Terminal\Button_Clear_Output = ButtonGadget(#PB_Any, Width-90, Height-80, 80, 20, "Clear Sent")
+    *Object_Network_Terminal\Button_Clear_Input = ButtonGadget(#PB_Any, Width-90, Height-60, 80, 20, "Clear Received")
     *Object_Network_Terminal\Button_Open = ButtonGadget(#PB_Any, Width-90, Height-40, 80, 30, "Open", #PB_Button_Toggle)
     
     SetGadgetText(*Object_Network_Terminal\String[0], *Object_Network_Terminal\Adress)
@@ -1200,7 +1206,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 3
+; CursorPosition = 992
+; FirstLine = 988
 ; Folding = ------
 ; EnableUnicode
 ; EnableXP

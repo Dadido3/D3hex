@@ -1341,7 +1341,7 @@ DataSection
   Object_View2D_Icon_Normalize:   : IncludeBinary "../../../Data/Icons/Graph_Normalize.png"
 EndDataSection
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 205
-; FirstLine = 175
+; CursorPosition = 420
+; FirstLine = 393
 ; Folding = ----
 ; EnableXP

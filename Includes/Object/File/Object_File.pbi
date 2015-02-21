@@ -241,6 +241,7 @@ Procedure Object_File_Create(Requester)
   Protected *Object.Object = _Object_Create()
   Protected *Object_File.Object_File
   Protected *Object_Output.Object_Output
+  Protected Filename.s
   
   If Not *Object
     ProcedureReturn #False
@@ -274,12 +275,15 @@ Procedure Object_File_Create(Requester)
   
   ; #### Open file
   If Requester
-    *Object_File\Filename = OpenFileRequester("Open File", "", "", 0)
     *Object_File\Mode = #Object_File_Mode_Write
     *Object_File\Cached = #True
     *Object_File\Shared_Read = #True
     *Object_File\Shared_Write = #True
-    Object_File_HDD_Open(*Object)
+    Filename = OpenFileRequester("Open File", "", "", 0)
+    If Filename
+      *Object_File\Filename = Filename
+      Object_File_HDD_Open(*Object)
+    EndIf
   EndIf
   
   ProcedureReturn *Object
@@ -386,32 +390,40 @@ Procedure Object_File_Output_Event(*Object_Output.Object_Output, *Object_Event.O
     Case #Object_Event_Save
       If Not *Object_File\File_ID
         ; #### Open file
-        *Object_File\Filename = SaveFileRequester("Save File", "", "", 0)
-        *Object_File\Mode = #Object_File_Mode_Write
-        *Object_File\Cached = #True
-        *Object_File\Shared_Read = #True
-        *Object_File\Shared_Write = #True
-        Object_File_HDD_Create(*Object)
-      EndIf
-      
-    Case #Object_Event_SaveAs
-      If Not *Object_File\File_ID
-        ; #### Open file
-        *Object_File\Filename = SaveFileRequester("Save File", "", "", 0)
-        *Object_File\Mode = #Object_File_Mode_Write
-        *Object_File\Cached = #True
-        *Object_File\Shared_Read = #True
-        *Object_File\Shared_Write = #True
-        Object_File_HDD_Create(*Object)
-      Else
-        Filename = SaveFileRequester("Save File As", "", "", 0)
-        If CopyFile(*Object_File\Filename, Filename)
+        Filename = SaveFileRequester("Save File", "", "", 0)
+        If Filename
           *Object_File\Filename = Filename
           *Object_File\Mode = #Object_File_Mode_Write
           *Object_File\Cached = #True
           *Object_File\Shared_Read = #True
           *Object_File\Shared_Write = #True
-          Object_File_HDD_Open(*Object)
+          Object_File_HDD_Create(*Object)
+        EndIf
+      EndIf
+      
+    Case #Object_Event_SaveAs
+      If Not *Object_File\File_ID
+        ; #### Open file
+        Filename = SaveFileRequester("Save File", "", "", 0)
+        If Filename
+          *Object_File\Filename = Filename
+          *Object_File\Mode = #Object_File_Mode_Write
+          *Object_File\Cached = #True
+          *Object_File\Shared_Read = #True
+          *Object_File\Shared_Write = #True
+          Object_File_HDD_Create(*Object)
+        EndIf
+      Else
+        Filename = SaveFileRequester("Save File As", "", "", 0)
+        If Filename
+          If CopyFile(*Object_File\Filename, Filename)
+            *Object_File\Filename = Filename
+            *Object_File\Mode = #Object_File_Mode_Write
+            *Object_File\Cached = #True
+            *Object_File\Shared_Read = #True
+            *Object_File\Shared_Write = #True
+            Object_File_HDD_Open(*Object)
+          EndIf
         EndIf
       EndIf
       
@@ -532,7 +544,7 @@ Procedure Object_File_Set_Data(*Object_Output.Object_Output, Position.q, Size.i,
     ProcedureReturn #False
   EndIf
   
-  ; #### Don't write over the end of the file (REMOVED, ALL ELEMENTS SHOULD ALLOW TO BE WRITTEN AT THE END WITHOUT CONVOLUTION)
+  ; #### Don't write over the end of the file (REMOVED, ALL OBJECTS SHOULD ALLOW TO BE WRITTEN AT THE END WITHOUT CONVOLUTION)
   ;File_Size = Object_File_Get_Size(*Object_Output)
   ;If Size + Position > File_Size
   ;  Size = File_Size - Position
@@ -762,6 +774,7 @@ Procedure Object_File_Window_Event_Button_File()
   Protected Event_Window = EventWindow()
   Protected Event_Gadget = EventGadget()
   Protected Event_Type = EventType()
+  Protected Filename.s
   
   Protected *Window.Window = Window_Get(Event_Window)
   If Not *Window
@@ -776,7 +789,10 @@ Procedure Object_File_Window_Event_Button_File()
     ProcedureReturn 
   EndIf
   
-  *Object_File\Filename = SaveFileRequester("Select File", *Object_File\Filename, "", 1)
+  Filename = SaveFileRequester("Select File", *Object_File\Filename, "", 1)
+  If Filename
+    *Object_File\Filename = Filename
+  EndIf
   
   SetGadgetText(*Object_File\Editor, *Object_File\Filename)
   
@@ -1135,7 +1151,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 3
+; CursorPosition = 578
+; FirstLine = 567
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

@@ -7,7 +7,7 @@
   <section name="data">
     <explorer view="Includes\Object\Data_Inspector\" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2015-01-06 18:55" user="David Vogel" host="DAVIDS_NOTEBOOK"/>
+    <lastopen date="2015-02-21 13:30" user="David Vogel" host="DAVIDS"/>
   </section>
   <section name="files">
     <file name="Includes\About.pbi">
@@ -72,11 +72,11 @@
     </file>
     <file name="Includes\Object\File\Object_File.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="0" panelstate="++++"/>
-      <fingerprint md5="2cd5fbfd4faa8eb4981d1b7c60769f36"/>
+      <fingerprint md5="d2711460de8caa55487492e0babc9e2a"/>
     </file>
     <file name="Includes\Object\History\Object_History.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
-      <fingerprint md5="8475f5b1d1fba81e656304264dc6d127"/>
+      <fingerprint md5="3e2d90e9e7e5b1a54f30b0f8bc2642bb"/>
     </file>
     <file name="Includes\Object\Math\Object_Math.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="0" panelstate="++++"/>
@@ -87,8 +87,8 @@
       <fingerprint md5="ddad6e1954ca6f6fbc0958c7ad9c588f"/>
     </file>
     <file name="Includes\Object\Network_Terminal\Object_Network_Terminal.pbi">
-      <config load="0" scan="1" panel="1" warn="1" lastopen="0" panelstate="++++"/>
-      <fingerprint md5="042cdff6d165565d0acdb3f5204e1145"/>
+      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
+      <fingerprint md5="2ba7e402563a4c311d782f27b139c306"/>
     </file>
     <file name="Includes\Object\Process\Object_Process.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="0" panelstate="++++"/>
@@ -108,7 +108,7 @@
     </file>
     <file name="Includes\Object\View2D\Object_View2D.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
-      <fingerprint md5="d452ad9053e11a77afc3f9a37f9eea14"/>
+      <fingerprint md5="ea77294c43b8b9925191c6babb9d0921"/>
     </file>
     <file name="Includes\Object\View2D\Object_View2D_Settings.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
@@ -136,7 +136,7 @@
     </file>
     <file name="Main.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="b7d632265c7c872046f69a3577e9ed25"/>
+      <fingerprint md5="37eca82c0e199bb48ab0aeb301f731be"/>
     </file>
   </section>
   <section name="targets">
@@ -163,7 +163,7 @@
       <options unicode="1" xpskin="1" user="1" onerror="1"/>
       <purifier enable="0" granularity="1,1,1,1"/>
       <icon enable="1">Data\Images\Icon.ico</icon>
-      <compilecount enable="1" value="2702"/>
+      <compilecount enable="1" value="2706"/>
       <buildcount enable="1" value="46"/>
       <versioninfo enable="1">
         <field3 value="D3hex"/>

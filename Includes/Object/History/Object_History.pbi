@@ -74,10 +74,13 @@ Structure Object_History
   
   ; #### Gadget stuff
   Text.i
+  CheckBox.i
   
   Update.l
   
   ; #### History stuff
+  
+  Always_Writable.l
   
   List Operation_Past.Object_History_Operation()    ; All virtual operations made to the input-data
   List Operation_Future.Object_History_Operation()  ; Available redo operations
@@ -416,7 +419,7 @@ Procedure Object_History_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
     ProcedureReturn #False
   EndIf
   
-  ;*NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Size", #NBT_Tag_Quad)  : NBT_Tag_Set_Number(*NBT_Tag, *Object_History\Size)
+  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Always_Writable", #NBT_Tag_Quad)  : NBT_Tag_Set_Number(*NBT_Tag, *Object_History\Always_Writable)
   
   ProcedureReturn #True
 EndProcedure
@@ -436,7 +439,7 @@ Procedure Object_History_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
     ProcedureReturn #False
   EndIf
   
-  ;*NBT_Tag = NBT_Tag(*Parent_Tag, "Size") : *Object_History\Size = NBT_Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT_Tag(*Parent_Tag, "Always_Writable") : *Object_History\Always_Writable = NBT_Tag_Get_Number(*NBT_Tag)
   
   ProcedureReturn #True
 EndProcedure
@@ -903,7 +906,7 @@ Procedure Object_History_Set_Data(*Object_Output.Object_Output, Position.q, Size
   
   Object_History_Recalculate_Past_Size(*Object)
   
-  If Not Object_History_Set_Data_Check_Recursively(*Object, Position, Size)
+  If Not *Object_History\Always_Writable And Not Object_History_Set_Data_Check_Recursively(*Object, Position, Size)
     ProcedureReturn #False
   EndIf
   
@@ -956,11 +959,7 @@ Procedure Object_History_Convolute_Check_Recursively(*Object.Object, Position.q,
     Until Not PreviousElement(*Object_History\Operation_Past())
   EndIf
   
-  If Not Object_Input_Convolute_Check(FirstElement(*Object\Input()), Position, Offset)
-    ProcedureReturn #False
-  EndIf
-  
-  ProcedureReturn #True
+  ProcedureReturn Object_Input_Convolute_Check(FirstElement(*Object\Input()), Position, Offset)
 EndProcedure
 
 Procedure Object_History_Convolute(*Object_Output.Object_Output, Position.q, Offset.q)
@@ -981,7 +980,7 @@ Procedure Object_History_Convolute(*Object_Output.Object_Output, Position.q, Off
   
   Object_History_Recalculate_Past_Size(*Object)
   
-  If Not Object_History_Convolute_Check_Recursively(*Object, Position, Offset)
+  If Not *Object_History\Always_Writable And Not Object_History_Convolute_Check_Recursively(*Object, Position, Offset)
     ProcedureReturn #False
   EndIf
   
@@ -1018,11 +1017,11 @@ Procedure Object_History_Set_Data_Check(*Object_Output.Object_Output, Position.q
   
   Object_History_Recalculate_Past_Size(*Object)
   
-  If Not Object_History_Set_Data_Check_Recursively(*Object, Position, Size)
-    ProcedureReturn #False
+  If *Object_History\Always_Writable
+    ProcedureReturn #True
+  Else
+    ProcedureReturn Object_History_Set_Data_Check_Recursively(*Object, Position, Size)
   EndIf
-  
-  ProcedureReturn #True
 EndProcedure
 
 Procedure Object_History_Convolute_Check(*Object_Output.Object_Output, Position.q, Offset.q)
@@ -1041,11 +1040,11 @@ Procedure Object_History_Convolute_Check(*Object_Output.Object_Output, Position.
   
   Object_History_Recalculate_Past_Size(*Object)
   
-  If Not Object_History_Convolute_Check_Recursively(*Object, Position, Offset)
-    ProcedureReturn #False
+  If *Object_History\Always_Writable
+    ProcedureReturn #True
+  Else
+    ProcedureReturn Object_History_Convolute_Check_Recursively(*Object, Position, Offset)
   EndIf
-  
-  ProcedureReturn #True
 EndProcedure
 
 Procedure Object_History_Window_Update(*Object.Object)
@@ -1064,9 +1063,11 @@ Procedure Object_History_Window_Update(*Object.Object)
   
   SetGadgetText(*Object_History\Text, Text)
   
+  SetGadgetState(*Object_History\CheckBox, *Object_History\Always_Writable)
+  
 EndProcedure
 
-Procedure Object_History_Window_Event_Something()
+Procedure Object_History_Window_Event_CheckBox_0()
   Protected Event_Window = EventWindow()
   Protected Event_Gadget = EventGadget()
   Protected Event_Type = EventType()
@@ -1084,7 +1085,7 @@ Procedure Object_History_Window_Event_Something()
     ProcedureReturn 
   EndIf
   
-  ; #### Some gadgetstuff here
+  *Object_History\Always_Writable = GetGadgetState(*Object_History\CheckBox)
   
 EndProcedure
 
@@ -1178,12 +1179,13 @@ Procedure Object_History_Window_Open(*Object.Object)
   If Not *Object_History\Window
     
     Width = 300
-    Height = 50
+    Height = 80
     
     *Object_History\Window = Window_Create(*Object, "History", "History", #False, 0, 0, Width, Height)
     
     ; #### Gadgets
-    *Object_History\Text = TextGadget(#PB_Any, 10, 10, Width-20, Height-20, "")
+    *Object_History\Text = TextGadget(#PB_Any, 10, 10, Width-20, Height-40, "")
+    *Object_History\CheckBox = CheckBoxGadget(#PB_Any, 10, Height-30, Width-20, 20, "Always writable")
     
     SetGadgetFont(*Object_History\Text, FontID(Object_History_Font))
     
@@ -1192,7 +1194,7 @@ Procedure Object_History_Window_Open(*Object.Object)
     BindEvent(#PB_Event_SizeWindow, @Object_History_Window_Event_SizeWindow(), *Object_History\Window\ID)
     BindEvent(#PB_Event_Menu, @Object_History_Window_Event_Menu(), *Object_History\Window\ID)
     BindEvent(#PB_Event_CloseWindow, @Object_History_Window_Event_CloseWindow(), *Object_History\Window\ID)
-    ;BindGadgetEvent(*Object_History\String[0], @Object_History_Window_Event_String_0())
+    BindGadgetEvent(*Object_History\CheckBox, @Object_History_Window_Event_CheckBox_0())
     
   Else
     Window_Set_Active(*Object_History\Window)
@@ -1213,6 +1215,7 @@ Procedure Object_History_Window_Close(*Object.Object)
     UnbindEvent(#PB_Event_SizeWindow, @Object_History_Window_Event_SizeWindow(), *Object_History\Window\ID)
     UnbindEvent(#PB_Event_Menu, @Object_History_Window_Event_Menu(), *Object_History\Window\ID)
     UnbindEvent(#PB_Event_CloseWindow, @Object_History_Window_Event_CloseWindow(), *Object_History\Window\ID)
+    UnbindGadgetEvent(*Object_History\CheckBox, @Object_History_Window_Event_CheckBox_0())
     
     Window_Delete(*Object_History\Window)
     *Object_History\Window = #Null
@@ -1265,6 +1268,7 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 3
+; CursorPosition = 982
+; FirstLine = 964
 ; Folding = ------
 ; EnableXP

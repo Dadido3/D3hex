@@ -21,6 +21,7 @@
 ; 
 ; Todo:
 ; - Each object HAS to return an segment-list via ...Get_Segments(...)
+; - Store/Restore Window states/positions into/from the configurations.
 ;   
 ; - Editor:
 ;   - Autoscroll
@@ -39,11 +40,17 @@
 ;   - 1-Dimensional viewer:
 ;     - Make offset working
 ;   - 2-Dimensional viewer (Raw Image Viewer)
+;     - BUG: Correct behaviour with negative offsets (A complete line is invisible when using negative offsets)
+;     - Support More Pixel Formats
+;     - Only redraw updated chunks on update events, not all
+;     - Check for Division with 0
 ;   - 3-Dimensional viewer?
 ;   - Hilbert-Viewer
-;   - Dateianalyse (Byteverteilung...)
+;   - Dateianalyse (Byteverteilung/Histogramm 1D 2D 3D)
+;   - Blockweise Entropie
+;   - Image-Format converter
 ;   - Vergleich
-;   - Mathematische operations (+, -, *, /, ...)
+;   - Mathematische operationen (+, -, *, /, ...)
 ;   - Korellation / Autokorellation
 ;   - Checksum
 ;   - Diskrete Fourier Transformation (bzw. FFT)
@@ -56,6 +63,9 @@
 ;   - Signalgeneratoren (Ausgabe verschiedener Datentypen (Byte, Word, Long, Float, Double...))
 ;   - Physikalische / Logische Datenträger
 ;   - Clipboard
+;   - Network-Terminal:
+;     - BUG: 
+;     - BUG: Doesn't work with the History object
 ;   
 ; - Strukturelemente
 ;   - Split
@@ -142,6 +152,15 @@
 ; - V0.941 (06.01.2015)
 ;   - Object_Editor: Fixed writing at the end of data
 ;   - Object_View2D: Added standard configuration
+;
+; - V0.942 (INDEV)
+;   - Object_File: Ignore result of File-requesters if it is ""
+;   - Network_Terminal:
+;     - Data_Set is not triggering an update event
+;     - Object_History is now working with Network_Terminal
+;     - Renamed output and input to sent and received
+;   - Object_History:
+;     - Added the option to allow write operations in any case
 ;   
 ; ##################################################### Begin #######################################################
 
@@ -322,7 +341,7 @@ Macro Line(x, y, Width, Height, Color)
   LineXY((x), (y), (x)+(Width), (y)+(Height), (Color))
 EndMacro
 
-; #### Works perfectly, A and B can be positive or negative
+; #### Works perfectly, A and B can be positive or negative. B must not be zero!
 Procedure.q Quad_Divide_Floor(A.q, B.q)
   Protected Temp.q = A / B
   If (((a ! b) < 0) And (a % b <> 0))
@@ -332,7 +351,7 @@ Procedure.q Quad_Divide_Floor(A.q, B.q)
   EndIf
 EndProcedure
 
-; #### Works perfectly, A and B can be positive or negative
+; #### Works perfectly, A and B can be positive or negative. B must not be zero!
 Procedure.q Quad_Divide_Ceil(A.q, B.q)
   Protected Temp.q = A / B
   If (((a ! b) >= 0) And (a % b <> 0))
@@ -879,8 +898,8 @@ DataSection
   
 EndDataSection
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 143
-; FirstLine = 123
+; CursorPosition = 169
+; FirstLine = 135
 ; Folding = --
 ; EnableUnicode
 ; EnableXP
