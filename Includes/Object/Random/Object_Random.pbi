@@ -485,7 +485,7 @@ Procedure Object_Random_Window_Open(*Object.Object)
     Width = 200
     Height = 60
     
-    *Object_Random\Window = Window_Create(*Object, "Random", "Random", #False, 0, 0, Width, Height)
+    *Object_Random\Window = Window_Create(*Object, "Random", "Random", #False, 0, 0, Width, Height, #False)
     
     ; #### Toolbar
     
@@ -571,7 +571,7 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 271
-; FirstLine = 244
+; CursorPosition = 487
+; FirstLine = 468
 ; Folding = ----
 ; EnableXP

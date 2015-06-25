@@ -984,7 +984,9 @@ Procedure Object_View1D_Window_Event_SizeWindow()
   ResizeGadget(*Object_View1D\Canvas_Y, 0, ToolBarHeight, Canvas_Y_Width, Data_Height)
   ResizeGadget(*Object_View1D\Canvas_Data, Canvas_Y_Width, ToolBarHeight, Data_Width, Data_Height)
   
-  *Object_View1D\Redraw = #True
+  Object_View1D_Organize(*Object)
+  Object_View1D_Get_Data(*Object)
+  Object_View1D_Canvas_Redraw(*Object)
 EndProcedure
 
 Procedure Object_View1D_Window_Event_ActivateWindow()
@@ -1108,9 +1110,9 @@ Procedure Object_View1D_Window_Open(*Object.Object)
   If *Object_View1D\Window = #Null
     
     Width = 500
-    Height = 500
+    Height = 300
     
-    *Object_View1D\Window = Window_Create(*Object, "View1D", "View1D", #True, #PB_Ignore, #PB_Ignore, Width, Height)
+    *Object_View1D\Window = Window_Create(*Object, "View1D", "View1D", #True, #PB_Ignore, #PB_Ignore, Width, Height, #True, 10, Object_View1D_Main\Object_Type\UID)
     
     ; #### Toolbar
     *Object_View1D\ToolBar = CreateToolBar(#PB_Any, WindowID(*Object_View1D\Window\ID))
@@ -1148,7 +1150,7 @@ Procedure Object_View1D_Window_Open(*Object.Object)
     BindGadgetEvent(*Object_View1D\Canvas_X, @Object_View1D_Window_Event_Canvas_X())
     BindGadgetEvent(*Object_View1D\Canvas_Y, @Object_View1D_Window_Event_Canvas_Y())
     
-    SetWindowCallback(@Object_View1D_Window_Callback(), *Object_View1D\Window\ID)
+    D3docker::Window_Set_Callback(*Object_View1D\Window\ID, @Object_View1D_Window_Callback())
     
     *Object_View1D\Redraw = #True
     
@@ -1177,7 +1179,7 @@ Procedure Object_View1D_Window_Close(*Object.Object)
     UnbindGadgetEvent(*Object_View1D\Canvas_X, @Object_View1D_Window_Event_Canvas_X())
     UnbindGadgetEvent(*Object_View1D\Canvas_Y, @Object_View1D_Window_Event_Canvas_Y())
     
-    SetWindowCallback(#Null, *Object_View1D\Window\ID)
+    D3docker::Window_Set_Callback(*Object_View1D\Window\ID, #Null)
     
     Window_Delete(*Object_View1D\Window)
     *Object_View1D\Window = #Null
@@ -1250,6 +1252,7 @@ DataSection
   Object_View1D_Icon_Normalize_Y: : IncludeBinary "../../../Data/Icons/Graph_Normalize_Y.png"
 EndDataSection
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 3
+; CursorPosition = 1112
+; FirstLine = 1098
 ; Folding = ----
 ; EnableXP

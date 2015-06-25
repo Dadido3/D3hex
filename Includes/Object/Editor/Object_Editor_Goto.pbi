@@ -160,7 +160,7 @@ Procedure Object_Editor_Goto_Window_Open(*Object.Object)
     Width = 270
     Height = 130
     
-    *Object_Editor_Goto\Window = Window_Create(*Object, "Editor_Goto", "Editor_Goto", #False, 0, 0, Width, Height)
+    *Object_Editor_Goto\Window = Window_Create(*Object, "Editor_Goto", "Editor_Goto", #False, 0, 0, Width, Height, #False)
     
     ; #### Gadgets
     *Object_Editor_Goto\Frame = FrameGadget(#PB_Any, 10, 10, Width-20, 70, "Position")
@@ -236,7 +236,8 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 3
+; CursorPosition = 162
+; FirstLine = 134
 ; Folding = -
 ; EnableUnicode
 ; EnableXP

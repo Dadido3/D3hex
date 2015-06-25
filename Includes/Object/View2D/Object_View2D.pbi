@@ -1121,6 +1121,7 @@ Procedure Object_View2D_Window_Event_SizeWindow()
   
   ResizeGadget(*Object_View2D\Canvas_Data, 0, ToolBarHeight, Data_Width, Data_Height)
   
+  Object_View2D_Canvas_Redraw(*Object)
   *Object_View2D\Redraw = #True
 EndProcedure
 
@@ -1218,7 +1219,7 @@ Procedure Object_View2D_Window_Open(*Object.Object)
     Width = 500
     Height = 500
     
-    *Object_View2D\Window = Window_Create(*Object, "View2D", "View2D", #True, #PB_Ignore, #PB_Ignore, Width, Height)
+    *Object_View2D\Window = Window_Create(*Object, "View2D", "View2D", #True, #PB_Ignore, #PB_Ignore, Width, Height, #True, 10, Object_View2D_Main\Object_Type\UID)
     
     ; #### Toolbar
     *Object_View2D\ToolBar = CreateToolBar(#PB_Any, WindowID(*Object_View2D\Window\ID))
@@ -1247,7 +1248,7 @@ Procedure Object_View2D_Window_Open(*Object.Object)
     BindEvent(#PB_Event_CloseWindow, @Object_View2D_Window_Event_CloseWindow(), *Object_View2D\Window\ID)
     BindGadgetEvent(*Object_View2D\Canvas_Data, @Object_View2D_Window_Event_Canvas_Data())
     
-    SetWindowCallback(@Object_View2D_Window_Callback(), *Object_View2D\Window\ID)
+    D3docker::Window_Set_Callback(*Object_View2D\Window\ID, @Object_View2D_Window_Callback())
     
     *Object_View2D\Redraw = #True
     
@@ -1274,7 +1275,7 @@ Procedure Object_View2D_Window_Close(*Object.Object)
     UnbindEvent(#PB_Event_CloseWindow, @Object_View2D_Window_Event_CloseWindow(), *Object_View2D\Window\ID)
     UnbindGadgetEvent(*Object_View2D\Canvas_Data, @Object_View2D_Window_Event_Canvas_Data())
     
-    SetWindowCallback(#Null, *Object_View2D\Window\ID)
+    D3docker::Window_Set_Callback(*Object_View2D\Window\ID, #Null)
     
     Window_Delete(*Object_View2D\Window)
     *Object_View2D\Window = #Null
@@ -1341,7 +1342,7 @@ DataSection
   Object_View2D_Icon_Normalize:   : IncludeBinary "../../../Data/Icons/Graph_Normalize.png"
 EndDataSection
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 420
-; FirstLine = 393
+; CursorPosition = 1220
+; FirstLine = 1205
 ; Folding = ----
 ; EnableXP

@@ -498,7 +498,7 @@ Procedure Object_MathFormula_Window_Open(*Object.Object)
     Width = 300
     Height = 460
     
-    *Object_MathFormula\Window = Window_Create(*Object, "Math", "Math", #False, 0, 0, Width, Height)
+    *Object_MathFormula\Window = Window_Create(*Object, "Math", "Math", #False, 0, 0, Width, Height, #False)
     
     ; #### Gadgets
     
@@ -647,6 +647,7 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 3
+; CursorPosition = 500
+; FirstLine = 472
 ; Folding = ----
 ; EnableXP

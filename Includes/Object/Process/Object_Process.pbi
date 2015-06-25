@@ -855,7 +855,7 @@ Procedure Object_Process_Window_Open(*Object.Object)
     Width = 400
     Height = 400
     
-    *Object_Process\Window = Window_Create(*Object, "Process", "Process", #False, 0, 0, Width, Height)
+    *Object_Process\Window = Window_Create(*Object, "Process", "Process", #False, 0, 0, Width, Height, #False)
     
     ; #### Toolbar
     
@@ -964,7 +964,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 3
+; CursorPosition = 859
+; FirstLine = 841
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

@@ -894,8 +894,8 @@ Procedure Node_Editor_Event_SizeWindow()
   ResizeGadget(Node_Editor\Canvas, #PB_Ignore, #PB_Ignore, WindowWidth(Node_Editor\Window\ID)-150, WindowHeight(Node_Editor\Window\ID)-ToolBarHeight)
   ResizeGadget(Node_Editor\TreeList, WindowWidth(Node_Editor\Window\ID)-150, #PB_Ignore, 150, WindowHeight(Node_Editor\Window\ID)-ToolBarHeight)
   
-  Node_Editor\Redraw = #True
-  ;Node_Editor_Canvas_Redraw()
+  ;Node_Editor\Redraw = #True
+  Node_Editor_Canvas_Redraw()
 EndProcedure
 
 Procedure Node_Editor_Event_ActivateWindow()
@@ -977,7 +977,7 @@ Procedure Node_Editor_Open()
   Protected ToolBarHeight
   
   If Node_Editor\Window = #Null
-    Node_Editor\Window = Window_Create(#Null, "Node Editor", "Node Editor", #PB_Ignore, #PB_Ignore, 500, 500)
+    Node_Editor\Window = Window_Create(#Null, "Node Editor", "Node Editor", #True, #PB_Ignore, #PB_Ignore, 500, 500, #True, 20)
     
     ; #### Toolbar
     Node_Editor\ToolBar = CreateToolBar(#PB_Any, WindowID(Node_Editor\Window\ID))
@@ -1085,7 +1085,8 @@ DataSection
   Node_Editor_Icon_Align:         : IncludeBinary "../Data/Icons/Node_Align.png"
 EndDataSection
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 3
+; CursorPosition = 979
+; FirstLine = 972
 ; Folding = ----
 ; EnableUnicode
 ; EnableXP

@@ -869,6 +869,8 @@ Procedure Object_Data_Inspector_Window_Open(*Object.Object)
     BindEvent(#PB_Event_Menu, @Object_Data_Inspector_Window_Event_Menu(), *Object_Data_Inspector\Window\ID)
     BindEvent(#PB_Event_CloseWindow, @Object_Data_Inspector_Window_Event_CloseWindow(), *Object_Data_Inspector\Window\ID)
     
+    Window_Bounds(*Object_Data_Inspector\Window, 300, 460, #PB_Default, #PB_Default)
+    
     *Object_Data_Inspector\Update_ListIcon = #True
     
   Else
@@ -947,7 +949,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 3
+; CursorPosition = 826
+; FirstLine = 834
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP

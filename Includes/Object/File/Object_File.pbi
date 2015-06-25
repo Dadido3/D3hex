@@ -1007,7 +1007,7 @@ Procedure Object_File_Window_Open(*Object.Object)
     Width = 500
     Height = 130
     
-    *Object_File\Window = Window_Create(*Object, "File", "File", #False, 0, 0, Width, Height)
+    *Object_File\Window = Window_Create(*Object, "File", "File", #False, 0, 0, Width, Height, #False)
     
     ; #### Toolbar
     
@@ -1151,8 +1151,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 578
-; FirstLine = 567
+; CursorPosition = 1009
+; FirstLine = 987
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

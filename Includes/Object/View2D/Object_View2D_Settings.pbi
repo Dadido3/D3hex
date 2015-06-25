@@ -443,7 +443,7 @@ Procedure Object_View2D_Settings_Window_Open(*Object.Object)
     Width = 270
     Height = 470
     
-    *Object_View2D_Settings\Window = Window_Create(*Object, "View2D_Settings", "View2D_Settings", #False, 0, 0, Width, Height)
+    *Object_View2D_Settings\Window = Window_Create(*Object, "View2D_Settings", "View2D_Settings", #False, 0, 0, Width, Height, #False)
     
     ; #### Gadgets
     
@@ -579,7 +579,7 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 341
-; FirstLine = 307
+; CursorPosition = 445
+; FirstLine = 426
 ; Folding = --
 ; EnableXP

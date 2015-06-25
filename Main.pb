@@ -153,7 +153,7 @@
 ;   - Object_Editor: Fixed writing at the end of data
 ;   - Object_View2D: Added standard configuration
 ;
-; - V0.942 (INDEV)
+; - V0.950 (INDEV)
 ;   - Object_File: Ignore result of File-requesters if it is ""
 ;   - Network_Terminal:
 ;     - Data_Set is not triggering an update event
@@ -161,6 +161,7 @@
 ;     - Renamed output and input to sent and received
 ;   - Object_History:
 ;     - Added the option to allow write operations in any case
+;   - Use D3docker.pbi instead of the mdi gadget
 ;   
 ; ##################################################### Begin #######################################################
 
@@ -171,7 +172,7 @@ UsePNGImageEncoder()
 
 ; ##################################################### Includes ####################################################
 
-XIncludeFile "Includes/TabBarGadget.pbi"
+XIncludeFile "Includes/D3docker/D3docker.pbi"
 XIncludeFile "Includes/Memory.pbi"
 XIncludeFile "Includes/D3HT.pbi"
 XIncludeFile "Includes/D3NBT.pbi"
@@ -180,7 +181,7 @@ XIncludeFile "Includes/UnitEngine.pbi"
 
 ; ##################################################### Constants ###################################################
 
-#Version = 0941
+#Version = 0950
 
 Enumeration
   #Data_Raw
@@ -288,12 +289,13 @@ Structure Main_Window
   Menu_ID.i
   ToolBar_ID.i
   StatusBar_ID.i
-  MDI.i
-  Panel.i
+  ;MDI.i
+  ;Panel.i
+  D3docker.i
   ; ####
-  MDI_Height.i
-  MDI_Widht.i
-  Panel_Height.i          ; Höhe des Panels
+  D3docker_Height.i
+  D3docker_Width.i
+  ;Panel_Height.i          ; Höhe des Panels
   Menu_Height.i           ; Höhe des Menüs
   ToolBar_Height.i        ; Höhe der ToolBar
   StatusBar_Height.i      ; Höhe der StatusBar
@@ -332,8 +334,6 @@ Global Icon_Search_Continue = CatchImage(#PB_Any, ?Icon_Search_Continue)
 Global Icon_Goto = CatchImage(#PB_Any, ?Icon_Goto)
 
 ; ##################################################### Declares ####################################################
-
-Declare   Main_Window_Refresh_Active()
 
 ; ##################################################### Macros ######################################################
 
@@ -394,16 +394,11 @@ Procedure.s SHGetFolderPath(CSIDL)
   ProcedureReturn String
 EndProcedure
 
-Procedure Main_Window_Refresh_Active()
-  Protected i
-  Protected Active_Window_ID = GetGadgetState(Main_Window\MDI)
-  
-  For i = 0 To CountTabBarGadgetItems(Main_Window\Panel) - 1
-    If GetTabBarGadgetItemData(Main_Window\Panel, i) = Active_Window_ID
-      SetTabBarGadgetState(Main_Window\Panel, i)
-      Break
-    EndIf
-  Next
+Procedure Main_Window_Event_SizeWindow()
+  Protected Event_Window = EventWindow()
+  Main_Window\D3docker_Width = WindowWidth(Event_Window)
+  Main_Window\D3docker_Height = WindowHeight(Event_Window) - Main_Window\Menu_Height - Main_Window\ToolBar_Height - Main_Window\StatusBar_Height
+  ResizeGadget(Main_Window\D3docker, #PB_Ignore, #PB_Ignore, Main_Window\D3docker_Width, Main_Window\D3docker_Height)
 EndProcedure
 
 Procedure Main_Window_Open(Width, Height)
@@ -414,7 +409,7 @@ Procedure Main_Window_Open(Width, Height)
     ProcedureReturn 0
   EndIf
   
-  SmartWindowRefresh(Main_Window\ID, 1)
+  SmartWindowRefresh(Main_Window\ID, #True)
   
   Main_Window\Menu_ID = CreateImageMenu(#PB_Any, WindowID(Main_Window\ID), #PB_Menu_ModernLook)
   If Not Main_Window\Menu_ID
@@ -520,22 +515,23 @@ Procedure Main_Window_Open(Width, Height)
   AddStatusBarField(250)
   AddStatusBarField(150)
   
+  ; ######################### Events
+  
+  BindEvent(#PB_Event_SizeWindow, @Main_Window_Event_SizeWindow(), Main_Window\ID)
+  
   ; ######################### Größe
   
   Main_Window\Menu_Height = MenuHeight()
   Main_Window\ToolBar_Height =  ToolBarHeight(Main_Window\ToolBar_ID)
-  Main_Window\Panel_Height = 20
   Main_Window\StatusBar_Height =  StatusBarHeight(Main_Window\StatusBar_ID)
   
-  Main_Window\MDI_Widht = Width
-  Main_Window\MDI_Height = Height - Main_Window\Menu_Height - Main_Window\ToolBar_Height - Main_Window\Panel_Height - Main_Window\StatusBar_Height
+  Main_Window\D3docker_Width = Width
+  Main_Window\D3docker_Height = Height - Main_Window\Menu_Height - Main_Window\ToolBar_Height - Main_Window\StatusBar_Height
   
   ; ################# Gadgets
   
   If UseGadgetList(WindowID(Main_Window\ID))
-    Main_Window\MDI = MDIGadget(#PB_Any, 0, Main_Window\ToolBar_Height + Main_Window\Panel_Height, Main_Window\MDI_Widht, Main_Window\MDI_Height, 3, #Menu_MDI_Windows_Start)
-    
-    Main_Window\Panel = TabBarGadget(#PB_Any, 0, Main_Window\ToolBar_Height, Main_Window\MDI_Widht, Main_Window\Panel_Height, #TabBarGadget_CloseButton | #TabBarGadget_NoTabMoving)
+    Main_Window\D3docker = D3docker::Create(#PB_Any, 0, Main_Window\ToolBar_Height, Main_Window\D3docker_Width, Main_Window\D3docker_Height, Main_Window\ID)
   EndIf
 EndProcedure
 
@@ -558,10 +554,6 @@ Main_Window_Open(1200, 700)
 
 Node_Editor_Open()
 
-SetWindowState(Node_Editor\Window\ID, #PB_Window_Maximize)
-
-;SetGadgetState(Main_Window\MDI, #PB_MDI_TileVertically)
-
 If FileSize(SHGetFolderPath(#CSIDL_APPDATA)+"\D3\Hexeditor\Node_Configuration.D3hex") < 0
   Node_Editor_Configuration_Load("Data\Default.D3hex")
 Else
@@ -580,11 +572,6 @@ Repeat
     Select Event_Window
       Case Main_Window\ID
         Select Event
-          Case #PB_Event_SizeWindow ; ##############
-            Main_Window\MDI_Widht = WindowWidth(Main_Window\ID)
-            Main_Window\MDI_Height = WindowHeight(Main_Window\ID) - Main_Window\Menu_Height - Main_Window\ToolBar_Height - Main_Window\Panel_Height - Main_Window\StatusBar_Height
-            ResizeGadget(Main_Window\Panel, #PB_Ignore, #PB_Ignore, Main_Window\MDI_Widht, #PB_Ignore) : UpdateTabBarGadget(Main_Window\Panel)
-            ResizeGadget(Main_Window\MDI, #PB_Ignore, #PB_Ignore, Main_Window\MDI_Widht, Main_Window\MDI_Height)
           
           Case #PB_Event_Menu ; ####################
             Select EventMenu()
@@ -762,30 +749,6 @@ Repeat
                   *Active_Window\Object\Function_Event(*Active_Window\Object, Object_Event)
                 EndIf
                 
-              Case #Menu_TileV
-                SetGadgetState(Main_Window\MDI, #PB_MDI_TileVertically)
-                ForEach Window()
-                  PostEvent(#PB_Event_SizeWindow, Window()\ID, 0)
-                Next
-                
-              Case #Menu_TileH
-                SetGadgetState(Main_Window\MDI, #PB_MDI_TileHorizontally)
-                ForEach Window()
-                  PostEvent(#PB_Event_SizeWindow, Window()\ID, 0)
-                Next
-                
-              Case #Menu_Cascade
-                SetGadgetState(Main_Window\MDI, #PB_MDI_Cascade)
-                ForEach Window()
-                  PostEvent(#PB_Event_SizeWindow, Window()\ID, 0)
-                Next
-                
-              Case #Menu_Arrange
-                SetGadgetState(Main_Window\MDI, #PB_MDI_Arrange)
-                ForEach Window()
-                  PostEvent(#PB_Event_SizeWindow, Window()\ID, 0)
-                Next
-                
               Case #Menu_About
                 About_Open()
                 
@@ -794,34 +757,7 @@ Repeat
                 
             EndSelect
           
-          Case #PB_Event_Gadget ; ##################
-            Select EventGadget()
-              Case Main_Window\Panel
-                Select TabBarGadgetEvent(Main_Window\Panel)
-                  Case #TabBarGadgetEvent_CloseTab
-                    ;RemoveTabBarGadgetItem(Main_Window\Panel, EventTab(Main_Window\Panel))
-                    ;ForEach Window()
-                    ;  If Window()\ID = GetTabBarGadgetItemData(Main_Window\Panel, EventTab(Main_Window\Panel))
-                    ;    If Window()\Object And Window()\Object\Function_Event
-                    ;      Object_Event.Object_Event
-                    ;      Object_Event\Type = #Object_Event_Goto
-                    ;      Window()\Object\Function_Event(Window()\Object, Object_Event)
-                    ;    EndIf
-                    ;    Break
-                    ;  EndIf
-                    ;Next
-                    Define *Window.Window = Window_Get(GetTabBarGadgetItemData(Main_Window\Panel, EventTab(Main_Window\Panel)))
-                    If *Window
-                      PostEvent(#PB_Event_CloseWindow, *Window\ID, 0)
-                    EndIf
-                    
-                  Case #TabBarGadgetEvent_Change
-                    Window_Set_Active(Window_Get(GetTabBarGadgetItemData(Main_Window\Panel, EventTab(Main_Window\Panel))))
-                    
-                    ;SetGadgetState(Main_Window\MDI, )
-                EndSelect
-                
-            EndSelect
+          Case #PB_Event_Gadget
             
           Case #PB_Event_CloseWindow
             Main\Quit = 1
@@ -898,8 +834,8 @@ DataSection
   
 EndDataSection
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 169
-; FirstLine = 135
+; CursorPosition = 183
+; FirstLine = 155
 ; Folding = --
 ; EnableUnicode
 ; EnableXP

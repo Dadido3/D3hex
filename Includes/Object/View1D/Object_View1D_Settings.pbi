@@ -460,7 +460,7 @@ Procedure Object_View1D_Settings_Window_Open(*Object.Object)
     Width = 270
     Height = 410
     
-    *Object_View1D_Settings\Window = Window_Create(*Object, "View1D_Settings", "View1D_Settings", #False, 0, 0, Width, Height)
+    *Object_View1D_Settings\Window = Window_Create(*Object, "View1D_Settings", "View1D_Settings", #False, 0, 0, Width, Height, #False)
     
     ; #### Gadgets
     
@@ -575,6 +575,7 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 3
+; CursorPosition = 462
+; FirstLine = 440
 ; Folding = ---
 ; EnableXP

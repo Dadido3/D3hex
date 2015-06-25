@@ -1196,7 +1196,7 @@ Procedure Object_Editor_Statusbar_Update(*Object.Object)
     ProcedureReturn #False
   EndIf
   
-  If *Object_Editor\Window\ID = GetGadgetState(Main_Window\MDI)
+  If *Object_Editor\Window\ID = Window_Get_Active()
     If *Object_Editor\Select_Start < *Object_Editor\Select_End
       StatusBarText(Main_Window\StatusBar_ID, 0, "Offset: "+Hex(*Object_Editor\Select_Start))
     Else
@@ -2177,7 +2177,10 @@ Procedure Object_Editor_Window_Event_SizeWindow()
   ResizeGadget(*Object_Editor\Canvas, #PB_Ignore, #PB_Ignore, WindowWidth(Event_Window)-17, WindowHeight(Event_Window)-ToolBarHeight)
   ResizeGadget(*Object_Editor\ScrollBar, WindowWidth(Event_Window)-17, #PB_Ignore, 17, WindowHeight(Event_Window)-ToolBarHeight)
   
-  *Object_Editor\Redraw = #True
+  Object_Editor_Organize(*Object)
+  Object_Editor_Get_Data(*Object)
+  Object_Editor_Canvas_Redraw(*Object)
+  Object_Editor_Statusbar_Update(*Object)
 EndProcedure
 
 Procedure Object_Editor_Window_Event_ActivateWindow()
@@ -2296,7 +2299,7 @@ Procedure Object_Editor_Window_Open(*Object.Object)
   EndIf
   
   If *Object_Editor\Window = #Null
-    *Object_Editor\Window = Window_Create(*Object, "Editor", "Editor", #True, #PB_Ignore, #PB_Ignore, 500, 500)
+    *Object_Editor\Window = Window_Create(*Object, "Editor", "Editor", #True, #PB_Ignore, #PB_Ignore, 630, 650, #True, -10, Object_Editor_Main\Object_Type\UID)
     
     ; #### Toolbar
     *Object_Editor\ToolBar = CreateToolBar(#PB_Any, WindowID(*Object_Editor\Window\ID))
@@ -2324,7 +2327,7 @@ Procedure Object_Editor_Window_Open(*Object.Object)
     BindEvent(#PB_Event_CloseWindow, @Object_Editor_Window_Event_CloseWindow(), *Object_Editor\Window\ID)
     BindGadgetEvent(*Object_Editor\Canvas, @Object_Editor_Window_Event_Canvas())
     
-    SetWindowCallback(@Object_Editor_Window_Callback(), *Object_Editor\Window\ID)
+    D3docker::Window_Set_Callback(*Object_Editor\Window\ID, @Object_Editor_Window_Callback())
     
     *Object_Editor\Redraw = #True
     
@@ -2351,7 +2354,7 @@ Procedure Object_Editor_Window_Close(*Object.Object)
     UnbindEvent(#PB_Event_CloseWindow, @Object_Editor_Window_Event_CloseWindow(), *Object_Editor\Window\ID)
     UnbindGadgetEvent(*Object_Editor\Canvas, @Object_Editor_Window_Event_Canvas())
     
-    SetWindowCallback(#Null, *Object_Editor\Window\ID)
+    D3docker::Window_Set_Callback(*Object_Editor\Window\ID, #Null)
     
     Window_Delete(*Object_Editor\Window)
     *Object_Editor\Window = #Null
@@ -2418,8 +2421,8 @@ MenuItem(#Object_Editor_PopupMenu_Select_All, "Select All", ImageID(Icon_Select_
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1493
-; FirstLine = 1481
+; CursorPosition = 2301
+; FirstLine = 2289
 ; Folding = -------
 ; EnableUnicode
 ; EnableXP

@@ -1181,7 +1181,7 @@ Procedure Object_History_Window_Open(*Object.Object)
     Width = 300
     Height = 80
     
-    *Object_History\Window = Window_Create(*Object, "History", "History", #False, 0, 0, Width, Height)
+    *Object_History\Window = Window_Create(*Object, "History", "History", #False, 0, 0, Width, Height, #False)
     
     ; #### Gadgets
     *Object_History\Text = TextGadget(#PB_Any, 10, 10, Width-20, Height-40, "")
@@ -1268,7 +1268,7 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 982
-; FirstLine = 964
+; CursorPosition = 1183
+; FirstLine = 1161
 ; Folding = ------
 ; EnableXP

@@ -973,7 +973,7 @@ Procedure Object_Network_Terminal_Window_Open(*Object.Object)
     Width = 430
     Height = 150
     
-    *Object_Network_Terminal\Window = Window_Create(*Object, "Network Terminal", "Network Terminal", #False, 0, 0, Width, Height)
+    *Object_Network_Terminal\Window = Window_Create(*Object, "Network Terminal", "Network Terminal", #False, 0, 0, Width, Height, #False)
     
     ; #### Toolbar
     
@@ -1206,8 +1206,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 992
-; FirstLine = 988
+; CursorPosition = 975
+; FirstLine = 953
 ; Folding = ------
 ; EnableUnicode
 ; EnableXP

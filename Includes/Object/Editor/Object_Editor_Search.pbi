@@ -1256,7 +1256,7 @@ Procedure Object_Editor_Search_Window_Open(*Object.Object)
     Width = 410
     Height = 320
     
-    *Object_Editor_Search\Window = Window_Create(*Object, "Editor_Search", "Editor_Search", #False, 0, 0, Width, Height)
+    *Object_Editor_Search\Window = Window_Create(*Object, "Editor_Search", "Editor_Search", #False, 0, 0, Width, Height, #False)
     
     ; #### Gadgets
     *Object_Editor_Search\Text[0] = TextGadget(#PB_Any, 10, 10, 100, 20, "Search for:", #PB_Text_Right)
@@ -1902,7 +1902,8 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 3
+; CursorPosition = 1258
+; FirstLine = 1254
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP
