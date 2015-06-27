@@ -89,47 +89,70 @@ Procedure About_Canvas_Redraw()
 EndProcedure
 
 Procedure About_Editor_Fill()
+  Protected Description.s, Temp_Text.s
+  
   ClearGadgetItems(About\Editor)
   
   SetGadgetFont(About\Editor, FontID(About_Font))
   
-  AddGadgetItem(About\Editor, -1, "D3hex V."+StrF(Main\Version*0.001, 3))
-  AddGadgetItem(About\Editor, -1, "")
-  AddGadgetItem(About\Editor, -1, "Created with PureBasic")
-  AddGadgetItem(About\Editor, -1, "")
-  AddGadgetItem(About\Editor, -1, "Times compiled: "+Str(#PB_Editor_CompileCount))
-  AddGadgetItem(About\Editor, -1, "Times built: "+Str(#PB_Editor_BuildCount))
-  AddGadgetItem(About\Editor, -1, "Build Timestamp: "+FormatDate("%hh:%ii:%ss %dd.%mm.%yyyy", #PB_Compiler_Date))
-  CompilerIf #PB_Compiler_Processor = #PB_Processor_x86
-    AddGadgetItem(About\Editor, -1, "Compiler Version: "+StrF(#PB_Compiler_Version/100, 2)+" (x86)")
-  CompilerElse
-    AddGadgetItem(About\Editor, -1, "Compiler Version: "+StrF(#PB_Compiler_Version/100, 2)+" (x64)")
-  CompilerEndIf
+  AddGadgetItem(About\Editor, -1, "                 ╔══════════════════════════╗")
+  AddGadgetItem(About\Editor, -1, "                 ║       D3hex V."+StrF(Main\Version*0.001, 3)+"      ║")
+  AddGadgetItem(About\Editor, -1, "                 ╟──────────────────────────╢")
+  AddGadgetItem(About\Editor, -1, "                 ║  A node based hex-editor ║")
+  AddGadgetItem(About\Editor, -1, "                 ╚══════════════════════════╝")
   AddGadgetItem(About\Editor, -1, "")
   AddGadgetItem(About\Editor, -1, "Programmer: David Vogel (Dadido3, Xaardas)")
   AddGadgetItem(About\Editor, -1, "Website: www.D3nexus.de")
+  AddGadgetItem(About\Editor, -1, "Repository: www.github.com/Dadido3/D3hex")
   AddGadgetItem(About\Editor, -1, "")
-  AddGadgetItem(About\Editor, -1, "Used Includes:")
-  AddGadgetItem(About\Editor, -1, "  - TabBarGadget.pbi by Stargate")
+  AddGadgetItem(About\Editor, -1, "╔══════════════════════╗")
+  AddGadgetItem(About\Editor, -1, "║     Compilation:     ║")
+  AddGadgetItem(About\Editor, -1, "╚══════════════════════╝")
   AddGadgetItem(About\Editor, -1, "")
+  AddGadgetItem(About\Editor, -1, "Times compiled:  "+Str(#PB_Editor_CompileCount))
+  AddGadgetItem(About\Editor, -1, "Times built:     "+Str(#PB_Editor_BuildCount))
+  AddGadgetItem(About\Editor, -1, "Build Timestamp: "+FormatDate("%hh:%ii:%ss %dd.%mm.%yyyy", #PB_Compiler_Date))
+  CompilerIf #PB_Compiler_Processor = #PB_Processor_x86
+    AddGadgetItem(About\Editor, -1, "Compiled with PureBasic "+StrF(#PB_Compiler_Version/100, 2)+" (x86)")
+  CompilerElse
+    AddGadgetItem(About\Editor, -1, "Compiled with PureBasic "+StrF(#PB_Compiler_Version/100, 2)+" (x64)")
+  CompilerEndIf
   AddGadgetItem(About\Editor, -1, "")
-  
-  AddGadgetItem(About\Editor, -1, "################")
-  AddGadgetItem(About\Editor, -1, "# Object-Types #")
-  AddGadgetItem(About\Editor, -1, "################")
-  
+  AddGadgetItem(About\Editor, -1, "╔══════════════════════╗")
+  AddGadgetItem(About\Editor, -1, "║      Thanks to:      ║")
+  AddGadgetItem(About\Editor, -1, "╚══════════════════════╝")
   AddGadgetItem(About\Editor, -1, "")
+  AddGadgetItem(About\Editor, -1, "► Stargate for his TabBarGadget")
+  AddGadgetItem(About\Editor, -1, "► PureBasic community as a good source for help and information")
+  AddGadgetItem(About\Editor, -1, "")
+  AddGadgetItem(About\Editor, -1, "╔══════════════════════╗")
+  AddGadgetItem(About\Editor, -1, "║       License:       ║")
+  AddGadgetItem(About\Editor, -1, "╚══════════════════════╝")
+  AddGadgetItem(About\Editor, -1, "")
+  AddGadgetItem(About\Editor, -1, "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.")
+  AddGadgetItem(About\Editor, -1, "")
+  AddGadgetItem(About\Editor, -1, "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. ")
+  AddGadgetItem(About\Editor, -1, "")
+  AddGadgetItem(About\Editor, -1, "You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.")
+  AddGadgetItem(About\Editor, -1, "")
+  AddGadgetItem(About\Editor, -1, "╔══════════════════════╗")
+  AddGadgetItem(About\Editor, -1, "║   Available nodes:   ║")
+  AddGadgetItem(About\Editor, -1, "╠══════════════════════╩═════════════════════════════════╗")
   ForEach Object_Type()
-    AddGadgetItem(About\Editor, -1, "Name: "+Object_Type()\Name+" (UID: "+Object_Type()\UID+")")
-    AddGadgetItem(About\Editor, -1, "Description: "+Object_Type()\Description)
-    AddGadgetItem(About\Editor, -1, "Author: "+Object_Type()\Author)
-    AddGadgetItem(About\Editor, -1, "Created:  "+FormatDate("%hh:%ii:%ss %dd.%mm.%yyyy", Object_Type()\Date_Creation))
-    AddGadgetItem(About\Editor, -1, "Modified: "+FormatDate("%hh:%ii:%ss %dd.%mm.%yyyy", Object_Type()\Date_Modification))
-    AddGadgetItem(About\Editor, -1, "Compiled: "+FormatDate("%hh:%ii:%ss %dd.%mm.%yyyy", Object_Type()\Date_Compilation))
-    AddGadgetItem(About\Editor, -1, "Version: "+StrF(Object_Type()\Version*0.001, 3))
-    AddGadgetItem(About\Editor, -1, "")
-    AddGadgetItem(About\Editor, -1, "########################################")
-    AddGadgetItem(About\Editor, -1, "")
+    AddGadgetItem(About\Editor, -1, "║ Name: "+LSet(Object_Type()\Name, 48)+                " ║")
+    AddGadgetItem(About\Editor, -1, "║ UID:  "+Object_Type()\UID+"                         Version: "+StrF(Object_Type()\Version*0.001, 3)+"  ║")
+    Description = "Description: "+Object_Type()\Description
+    Repeat
+      Temp_Text = LSet(Description, 54)
+      Description = Mid(Description, 54)
+      AddGadgetItem(About\Editor, -1, "║ "+Temp_Text+" ║")
+    Until Description = ""
+    AddGadgetItem(About\Editor, -1, "╟────────────────────────────────────────────────────────╢")
+    AddGadgetItem(About\Editor, -1, "║ Created:  "+FormatDate("%hh:%ii:%ss %dd.%mm.%yyyy", Object_Type()\Date_Creation)+"                          ║")
+    AddGadgetItem(About\Editor, -1, "║ Modified: "+FormatDate("%hh:%ii:%ss %dd.%mm.%yyyy", Object_Type()\Date_Modification)+"                          ║")
+    AddGadgetItem(About\Editor, -1, "║ Compiled: "+FormatDate("%hh:%ii:%ss %dd.%mm.%yyyy", Object_Type()\Date_Compilation)+"                          ║")
+    AddGadgetItem(About\Editor, -1, "║ Author:   "+LSet(Object_Type()\Author, 44)+          " ║")
+    AddGadgetItem(About\Editor, -1, "╠════════════════════════════════════════════════════════╣")
   Next
 EndProcedure
 
@@ -248,6 +271,7 @@ DataSection
 EndDataSection
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 3
+; CursorPosition = 125
+; FirstLine = 110
 ; Folding = --
 ; EnableXP
