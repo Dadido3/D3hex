@@ -177,7 +177,7 @@ Declare   Object_Editor_Input_Event(*Object_Input.Object_Input, *Object_Event.Ob
 Declare   Object_Editor_Output_Event(*Object_Output.Object_Output, *Object_Event.Object_Event)
 
 Declare   Object_Editor_Output_Get_Segments(*Object_Output.Object_Output, List Segment.Object_Output_Segment())
-Declare.s Object_Editor_Output_Get_Descriptor(*Object_Output.Object_Output)
+Declare   Object_Editor_Output_Get_Descriptor(*Object_Output.Object_Output)
 Declare.q Object_Editor_Output_Get_Size(*Object_Output.Object_Output)
 Declare   Object_Editor_Output_Get_Data(*Object_Output.Object_Output, Position.q, Size.i, *Data, *Metadata)
 Declare   Object_Editor_Output_Set_Data(*Object_Output.Object_Output, Position.q, Size.i, *Data)
@@ -225,7 +225,8 @@ Procedure Object_Editor_Create(Requester)
   *Object\Function_Configuration_Get = @Object_Editor_Configuration_Get()
   *Object\Function_Configuration_Set = @Object_Editor_Configuration_Set()
   
-  *Object\Name = "Editor"
+  *Object\Name = Object_Editor_Main\Object_Type\Name
+  *Object\Name_Inherited = *Object\Name
   *Object\Color = RGBA(127, 127, 127, 255)
   
   *Object\Custom_Data = AllocateStructure(Object_Editor)
@@ -404,6 +405,7 @@ Procedure Object_Editor_Input_Event(*Object_Input.Object_Input, *Object_Event.Ob
     ProcedureReturn #False
   EndIf
   
+  Protected *Descriptor.NBT_Element
   Protected Start.q, Length.q
   Protected Object_Event.Object_Event
   
@@ -416,6 +418,19 @@ Procedure Object_Editor_Input_Event(*Object_Input.Object_Input, *Object_Event.Ob
   EndIf
   
   Select *Object_Event\Type
+    Case #Object_Link_Event_Update_Descriptor
+      *Descriptor = Object_Input_Get_Descriptor(*Object_Input)
+      If *Descriptor
+        *Object\Name_Inherited = *Object\Name + ": " + NBT_Tag_Get_String(NBT_Tag(*Descriptor\NBT_Tag, "Name"))
+        NBT_Error_Get()
+      Else
+        *Object\Name_Inherited = *Object\Name
+      EndIf
+      If *Object_Editor\Window
+        SetWindowTitle(*Object_Editor\Window\ID, *Object\Name_Inherited)
+      EndIf
+      Object_Output_Event(FirstElement(*Object\Output()), *Object_Event)
+      
     Case #Object_Link_Event_Update
       *Object_Editor\Redraw = #True
       ; #### Forward the event to the selection-output
@@ -493,22 +508,23 @@ Procedure Object_Editor_Output_Get_Segments(*Object_Output.Object_Output, List S
   ProcedureReturn #True
 EndProcedure
 
-Procedure.s Object_Editor_Output_Get_Descriptor(*Object_Output.Object_Output)
-  Protected Descriptor.s
+Procedure Object_Editor_Output_Get_Descriptor(*Object_Output.Object_Output)
   If Not *Object_Output
-    ProcedureReturn ""
+    ProcedureReturn #Null
   EndIf
   Protected *Object.Object = *Object_Output\Object
   If Not *Object
-    ProcedureReturn ""
+    ProcedureReturn #Null
   EndIf
   
   Protected *Object_Editor.Object_Editor = *Object\Custom_Data
   If Not *Object_Editor
-    ProcedureReturn ""
+    ProcedureReturn #Null
   EndIf
   
-  ProcedureReturn ""
+  NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Name", #NBT_Tag_String), *Object\Name + " selection")
+  
+  ProcedureReturn *Object_Output\Descriptor
 EndProcedure
 
 Procedure.q Object_Editor_Output_Get_Size(*Object_Output.Object_Output)
@@ -2299,7 +2315,7 @@ Procedure Object_Editor_Window_Open(*Object.Object)
   EndIf
   
   If *Object_Editor\Window = #Null
-    *Object_Editor\Window = Window_Create(*Object, "Editor", "Editor", #True, #PB_Ignore, #PB_Ignore, 630, 650, #True, -10, Object_Editor_Main\Object_Type\UID)
+    *Object_Editor\Window = Window_Create(*Object, *Object\Name_Inherited, *Object\Name, #True, #PB_Ignore, #PB_Ignore, 630, 650, #True, -10, Object_Editor_Main\Object_Type\UID)
     
     ; #### Toolbar
     *Object_Editor\ToolBar = CreateToolBar(#PB_Any, WindowID(*Object_Editor\Window\ID))
@@ -2326,6 +2342,16 @@ Procedure Object_Editor_Window_Open(*Object.Object)
     BindEvent(#PB_Event_Menu, @Object_Editor_Window_Event_Menu(), *Object_Editor\Window\ID)
     BindEvent(#PB_Event_CloseWindow, @Object_Editor_Window_Event_CloseWindow(), *Object_Editor\Window\ID)
     BindGadgetEvent(*Object_Editor\Canvas, @Object_Editor_Window_Event_Canvas())
+    
+    AddKeyboardShortcut(*Object_Editor\Window\ID, #PB_Shortcut_Control | #PB_Shortcut_F, #Object_Editor_Menu_Search)
+    AddKeyboardShortcut(*Object_Editor\Window\ID, #PB_Shortcut_F3, #Object_Editor_Menu_Search_Continue)
+    
+    AddKeyboardShortcut(*Object_Editor\Window\ID, #PB_Shortcut_Control | #PB_Shortcut_X, #Object_Editor_Menu_Cut)
+    AddKeyboardShortcut(*Object_Editor\Window\ID, #PB_Shortcut_Control | #PB_Shortcut_C, #Object_Editor_Menu_Copy)
+    AddKeyboardShortcut(*Object_Editor\Window\ID, #PB_Shortcut_Control | #PB_Shortcut_V, #Object_Editor_Menu_Paste)
+    
+    AddKeyboardShortcut(*Object_Editor\Window\ID, #PB_Shortcut_Control | #PB_Shortcut_Z, #Object_Editor_Menu_Undo)
+    AddKeyboardShortcut(*Object_Editor\Window\ID, #PB_Shortcut_Control | #PB_Shortcut_Y, #Object_Editor_Menu_Redo)
     
     D3docker::Window_Set_Callback(*Object_Editor\Window\ID, @Object_Editor_Window_Callback())
     
@@ -2421,8 +2447,8 @@ MenuItem(#Object_Editor_PopupMenu_Select_All, "Select All", ImageID(Icon_Select_
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 2301
-; FirstLine = 2289
+; CursorPosition = 2305
+; FirstLine = 2305
 ; Folding = -------
 ; EnableUnicode
 ; EnableXP

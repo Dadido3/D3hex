@@ -177,6 +177,8 @@ Procedure Object_Editor_Goto_Window_Open(*Object.Object)
     
     BindEvent(#PB_Event_CloseWindow, @Object_Editor_Goto_Window_Event_CloseWindow(), *Object_Editor_Goto\Window\ID)
     
+  Else
+    Window_Set_Active(*Object_Editor_Goto\Window)
   EndIf
 EndProcedure
 
@@ -236,8 +238,8 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 162
-; FirstLine = 134
+; CursorPosition = 180
+; FirstLine = 155
 ; Folding = -
 ; EnableUnicode
 ; EnableXP

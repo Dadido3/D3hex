@@ -69,7 +69,7 @@ Declare   Object_Random_Window_Open(*Object.Object)
 Declare   Object_Random_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
 Declare   Object_Random_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
 
-Declare.s Object_Random_Get_Descriptor(*Object_Output.Object_Output)
+Declare   Object_Random_Get_Descriptor(*Object_Output.Object_Output)
 Declare.q Object_Random_Get_Size(*Object_Output.Object_Output)
 Declare   Object_Random_Get_Data(*Object_Output.Object_Output, Position.q, Size.i, *Data, *Metadata)
 Declare   Object_Random_Set_Data(*Object_Output.Object_Output, Position.q, Size.i, *Data)
@@ -99,7 +99,8 @@ Procedure Object_Random_Create(Requester)
   *Object\Function_Configuration_Get = @Object_Random_Configuration_Get()
   *Object\Function_Configuration_Set = @Object_Random_Configuration_Set()
   
-  *Object\Name = "Random"
+  *Object\Name = Object_Random_Main\Object_Type\Name
+  *Object\Name_Inherited = *Object\Name
   *Object\Color = RGBA(Random(100)+50,Random(100)+50,Random(100)+50,255)
   
   *Object\Custom_Data = AllocateStructure(Object_Random)
@@ -183,22 +184,23 @@ Procedure Object_Random_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
   ProcedureReturn #True
 EndProcedure
 
-Procedure.s Object_Random_Get_Descriptor(*Object_Output.Object_Output)
-  Protected Descriptor.s
+Procedure Object_Random_Get_Descriptor(*Object_Output.Object_Output)
   If Not *Object_Output
-    ProcedureReturn ""
+    ProcedureReturn #Null
   EndIf
   Protected *Object.Object = *Object_Output\Object
   If Not *Object
-    ProcedureReturn ""
+    ProcedureReturn #Null
   EndIf
   
   Protected *Object_Random.Object_Random = *Object\Custom_Data
   If Not *Object_Random
-    ProcedureReturn ""
+    ProcedureReturn #Null
   EndIf
   
-  ProcedureReturn ""
+  NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Name", #NBT_Tag_String), "Random data")
+  
+  ProcedureReturn *Object_Output\Descriptor
 EndProcedure
 
 Procedure.q Object_Random_Get_Size(*Object_Output.Object_Output)
@@ -485,7 +487,7 @@ Procedure Object_Random_Window_Open(*Object.Object)
     Width = 200
     Height = 60
     
-    *Object_Random\Window = Window_Create(*Object, "Random", "Random", #False, 0, 0, Width, Height, #False)
+    *Object_Random\Window = Window_Create(*Object, *Object\Name_Inherited, *Object\Name, #False, 0, 0, Width, Height, #False)
     
     ; #### Toolbar
     
@@ -571,7 +573,7 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 487
-; FirstLine = 468
+; CursorPosition = 489
+; FirstLine = 473
 ; Folding = ----
 ; EnableXP

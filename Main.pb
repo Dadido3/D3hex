@@ -51,7 +51,7 @@
 ;   - Image-Format converter
 ;   - Vergleich
 ;   - Mathematische operationen (+, -, *, /, ...)
-;   - Korellation / Autokorellation
+;   - Korrellation / Autokorrellation
 ;   - Checksum
 ;   - Diskrete Fourier Transformation (bzw. FFT)
 ;   - Disassembler (x86/64, 6809, ...)
@@ -63,9 +63,6 @@
 ;   - Signalgeneratoren (Ausgabe verschiedener Datentypen (Byte, Word, Long, Float, Double...))
 ;   - Physikalische / Logische Datenträger
 ;   - Clipboard
-;   - Network-Terminal:
-;     - BUG: 
-;     - BUG: Doesn't work with the History object
 ;   
 ; - Strukturelemente
 ;   - Split
@@ -153,7 +150,7 @@
 ;   - Object_Editor: Fixed writing at the end of data
 ;   - Object_View2D: Added standard configuration
 ;
-; - V0.950 (INDEV)
+; - V0.955 (INDEV)
 ;   - Object_File: Ignore result of File-requesters if it is ""
 ;   - Network_Terminal:
 ;     - Data_Set is not triggering an update event
@@ -162,6 +159,12 @@
 ;   - Object_History:
 ;     - Added the option to allow write operations in any case
 ;   - Use D3docker.pbi instead of the mdi gadget
+;   - Shortcuts now work in undocked windows
+;   - Continued implementation of "Data descriptors"
+;   - Names of the object-windows now depend on the parent objects
+;   - Object_Data_Inspector:
+;     - Resized the gadget a bit
+;   - Many other small changes
 ;   
 ; ##################################################### Begin #######################################################
 
@@ -181,7 +184,7 @@ XIncludeFile "Includes/UnitEngine.pbi"
 
 ; ##################################################### Constants ###################################################
 
-#Version = 0950
+#Version = 0955
 
 Enumeration
   #Data_Raw
@@ -834,8 +837,8 @@ DataSection
   
 EndDataSection
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 183
-; FirstLine = 155
+; CursorPosition = 186
+; FirstLine = 153
 ; Folding = --
 ; EnableUnicode
 ; EnableXP

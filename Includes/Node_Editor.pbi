@@ -454,7 +454,9 @@ Procedure Node_Editor_Canvas_Redraw()
           EndIf
         Next
         
-        DrawImage(ImageID(Object()\Image), S_X, S_Y, S_Width, S_Height)
+        If Object()\Image
+          DrawImage(ImageID(Object()\Image), S_X, S_Y, S_Width, S_Height)
+        EndIf
         
       Until Not PreviousElement(Object())
     EndIf
@@ -1068,9 +1070,9 @@ EndProcedure
 
 ; #### Object Popup-Menu
 Node_Editor_Main\Object_PopupMenu = CreatePopupImageMenu(#PB_Any, #PB_Menu_ModernLook)
-MenuItem(#Node_Editor_Object_PopupMenu_Window, "Window")
+MenuItem(#Node_Editor_Object_PopupMenu_Window, "Open window")
 MenuBar()
-MenuItem(#Node_Editor_Object_PopupMenu_Delete, "Delete")
+MenuItem(#Node_Editor_Object_PopupMenu_Delete, "Delete node")
 
 ; ##################################################### Main ########################################################
 
@@ -1085,8 +1087,8 @@ DataSection
   Node_Editor_Icon_Align:         : IncludeBinary "../Data/Icons/Node_Align.png"
 EndDataSection
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 979
-; FirstLine = 972
+; CursorPosition = 1072
+; FirstLine = 1042
 ; Folding = ----
 ; EnableUnicode
 ; EnableXP

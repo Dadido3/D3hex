@@ -73,7 +73,7 @@ Declare   Object_Process_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
 Declare   Object_Process_Output_Event(*Object_Output.Object_Output, *Object_Event.Object_Event)
 
 Declare   Object_Process_Get_Segments(*Object_Output.Object_Output, List Segment.Object_Output_Segment())
-Declare.s Object_Process_Get_Descriptor(*Object_Output.Object_Output)
+Declare   Object_Process_Get_Descriptor(*Object_Output.Object_Output)
 Declare.q Object_Process_Get_Size(*Object_Output.Object_Output)
 Declare   Object_Process_Get_Data(*Object_Output.Object_Output, Position.q, Size.i, *Data, *Metadata)
 Declare   Object_Process_Set_Data(*Object_Output.Object_Output, Position.q, Size.i, *Data)
@@ -88,6 +88,7 @@ Declare   Object_Process_Window_Close(*Object.Object)
 Procedure Object_Process_Open(*Object.Object)
   Protected Flags
   Protected Object_Event.Object_Event
+  Protected Object_Event_Descriptor.Object_Event
   
   If Not *Object
     ProcedureReturn #False
@@ -103,13 +104,19 @@ Procedure Object_Process_Open(*Object.Object)
   
   *Object_Process\hProcess = OpenProcess_(#MAXIMUM_ALLOWED, #False, *Object_Process\PID)
   
+  ; #### Send event for the updated descriptor
+  Object_Event_Descriptor\Type = #Object_Link_Event_Update_Descriptor
+  Object_Output_Event(FirstElement(*Object\Output()), Object_Event_Descriptor)
+  
   If *Object_Process\hProcess
+    ; #### Send event to update the data
     Object_Event\Type = #Object_Link_Event_Update
     Object_Event\Position = 0
     Object_Event\Size = Object_Process_Get_Size(FirstElement(*Object\Output()))
     Object_Output_Event(FirstElement(*Object\Output()), Object_Event)
   Else
     Logging_Entry_Add_Error("Couldn't open Process", "PID="+*Object_Process\PID+" couldn't be opened.")
+    ; #### Send event to update the data
     Object_Event\Type = #Object_Link_Event_Update
     Object_Event\Position = 0
     Object_Event\Size = 0
@@ -132,6 +139,7 @@ EndProcedure
 
 Procedure Object_Process_Close(*Object.Object)
   Protected Object_Event.Object_Event
+  Protected Object_Event_Descriptor.Object_Event
   
   If Not *Object
     ProcedureReturn #False
@@ -146,6 +154,11 @@ Procedure Object_Process_Close(*Object.Object)
     *Object_Process\hProcess = #Null
   EndIf
   
+  ; #### Send event for the updated descriptor
+  Object_Event_Descriptor\Type = #Object_Link_Event_Update_Descriptor
+  Object_Output_Event(FirstElement(*Object\Output()), Object_Event_Descriptor)
+  
+  ; #### Send event to update the data
   Object_Event\Type = #Object_Link_Event_Update
   Object_Event\Position = 0
   Object_Event\Size = 0
@@ -183,7 +196,8 @@ Procedure Object_Process_Create(Requester)
   *Object\Function_Configuration_Get = @Object_Process_Configuration_Get()
   *Object\Function_Configuration_Set = @Object_Process_Configuration_Set()
   
-  *Object\Name = "Process"
+  *Object\Name = Object_Process_Main\Object_Type\Name
+  *Object\Name_Inherited = *Object\Name
   *Object\Color = RGBA(100,100,255,255)
   
   *Object\Custom_Data = AllocateStructure(Object_Process)
@@ -334,27 +348,32 @@ Procedure Object_Process_Get_Segments(*Object_Output.Object_Output, List Segment
   ProcedureReturn #True
 EndProcedure
 
-Procedure.s Object_Process_Get_Descriptor(*Object_Output.Object_Output)
-  Protected Descriptor.s
+Procedure Object_Process_Get_Descriptor(*Object_Output.Object_Output)
   If Not *Object_Output
-    ProcedureReturn ""
+    ProcedureReturn #Null
   EndIf
   Protected *Object.Object = *Object_Output\Object
   If Not *Object
-    ProcedureReturn ""
+    ProcedureReturn #Null
   EndIf
   
   Protected *Object_Process.Object_Process = *Object\Custom_Data
   If Not *Object_Process
-    ProcedureReturn ""
+    ProcedureReturn #Null
   EndIf
   
   If *Object_Process\hProcess
-    Descriptor + "[Process]" + #CRLF$
-    ProcedureReturn Descriptor
+    NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Name", #NBT_Tag_String), "Process") ; TODO: get process name
+    NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Type", #NBT_Tag_String), "Process")
+    NBT_Tag_Set_Number(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Process_Handle", #NBT_Tag_Quad), *Object_Process\hProcess)
   Else
-    ProcedureReturn "" ; Not initialized
+    ; #### Delete all tags
+    While NBT_Tag_Delete(NBT_Tag_Index(*Object_Output\Descriptor\NBT_Tag, 0))
+    Wend
+    NBT_Error_Get()
   EndIf
+  
+  ProcedureReturn *Object_Output\Descriptor
 EndProcedure
 
 Procedure.q Object_Process_Get_Size(*Object_Output.Object_Output)
@@ -855,7 +874,7 @@ Procedure Object_Process_Window_Open(*Object.Object)
     Width = 400
     Height = 400
     
-    *Object_Process\Window = Window_Create(*Object, "Process", "Process", #False, 0, 0, Width, Height, #False)
+    *Object_Process\Window = Window_Create(*Object, *Object\Name_Inherited, *Object\Name, #False, 0, 0, Width, Height, #False)
     
     ; #### Toolbar
     
@@ -964,8 +983,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 859
-; FirstLine = 841
+; CursorPosition = 141
+; FirstLine = 119
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

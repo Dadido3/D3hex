@@ -112,7 +112,7 @@ Declare   Object_Network_Terminal_Configuration_Set(*Object.Object, *Parent_Tag.
 Declare   Object_Network_Terminal_Output_Event(*Object_Output.Object_Output, *Object_Event.Object_Event)
 
 Declare   Object_Network_Terminal_Get_Segments(*Object_Output.Object_Output, List Segment.Object_Output_Segment())
-Declare.s Object_Network_Terminal_Get_Descriptor(*Object_Output.Object_Output)
+Declare   Object_Network_Terminal_Get_Descriptor(*Object_Output.Object_Output)
 Declare.q Object_Network_Terminal_Get_Size(*Object_Output.Object_Output)
 Declare   Object_Network_Terminal_Get_Data(*Object_Output.Object_Output, Position.q, Size.i, *Data, *Metadata)
 Declare   Object_Network_Terminal_Set_Data(*Object_Output.Object_Output, Position.q, Size.i, *Data)
@@ -134,6 +134,7 @@ Procedure Object_Network_Terminal_Connection_Open(*Object.Object)
   EndIf
   
   Protected Object_Event.Object_Event
+  Protected Object_Event_Descriptor.Object_Event
   Protected Type
   
   If *Object_Network_Terminal\Connection_ID
@@ -165,6 +166,15 @@ Procedure Object_Network_Terminal_Connection_Open(*Object.Object)
     EndIf
   Next
   
+  ; #### Send event for the updated descriptor
+  Object_Event_Descriptor\Type = #Object_Link_Event_Update_Descriptor
+  Object_Output_Event(Object_Output_Get(*Object, 0), Object_Event_Descriptor)
+  
+  ; #### Send event for the updated descriptor
+  Object_Event_Descriptor\Type = #Object_Link_Event_Update_Descriptor
+  Object_Output_Event(Object_Output_Get(*Object, 1), Object_Event_Descriptor)
+  
+  ; #### Send event to update the data
   Object_Event\Type = #Object_Link_Event_Update
   Object_Event\Position = 0
   Object_Event\Size = *Object_Network_Terminal\Sent
@@ -191,6 +201,7 @@ EndProcedure
 
 Procedure Object_Network_Terminal_Connection_Close(*Object.Object)
   Protected Object_Event.Object_Event
+  Protected Object_Event_Descriptor.Object_Event
   
   If Not *Object
     ProcedureReturn #False
@@ -204,6 +215,14 @@ Procedure Object_Network_Terminal_Connection_Close(*Object.Object)
     CloseNetworkConnection(*Object_Network_Terminal\Connection_ID)
     *Object_Network_Terminal\Connection_ID = 0
   EndIf
+  
+  ; #### Send event for the updated descriptor
+  Object_Event_Descriptor\Type = #Object_Link_Event_Update_Descriptor
+  Object_Output_Event(Object_Output_Get(*Object, 0), Object_Event_Descriptor)
+  
+  ; #### Send event for the updated descriptor
+  Object_Event_Descriptor\Type = #Object_Link_Event_Update_Descriptor
+  Object_Output_Event(Object_Output_Get(*Object, 1), Object_Event_Descriptor)
   
   If *Object_Network_Terminal\Window
     If *Object_Network_Terminal\Connection_ID
@@ -234,7 +253,8 @@ Procedure Object_Network_Terminal_Create(Requester)
   *Object\Function_Configuration_Get = @Object_Network_Terminal_Configuration_Get()
   *Object\Function_Configuration_Set = @Object_Network_Terminal_Configuration_Set()
   
-  *Object\Name = "Network Terminal"
+  *Object\Name = Object_Network_Terminal_Main\Object_Type\Name
+  *Object\Name_Inherited = *Object\Name
   *Object\Color = RGBA(200,150,250,255)
   
   *Object\Custom_Data = AllocateStructure(Object_Network_Terminal)
@@ -433,22 +453,30 @@ Procedure Object_Network_Terminal_Get_Segments(*Object_Output.Object_Output, Lis
   ProcedureReturn #False
 EndProcedure
 
-Procedure.s Object_Network_Terminal_Get_Descriptor(*Object_Output.Object_Output)
-  Protected Descriptor.s
+Procedure Object_Network_Terminal_Get_Descriptor(*Object_Output.Object_Output)
   If Not *Object_Output
-    ProcedureReturn ""
+    ProcedureReturn #Null
   EndIf
   Protected *Object.Object = *Object_Output\Object
   If Not *Object
-    ProcedureReturn ""
+    ProcedureReturn #Null
   EndIf
   
   Protected *Object_Network_Terminal.Object_Network_Terminal = *Object\Custom_Data
   If Not *Object_Network_Terminal
-    ProcedureReturn ""
+    ProcedureReturn #Null
   EndIf
   
-  ProcedureReturn ""
+  If *Object_Network_Terminal\Connection_ID
+    NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Name", #NBT_Tag_String), *Object_Network_Terminal\Adress+":"+Str(*Object_Network_Terminal\Port))
+  Else
+    ; #### Delete all tags
+    While NBT_Tag_Delete(NBT_Tag_Index(*Object_Output\Descriptor\NBT_Tag, 0))
+    Wend
+    NBT_Error_Get()
+  EndIf
+  
+  ProcedureReturn *Object_Output\Descriptor
 EndProcedure
 
 Procedure.q Object_Network_Terminal_Get_Size(*Object_Output.Object_Output)
@@ -973,7 +1001,7 @@ Procedure Object_Network_Terminal_Window_Open(*Object.Object)
     Width = 430
     Height = 150
     
-    *Object_Network_Terminal\Window = Window_Create(*Object, "Network Terminal", "Network Terminal", #False, 0, 0, Width, Height, #False)
+    *Object_Network_Terminal\Window = Window_Create(*Object, *Object\Name_Inherited, *Object\Name, #False, 0, 0, Width, Height, #False)
     
     ; #### Toolbar
     
@@ -1206,8 +1234,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 975
-; FirstLine = 953
+; CursorPosition = 203
+; FirstLine = 190
 ; Folding = ------
 ; EnableUnicode
 ; EnableXP

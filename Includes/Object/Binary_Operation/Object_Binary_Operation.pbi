@@ -102,7 +102,7 @@ Declare   Object_Binary_Operation_Input_Event(*Object_Input.Object_Input, *Objec
 
 Declare   Object_Binary_Operation_Output_Event(*Object_Output.Object_Output, *Object_Event.Object_Event)
 Declare   Object_Binary_Operation_Output_Get_Segments(*Object_Output.Object_Output, List Segment.Object_Output_Segment())
-Declare.s Object_Binary_Operation_Output_Get_Descriptor(*Object_Output.Object_Output)
+Declare   Object_Binary_Operation_Output_Get_Descriptor(*Object_Output.Object_Output)
 Declare.q Object_Binary_Operation_Output_Get_Size(*Object_Output.Object_Output)
 Declare   Object_Binary_Operation_Output_Get_Data(*Object_Output.Object_Output, Position.q, Size.i, *Data, *Metadata)
 Declare   Object_Binary_Operation_Output_Set_Data(*Object_Output.Object_Output, Position.q, Size.i, *Data)
@@ -134,7 +134,8 @@ Procedure Object_Binary_Operation_Create(Requester)
   *Object\Function_Configuration_Get = @Object_Binary_Operation_Configuration_Get()
   *Object\Function_Configuration_Set = @Object_Binary_Operation_Configuration_Set()
   
-  *Object\Name = "Binary Operation"
+  *Object\Name = Object_Binary_Operation_Main\Object_Type\Name
+  *Object\Name_Inherited = *Object\Name
   *Object\Color = RGBA(180,200,250,255)
   
   *Object\Custom_Data = AllocateStructure(Object_Binary_Operation)
@@ -315,6 +316,10 @@ Procedure Object_Binary_Operation_Input_Event(*Object_Input.Object_Input, *Objec
   EndSelect
   
   Select *Object_Event\Type
+    Case #Object_Link_Event_Update_Descriptor
+      ;CopyStructure(*Object_Event, Object_Event, Object_Event)
+      ;Object_Output_Event(FirstElement(*Object\Output()), Object_Event)
+    
     Case #Object_Link_Event_Update, #Object_Link_Event_Goto
       ; #### Forward the event to the selection-output
       CopyStructure(*Object_Event, Object_Event, Object_Event)
@@ -386,24 +391,23 @@ Procedure Object_Binary_Operation_Output_Get_Segments(*Object_Output.Object_Outp
   ProcedureReturn #True
 EndProcedure
 
-Procedure.s Object_Binary_Operation_Output_Get_Descriptor(*Object_Output.Object_Output)
-  Protected Descriptor.s
+Procedure Object_Binary_Operation_Output_Get_Descriptor(*Object_Output.Object_Output)
   If Not *Object_Output
-    ProcedureReturn ""
+    ProcedureReturn #Null
   EndIf
   Protected *Object.Object = *Object_Output\Object
   If Not *Object
-    ProcedureReturn ""
+    ProcedureReturn #Null
   EndIf
   
   Protected *Object_Binary_Operation.Object_Binary_Operation = *Object\Custom_Data
   If Not *Object_Binary_Operation
-    ProcedureReturn ""
+    ProcedureReturn #Null
   EndIf
   
-  ;TODO: The Descriptor needs to be forwarded
+  NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Name", #NBT_Tag_String), "Binary Operation")
   
-  ProcedureReturn ""
+  ProcedureReturn *Object_Output\Descriptor
 EndProcedure
 
 Procedure.q Object_Binary_Operation_Output_Get_Size(*Object_Output.Object_Output)
@@ -915,7 +919,7 @@ Procedure Object_Binary_Operation_Window_Open(*Object.Object)
     Width = 350
     Height = 250
     
-    *Object_Binary_Operation\Window = Window_Create(*Object, "Binary Operation", "Binary", #False, 0, 0, Width, Height, #False)
+    *Object_Binary_Operation\Window = Window_Create(*Object, *Object\Name_Inherited, *Object\Name, #False, 0, 0, Width, Height, #False)
     
     ; #### Gadgets
     
@@ -1066,7 +1070,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 3
+; CursorPosition = 921
+; FirstLine = 905
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

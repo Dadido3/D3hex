@@ -83,7 +83,7 @@ Declare   Object_File_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
 
 Declare   Object_File_Output_Event(*Object_Output.Object_Output, *Object_Event.Object_Event)
 
-Declare.s Object_File_Get_Descriptor(*Object_Output.Object_Output)
+Declare   Object_File_Get_Descriptor(*Object_Output.Object_Output)
 Declare.q Object_File_Get_Size(*Object_Output.Object_Output)
 Declare   Object_File_Get_Data(*Object_Output.Object_Output, Position.q, Size.i, *Data, *Metadata)
 Declare   Object_File_Set_Data(*Object_Output.Object_Output, Position.q, Size.i, *Data)
@@ -98,6 +98,7 @@ Declare   Object_File_Window_Close(*Object.Object)
 Procedure Object_File_HDD_Create(*Object.Object) ; #### That function doesn't create a file-object. It creates a file
   Protected Flags
   Protected Object_Event.Object_Event
+  Protected Object_Event_Descriptor.Object_Event
   
   If Not *Object
     ProcedureReturn #False
@@ -124,6 +125,11 @@ Procedure Object_File_HDD_Create(*Object.Object) ; #### That function doesn't cr
   
   *Object_File\File_ID = CreateFile(#PB_Any, *Object_File\Filename, Flags) : *Object_File\Mode = #Object_File_Mode_Write
   
+  ; #### Send event for the updated descriptor
+  Object_Event_Descriptor\Type = #Object_Link_Event_Update_Descriptor
+  Object_Output_Event(FirstElement(*Object\Output()), Object_Event_Descriptor)
+  
+  ; #### Send event to update the data
   If *Object_File\File_ID
     Object_Event\Type = #Object_Link_Event_Update
     Object_Event\Position = 0
@@ -151,6 +157,7 @@ EndProcedure
 Procedure Object_File_HDD_Open(*Object.Object)
   Protected Flags
   Protected Object_Event.Object_Event
+  Protected Object_Event_Descriptor.Object_Event
   
   If Not *Object
     ProcedureReturn #False
@@ -180,6 +187,11 @@ Procedure Object_File_HDD_Open(*Object.Object)
     Case #Object_File_Mode_Write  : *Object_File\File_ID = OpenFile(#PB_Any, *Object_File\Filename, Flags)
   EndSelect
   
+  ; #### Send event for the updated descriptor
+  Object_Event_Descriptor\Type = #Object_Link_Event_Update_Descriptor
+  Object_Output_Event(FirstElement(*Object\Output()), Object_Event_Descriptor)
+  
+  ; #### Send event to update the data
   If *Object_File\File_ID
     Object_Event\Type = #Object_Link_Event_Update
     Object_Event\Position = 0
@@ -207,6 +219,7 @@ EndProcedure
 
 Procedure Object_File_HDD_Close(*Object.Object)
   Protected Object_Event.Object_Event
+  Protected Object_Event_Descriptor.Object_Event
   
   If Not *Object
     ProcedureReturn #False
@@ -221,6 +234,11 @@ Procedure Object_File_HDD_Close(*Object.Object)
     *Object_File\File_ID = 0
   EndIf
   
+  ; #### Send event for the updated descriptor
+  Object_Event_Descriptor\Type = #Object_Link_Event_Update_Descriptor
+  Object_Output_Event(FirstElement(*Object\Output()), Object_Event_Descriptor)
+  
+  ; #### Send event to update the data
   Object_Event\Type = #Object_Link_Event_Update
   Object_Event\Position = 0
   Object_Event\Size = 0
@@ -256,7 +274,8 @@ Procedure Object_File_Create(Requester)
   *Object\Function_Configuration_Get = @Object_File_Configuration_Get()
   *Object\Function_Configuration_Set = @Object_File_Configuration_Set()
   
-  *Object\Name = "File"
+  *Object\Name = Object_File_Main\Object_Type\Name
+  *Object\Name_Inherited = *Object\Name
   *Object\Color = RGBA(176,137,0,255)
   
   *Object\Custom_Data = AllocateStructure(Object_File)
@@ -432,28 +451,32 @@ Procedure Object_File_Output_Event(*Object_Output.Object_Output, *Object_Event.O
   ProcedureReturn #True
 EndProcedure
 
-Procedure.s Object_File_Get_Descriptor(*Object_Output.Object_Output)
-  Protected Descriptor.s
+Procedure Object_File_Get_Descriptor(*Object_Output.Object_Output)
   If Not *Object_Output
-    ProcedureReturn ""
+    ProcedureReturn #Null
   EndIf
   Protected *Object.Object = *Object_Output\Object
   If Not *Object
-    ProcedureReturn ""
+    ProcedureReturn #Null
   EndIf
   
   Protected *Object_File.Object_File = *Object\Custom_Data
   If Not *Object_File
-    ProcedureReturn ""
+    ProcedureReturn #Null
   EndIf
   
   If *Object_File\File_ID
-    Descriptor + "[File]" + #CRLF$
-    Descriptor + "Extension = " + GetExtensionPart(*Object_File\Filename) + #CRLF$
-    ProcedureReturn Descriptor
+    NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Name", #NBT_Tag_String), GetFilePart(*Object_File\Filename))
+    NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Type", #NBT_Tag_String), "File")
+    NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Filename", #NBT_Tag_String), *Object_File\Filename)
   Else
-    ProcedureReturn "" ; Not initialized --> Behave like an empty file
+    ; #### Delete all tags
+    While NBT_Tag_Delete(NBT_Tag_Index(*Object_Output\Descriptor\NBT_Tag, 0))
+    Wend
+    NBT_Error_Get()
   EndIf
+  
+  ProcedureReturn *Object_Output\Descriptor
 EndProcedure
 
 Procedure.q Object_File_Get_Size(*Object_Output.Object_Output)
@@ -1007,7 +1030,7 @@ Procedure Object_File_Window_Open(*Object.Object)
     Width = 500
     Height = 130
     
-    *Object_File\Window = Window_Create(*Object, "File", "File", #False, 0, 0, Width, Height, #False)
+    *Object_File\Window = Window_Create(*Object, *Object\Name_Inherited, *Object\Name, #False, 0, 0, Width, Height, #False)
     
     ; #### Toolbar
     
@@ -1151,8 +1174,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1009
-; FirstLine = 987
+; CursorPosition = 1032
+; FirstLine = 1016
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

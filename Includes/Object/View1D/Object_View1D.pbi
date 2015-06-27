@@ -166,7 +166,8 @@ Procedure Object_View1D_Create(Requester)
   *Object\Function_Configuration_Get = @Object_View1D_Configuration_Get()
   *Object\Function_Configuration_Set = @Object_View1D_Configuration_Set()
   
-  *Object\Name = "View1D"
+  *Object\Name = Object_View1D_Main\Object_Type\Name
+  *Object\Name_Inherited = *Object\Name
   *Object\Color = RGBA(200, 127, 127, 255)
   
   *Object\Custom_Data = AllocateStructure(Object_View1D)
@@ -359,12 +360,30 @@ Procedure Object_View1D_Input_Event(*Object_Input.Object_Input, *Object_Event.Ob
   If Not *Object_Event
     ProcedureReturn #False
   EndIf
+  Protected *Object.Object = *Object_Input\Object
+  If Not *Object
+    ProcedureReturn #False
+  EndIf
   Protected *Object_View1D.Object_View1D = *Object_Input\Object\Custom_Data
   If Not *Object_View1D
     ProcedureReturn #False
   EndIf
   
+  Protected *Descriptor.NBT_Element
+  
   Select *Object_Event\Type
+    Case #Object_Link_Event_Update_Descriptor
+      *Descriptor = Object_Input_Get_Descriptor(*Object_Input)
+      If *Descriptor
+        *Object\Name_Inherited = *Object\Name + ": " + NBT_Tag_Get_String(NBT_Tag(*Descriptor\NBT_Tag, "Name"))
+        NBT_Error_Get()
+      Else
+        *Object\Name_Inherited = *Object\Name
+      EndIf
+      If *Object_View1D\Window
+        SetWindowTitle(*Object_View1D\Window\ID, *Object\Name_Inherited)
+      EndIf
+      
     Case #Object_Link_Event_Update
       *Object_View1D\Redraw = #True
       
@@ -1112,7 +1131,7 @@ Procedure Object_View1D_Window_Open(*Object.Object)
     Width = 500
     Height = 300
     
-    *Object_View1D\Window = Window_Create(*Object, "View1D", "View1D", #True, #PB_Ignore, #PB_Ignore, Width, Height, #True, 10, Object_View1D_Main\Object_Type\UID)
+    *Object_View1D\Window = Window_Create(*Object, *Object\Name_Inherited, *Object\Name, #True, #PB_Ignore, #PB_Ignore, Width, Height, #True, 10, Object_View1D_Main\Object_Type\UID)
     
     ; #### Toolbar
     *Object_View1D\ToolBar = CreateToolBar(#PB_Any, WindowID(*Object_View1D\Window\ID))
@@ -1252,7 +1271,7 @@ DataSection
   Object_View1D_Icon_Normalize_Y: : IncludeBinary "../../../Data/Icons/Graph_Normalize_Y.png"
 EndDataSection
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1112
-; FirstLine = 1098
+; CursorPosition = 1117
+; FirstLine = 1117
 ; Folding = ----
 ; EnableXP

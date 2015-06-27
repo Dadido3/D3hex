@@ -36,6 +36,7 @@
 ; TODO: Container_Resize_Between has some problems with *Container\Max_Width or *Container\Max_Height
 ; TODO: Merge the Container_Docker bar with the tab bar of the tabbed container
 ; TODO: Allow the docking to undocked windows
+; TODO: Add static containers (not movable and/or not removable)
 ;
 ; #################################################### Includes #################################################
 
@@ -168,6 +169,8 @@ Module D3docker
     
     *Callback.Window_Callback
     
+    Title.s
+    
     Max_Width.l
     Min_Width.l
     Max_Height.l
@@ -263,7 +266,7 @@ Module D3docker
   Declare    Window_Get_By_Number(Window)
   
   Declare    Container_Docker_Redraw(*Gadget.GADGET, *Container.Container)
-  Declare    Container_Tabbed_Select(*Gadget.GADGET, *Container.Container, *Selection.Container, SetGadgetState=#True)
+  Declare    Container_Tabbed_Select(*Gadget.GADGET, *Container.Container, *Selection.Container, SetGadgetState=#True, Activate_Window=#True)
   Declare    Container_Get_By_Coordinate(*Gadget.GADGET, *Container.Container, X, Y)
   Declare    Container_Merge_To_Parent(*Gadget.GADGET, *Container.Container)
   Declare    Container_Update_Limits(*Gadget.GADGET, *Container.Container)
@@ -450,9 +453,12 @@ Module D3docker
     
     Select Message
       Case #WM_PARENTNOTIFY ; #WM_PARENTNOTIFY because of the canvas gadget
-        If *Window\Container
-          _Window_Set_Active(*Window\Gadget, *Window, #True)
-        EndIf
+        Select wParam 
+          Case #WM_LBUTTONDOWN, #WM_MBUTTONDOWN, #WM_RBUTTONDOWN, #WM_XBUTTONDOWN ; TODO: Find a bulletproof way to determine the active window (Not enabling the "Child" flag could help)
+            If *Window\Container
+              _Window_Set_Active(*Window\Gadget, *Window, #True)
+            EndIf
+        EndSelect
         
       Case #WM_ACTIVATE
         *params = GetParams(*Window\Gadget)
@@ -570,6 +576,7 @@ Module D3docker
       \Window()\Window = Window
       \Window()\hWnd = WindowID(\Window()\Window)
       \Window()\Gadget = *Gadget
+      \Window()\Title = Title
       ;SetWindowData(\Window()\Window, \Window())
       SetWindowCallback(@Window_Callback(), \Window()\Window)
       
@@ -700,9 +707,12 @@ Module D3docker
         Container_Docker_Redraw(*Gadget, *Old_Container)
       EndIf
       
-      ; #### Redraw the active container
       If *Window
         If *Window\Container
+          ; #### Change the current tab, if it is in any
+          Container_Tabbed_Select(*Gadget, *Window\Container, 0)
+          
+          ; #### Redraw the active container
           ;SetActiveWindow(\Parent_Window)
           Container_Docker_Redraw(*Gadget, *Window\Container)
           If Post_Event
@@ -1032,7 +1042,7 @@ Module D3docker
     EndWith
   EndProcedure
   
-  Procedure Container_Tabbed_Select(*Gadget.GADGET, *Container.Container, Selection, SetGadgetState=#True)
+  Procedure Container_Tabbed_Select(*Gadget.GADGET, *Container.Container, Selection, SetGadgetState=#True, Activate_Window=#True)
     If Not *Gadget
       ProcedureReturn #False
     EndIf
@@ -1044,32 +1054,52 @@ Module D3docker
     Protected *params.GADGET_PARAMS=GetParams(*Gadget)
     With *params
       
-      If Selection > ListSize(*Container\Container())-1
-        Selection = ListSize(*Container\Container())-1
-      ElseIf Selection < 0
-        Selection = ListSize(*Container\Container())-1
+      ; #### Recursively go throught the parents and select the according tabs
+      If *Container\Parent
+        If *Container\Parent\Type = #Container_Type_Tabbed
+          ForEach *Container\Parent\Container()
+            If *Container\Parent\Container() = *Container
+              Container_Tabbed_Select(*Gadget, *Container\Parent, ListIndex(*Container\Parent\Container()), #True, #False)
+              Break
+            EndIf
+          Next
+        Else
+          Container_Tabbed_Select(*Gadget, *Container\Parent, 0, #True, #False)
+        EndIf
       EndIf
       
-      *Container\Tabbed_Selection = Selection
-      
-      ForEach *Container\Container()
-        If ListIndex(*Container\Container()) = *Container\Tabbed_Selection
-          *Selection = *Container\Container()
-          Container_Hide(*Gadget, *Container\Container(), #False)
-          _Window_Set_Active(*Gadget, *Container\Container()\Window, #True)
-        Else
-          Container_Hide(*Gadget, *Container\Container(), #True)
+      If *Container\Type = #Container_Type_Tabbed
+        
+        If Selection > ListSize(*Container\Container())-1
+          Selection = ListSize(*Container\Container())-1
+        ElseIf Selection < 0 ; #### -1 will point to the end of the list
+          Selection = ListSize(*Container\Container())-1
         EndIf
-      Next
-      
-      ; #### Set the GadgetState
-      If SetGadgetState And *Selection And *Container\Gadget_TabBar
-        For i = 0 To CountTabBarGadgetItems(*Container\Gadget_TabBar)-1
-          If GetTabBarGadgetItemData(*Container\Gadget_TabBar, i) = *Selection
-            SetTabBarGadgetState(*Container\Gadget_TabBar, i)
-            Break
+        
+        *Container\Tabbed_Selection = Selection
+        
+        ForEach *Container\Container()
+          If ListIndex(*Container\Container()) = *Container\Tabbed_Selection
+            *Selection = *Container\Container()
+            Container_Hide(*Gadget, *Container\Container(), #False)
+            If Activate_Window
+              _Window_Set_Active(*Gadget, *Container\Container()\Window, #True)
+            EndIf
+          Else
+            Container_Hide(*Gadget, *Container\Container(), #True)
           EndIf
         Next
+        
+        ; #### Set the GadgetState
+        If SetGadgetState And *Selection And *Container\Gadget_TabBar
+          For i = 0 To CountTabBarGadgetItems(*Container\Gadget_TabBar)-1
+            If GetTabBarGadgetItemData(*Container\Gadget_TabBar, i) = *Selection
+              SetTabBarGadgetState(*Container\Gadget_TabBar, i)
+              Break
+            EndIf
+          Next
+        EndIf
+        
       EndIf
       
     EndWith
@@ -1222,6 +1252,7 @@ Module D3docker
       *Container\Width = Width
       *Container\Height = Height
       *Container\Window = *Window
+      *Container\Priority = -2147483648
       
       Select *Container\Type
         Case #Container_Type_Docker
@@ -2127,8 +2158,8 @@ Module D3docker
   
 EndModule
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1631
-; FirstLine = 1602
+; CursorPosition = 1085
+; FirstLine = 1062
 ; Folding = --------
 ; EnableUnicode
 ; EnableXP

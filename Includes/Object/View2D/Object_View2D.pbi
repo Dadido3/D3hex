@@ -186,7 +186,8 @@ Procedure Object_View2D_Create(Requester)
   *Object\Function_Configuration_Get = @Object_View2D_Configuration_Get()
   *Object\Function_Configuration_Set = @Object_View2D_Configuration_Set()
   
-  *Object\Name = "View2D"
+  *Object\Name = Object_View2D_Main\Object_Type\Name
+  *Object\Name_Inherited = *Object\Name
   *Object\Color = RGBA(200, 127, 127, 255)
   
   *Object\Custom_Data = AllocateStructure(Object_View2D)
@@ -405,6 +406,10 @@ Procedure Object_View2D_Input_Event(*Object_Input.Object_Input, *Object_Event.Ob
   If Not *Object_Event
     ProcedureReturn #False
   EndIf
+  Protected *Object.Object = *Object_Input\Object
+  If Not *Object
+    ProcedureReturn #False
+  EndIf
   Protected *Object_View2D.Object_View2D = *Object_Input\Object\Custom_Data
   If Not *Object_View2D
     ProcedureReturn #False
@@ -414,7 +419,21 @@ Procedure Object_View2D_Input_Event(*Object_Input.Object_Input, *Object_Event.Ob
     ProcedureReturn #False
   EndIf
   
+  Protected *Descriptor.NBT_Element
+  
   Select *Object_Event\Type
+    Case #Object_Link_Event_Update_Descriptor
+      *Descriptor = Object_Input_Get_Descriptor(*Object_Input)
+      If *Descriptor
+        *Object\Name_Inherited = *Object\Name + ": " + NBT_Tag_Get_String(NBT_Tag(*Descriptor\NBT_Tag, "Name"))
+        NBT_Error_Get()
+      Else
+        *Object\Name_Inherited = *Object\Name
+      EndIf
+      If *Object_View2D\Window
+        SetWindowTitle(*Object_View2D\Window\ID, *Object\Name_Inherited)
+      EndIf
+      
     Case #Object_Link_Event_Update
       *Object_View2D\Redraw = #True
       
@@ -1219,7 +1238,7 @@ Procedure Object_View2D_Window_Open(*Object.Object)
     Width = 500
     Height = 500
     
-    *Object_View2D\Window = Window_Create(*Object, "View2D", "View2D", #True, #PB_Ignore, #PB_Ignore, Width, Height, #True, 10, Object_View2D_Main\Object_Type\UID)
+    *Object_View2D\Window = Window_Create(*Object, *Object\Name_Inherited, *Object\Name, #True, #PB_Ignore, #PB_Ignore, Width, Height, #True, 10, Object_View2D_Main\Object_Type\UID)
     
     ; #### Toolbar
     *Object_View2D\ToolBar = CreateToolBar(#PB_Any, WindowID(*Object_View2D\Window\ID))
@@ -1342,7 +1361,7 @@ DataSection
   Object_View2D_Icon_Normalize:   : IncludeBinary "../../../Data/Icons/Graph_Normalize.png"
 EndDataSection
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1220
-; FirstLine = 1205
+; CursorPosition = 1237
+; FirstLine = 1224
 ; Folding = ----
 ; EnableXP

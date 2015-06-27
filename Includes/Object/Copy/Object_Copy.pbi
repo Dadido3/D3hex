@@ -124,7 +124,8 @@ Procedure Object_Copy_Create(Requester)
   *Object\Function_Configuration_Get = @Object_Copy_Configuration_Get()
   *Object\Function_Configuration_Set = @Object_Copy_Configuration_Set()
   
-  *Object\Name = "Copy"
+  *Object\Name = Object_Copy_Main\Object_Type\Name
+  *Object\Name_Inherited = *Object\Name
   *Object\Color = RGBA(230,180,250,255)
   
   *Object\Custom_Data = AllocateStructure(Object_Copy)
@@ -386,7 +387,7 @@ Procedure Object_Copy_Window_Open(*Object.Object)
     Width = 210
     Height = 190
     
-    *Object_Copy\Window = Window_Create(*Object, "Copy", "Copy", #False, 0, 0, Width, Height, #False)
+    *Object_Copy\Window = Window_Create(*Object, *Object\Name_Inherited, *Object\Name, #False, 0, 0, Width, Height, #False)
     
     ; #### Gadgets
     
@@ -666,7 +667,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 3
+; CursorPosition = 389
+; FirstLine = 373
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP

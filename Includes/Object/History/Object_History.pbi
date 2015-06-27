@@ -460,12 +460,27 @@ Procedure Object_History_Input_Event(*Object_Input.Object_Input, *Object_Event.O
     ProcedureReturn #False
   EndIf
   
-  ;Select *Object_Event\Type
-  ;  Default
-      ; #### Todo: Correct the event-range!!!
+  Protected *Descriptor.NBT_Element
+  
+  Select *Object_Event\Type
+    Case #Object_Link_Event_Update_Descriptor
+      *Descriptor = Object_Input_Get_Descriptor(FirstElement(*Object\Input()))
+      If *Descriptor
+        *Object\Name_Inherited = *Object\Name + ": " + NBT_Tag_Get_String(NBT_Tag(*Descriptor\NBT_Tag, "Name"))
+        NBT_Error_Get()
+      Else
+        *Object\Name_Inherited = *Object\Name
+      EndIf
+      If *Object_History\Window
+        SetWindowTitle(*Object_History\Window\ID, *Object\Name_Inherited)
+      EndIf
       Object_Output_Event(FirstElement(*Object\Output()), *Object_Event)
       
-  ;EndSelect
+    Default
+      ; TODO: Correct the event-range!!!
+      Object_Output_Event(FirstElement(*Object\Output()), *Object_Event)
+      
+  EndSelect
   
   
   ProcedureReturn #True
@@ -1268,7 +1283,7 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1183
-; FirstLine = 1161
+; CursorPosition = 476
+; FirstLine = 455
 ; Folding = ------
 ; EnableXP

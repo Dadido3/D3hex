@@ -114,7 +114,7 @@ Declare   Object_Math_Input_Event(*Object_Input.Object_Input, *Object_Event.Obje
 Declare   Object_Math_Output_Event(*Object_Output.Object_Output, *Object_Event.Object_Event)
 
 Declare   Object_Math_Get_Segments(*Object_Output.Object_Output, List Segment.Object_Output_Segment())
-Declare.s Object_Math_Get_Descriptor(*Object_Output.Object_Output)
+Declare   Object_Math_Get_Descriptor(*Object_Output.Object_Output)
 Declare.q Object_Math_Get_Size(*Object_Output.Object_Output)
 Declare   Object_Math_Get_Data(*Object_Output.Object_Output, Position.q, Size.i, *Data, *Metadata)
 Declare   Object_Math_Set_Data(*Object_Output.Object_Output, Position.q, Size.i, *Data)
@@ -281,18 +281,17 @@ Procedure Object_Math_Get_Segments(*Object_Output.Object_Output, List Segment.Ob
   ProcedureReturn Object_Input_Get_Segments(FirstElement(*Object\Input()), Segment())
 EndProcedure
 
-Procedure.s Object_Math_Get_Descriptor(*Object_Output.Object_Output)
-  Protected Descriptor.s
+Procedure Object_Math_Get_Descriptor(*Object_Output.Object_Output)
   If Not *Object_Output
-    ProcedureReturn ""
+    ProcedureReturn #Null
   EndIf
   Protected *Object.Object = *Object_Output\Object
   If Not *Object
-    ProcedureReturn ""
+    ProcedureReturn #Null
   EndIf
   Protected *Object_Math.Object_Math = *Object\Custom_Data
   If Not *Object_Math
-    ProcedureReturn ""
+    ProcedureReturn #Null
   EndIf
   
   ProcedureReturn Object_Input_Get_Descriptor(FirstElement(*Object\Input()))
@@ -647,7 +646,7 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 500
-; FirstLine = 478
+; CursorPosition = 297
+; FirstLine = 278
 ; Folding = ----
 ; EnableXP

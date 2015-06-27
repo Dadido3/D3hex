@@ -7,12 +7,12 @@
   <section name="data">
     <explorer view="Includes\Object\Data_Inspector\" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2015-06-25 19:36" user="David Vogel" host="DAVIDS"/>
+    <lastopen date="2015-06-27 23:41" user="David Vogel" host="DAVIDS"/>
   </section>
   <section name="files">
     <file name="Includes\About.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
-      <fingerprint md5="36662ab4023414b02299d7dc418e8633"/>
+      <fingerprint md5="e62bbafbc3f02844c3a15bcccc05113d"/>
     </file>
     <file name="Includes\Crash.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
@@ -20,7 +20,7 @@
     </file>
     <file name="Includes\D3docker\D3docker.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+++"/>
-      <fingerprint md5="06555a35eb7635abdfb9f22dfe13f2ba"/>
+      <fingerprint md5="eafe7333be2f4e78ecd0fe2b8ac59cb5"/>
     </file>
     <file name="Includes\D3HT.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
@@ -40,35 +40,35 @@
     </file>
     <file name="Includes\Node_Editor.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
-      <fingerprint md5="8da40321362c1c4f0acc0b6e5a4a9c8e"/>
+      <fingerprint md5="7d2a2d55edc379a94012a7ccbbbaf3aa"/>
     </file>
     <file name="Includes\Object.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
-      <fingerprint md5="8d9a286bd225d04253f9434dd010aa44"/>
+      <fingerprint md5="1aacf4a42bd280a169cb838bf006cbc3"/>
     </file>
     <file name="Includes\Object\Binary_Operation\Object_Binary_Operation.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
-      <fingerprint md5="355a27bed15034d1a02d23d5762a23f0"/>
+      <fingerprint md5="915152f849133c06cca21a3218c45cef"/>
     </file>
     <file name="Includes\Object\Copy\Object_Copy.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
-      <fingerprint md5="4163a6e8a17187fccbc7980a5bf45db7"/>
+      <fingerprint md5="36567ee66c6928f9cb5c0c7e6f49be6d"/>
     </file>
     <file name="Includes\Object\Data_Inspector\Object_Data_Inspector.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
-      <fingerprint md5="f9856304d767b7d9b1c20f7c5bc42a74"/>
+      <fingerprint md5="b4cb843f102186e3ca00af56311a3f66"/>
     </file>
     <file name="Includes\Object\Dummy\Object_Dummy.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
-      <fingerprint md5="e4710566e0badeb386de200ee2c045df"/>
+      <fingerprint md5="08d620eae05519ddd5c45138491650c6"/>
     </file>
     <file name="Includes\Object\Editor\Object_Editor.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
-      <fingerprint md5="904894d161f5a2c7a2f40d9b33e8bf7d"/>
+      <fingerprint md5="edf552b4f79397de40a4036095794ae1"/>
     </file>
     <file name="Includes\Object\Editor\Object_Editor_Goto.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
-      <fingerprint md5="a4992d8f8025e787c40bce1b0d6380e2"/>
+      <fingerprint md5="52cbdb02885f7b8016a9173746abd4f9"/>
     </file>
     <file name="Includes\Object\Editor\Object_Editor_Search.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
@@ -76,35 +76,35 @@
     </file>
     <file name="Includes\Object\File\Object_File.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
-      <fingerprint md5="5a3534e262c47ef15e85eb905195a9d8"/>
+      <fingerprint md5="116f74d81be950fc0a4189cb95aa2df4"/>
     </file>
     <file name="Includes\Object\History\Object_History.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
-      <fingerprint md5="60f3f5b081626cca1d1a1eac11481e85"/>
+      <fingerprint md5="7aaeffb81a285db51f03cd76d5f4150c"/>
     </file>
     <file name="Includes\Object\Math\Object_Math.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
-      <fingerprint md5="9520bd3117be5e36eea002c1c4d26b8f"/>
+      <fingerprint md5="79daad4ffe72ed65af0f0d8f573f026e"/>
     </file>
     <file name="Includes\Object\Math\Object_MathFormula.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
-      <fingerprint md5="ca3068c2a4cc1f44c3a0d37ea45c24ee"/>
+      <fingerprint md5="b812295f441789292aec3d184cb8c0f9"/>
     </file>
     <file name="Includes\Object\Network_Terminal\Object_Network_Terminal.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
-      <fingerprint md5="6388d195fd485ac796481335d9a5cd74"/>
+      <fingerprint md5="74a61aa5a4b9813b52c581882f017b8e"/>
     </file>
     <file name="Includes\Object\Process\Object_Process.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
-      <fingerprint md5="a74ae817afa2a304cec936cba5f1e73c"/>
+      <fingerprint md5="764156ff9866a6072f263bfbcd9601c1"/>
     </file>
     <file name="Includes\Object\Random\Object_Random.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
-      <fingerprint md5="aa5c1f520df15ca16faac7b837fa9a96"/>
+      <fingerprint md5="28be17cbb0fa7ec56cd62b6397b99fed"/>
     </file>
     <file name="Includes\Object\View1D\Object_View1D.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
-      <fingerprint md5="65dee99a5933bfe6e4dfa90d58d78b59"/>
+      <fingerprint md5="90b2d13012397516b7d7e6e49e2b2978"/>
     </file>
     <file name="Includes\Object\View1D\Object_View1D_Settings.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
@@ -112,7 +112,7 @@
     </file>
     <file name="Includes\Object\View2D\Object_View2D.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
-      <fingerprint md5="153da3f1abef3db5826a51de099aadd8"/>
+      <fingerprint md5="992417bfc1731d7ae7aa5f478aae1dad"/>
     </file>
     <file name="Includes\Object\View2D\Object_View2D_Settings.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
@@ -140,7 +140,7 @@
     </file>
     <file name="Main.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="8c3eec05a3f0034db0082ccf841232d7"/>
+      <fingerprint md5="98f34667855e2c2b2a9fa8fd00abcc14"/>
     </file>
   </section>
   <section name="targets">
@@ -151,8 +151,8 @@
       <executable value="Distribution\D3hex.x86.exe"/>
       <options unicode="1" xpskin="1" user="1" onerror="1"/>
       <icon enable="1">Data\Images\Icon.ico</icon>
-      <compilecount enable="1" value="228"/>
-      <buildcount enable="1" value="40"/>
+      <compilecount enable="1" value="229"/>
+      <buildcount enable="1" value="41"/>
       <versioninfo enable="1">
         <field3 value="D3hex"/>
         <field14 value="D3nexus.de"/>
@@ -164,11 +164,11 @@
       <outputfile value="Distribution\D3hex.x64.exe"/>
       <compiler version="PureBasic 5.31 (Windows - x64)"/>
       <executable value="Distribution\D3hex.x64.exe"/>
-      <options unicode="1" xpskin="1" user="1" onerror="1"/>
+      <options unicode="1" xpskin="1" user="1" onerror="1" debug="1"/>
       <purifier enable="0" granularity="1,1,1,1"/>
       <icon enable="1">Data\Images\Icon.ico</icon>
-      <compilecount enable="1" value="2942"/>
-      <buildcount enable="1" value="47"/>
+      <compilecount enable="1" value="3019"/>
+      <buildcount enable="1" value="48"/>
       <versioninfo enable="1">
         <field3 value="D3hex"/>
         <field14 value="D3nexus.de"/>

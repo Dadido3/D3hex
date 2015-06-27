@@ -23,7 +23,7 @@
 ; 
 ; 
 ; 
-; 
+; TODO: Object_Dummy_Get_Descriptor(...)
 ; 
 
 ; ##################################################### Includes ####################################################
@@ -80,7 +80,8 @@ Procedure Object_Dummy_Create(Requester)
   *Object\Function_Configuration_Get = @Object_Dummy_Configuration_Get()
   *Object\Function_Configuration_Set = @Object_Dummy_Configuration_Set()
   
-  *Object\Name = "Dummy"
+  *Object\Name = Object_Dummy_Main\Object_Type\Name
+  *Object\Name_Inherited = *Object\Name
   *Object\Color = RGBA(127, 127, 100, 255)
   
   *Object\Custom_Data = AllocateStructure(Object_Dummy)
@@ -375,8 +376,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 203
-; FirstLine = 203
+; CursorPosition = 83
+; FirstLine = 62
 ; Folding = --
 ; EnableUnicode
 ; EnableXP

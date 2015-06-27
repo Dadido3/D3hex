@@ -80,6 +80,7 @@ Enumeration
   #Object_Event_Close
   
   ; #### Link events
+  #Object_Link_Event_Update_Descriptor
   #Object_Link_Event_Update
   #Object_Link_Event_Goto
   
@@ -125,6 +126,7 @@ Structure Object_Output
   
   Short_Name.s
   Name.s
+  Name_Inherited.s
   
   ; #### Custom Data
   *Custom_Data
@@ -148,8 +150,10 @@ EndStructure
 
 Structure Object
   ID.q
-  Name.s
   Color.l
+  
+  Name.s
+  Name_Inherited.s
   
   *Type.Object_Type
   *Type_Base.Object_Type
@@ -424,6 +428,13 @@ Procedure Object_Link_Connect(*Object_Output.Object_Output, *Object_Input.Object
     *Object_Input\Function_Event(*Object_Input, Object_Event)
   EndIf
   
+  ; #### Send "update descriptor" event
+  Protected Object_Event_Descriptor.Object_Event
+  Object_Event_Descriptor\Type = #Object_Link_Event_Update_Descriptor
+  If *Object_Input\Function_Event
+    *Object_Input\Function_Event(*Object_Input, Object_Event_Descriptor)
+  EndIf
+  
   ProcedureReturn #True
 EndProcedure
 
@@ -645,6 +656,7 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 3
+; CursorPosition = 434
+; FirstLine = 399
 ; Folding = ----
 ; EnableXP

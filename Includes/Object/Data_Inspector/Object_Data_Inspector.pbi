@@ -119,7 +119,8 @@ Procedure Object_Data_Inspector_Create(Requester)
   *Object\Function_Configuration_Get = @Object_Data_Inspector_Configuration_Get()
   *Object\Function_Configuration_Set = @Object_Data_Inspector_Configuration_Set()
   
-  *Object\Name = "Data Inspector"
+  *Object\Name = Object_Data_Inspector_Main\Object_Type\Name
+  *Object\Name_Inherited = *Object\Name
   *Object\Color = RGBA(150,100,150,255)
   
   *Object\Custom_Data = AllocateStructure(Object_Data_Inspector)
@@ -660,7 +661,21 @@ Procedure Object_Data_Inspector_Input_Event(*Object_Input.Object_Input, *Object_
     ProcedureReturn #False
   EndIf
   
+  Protected *Descriptor.NBT_Element
+  
   Select *Object_Event\Type
+    Case #Object_Link_Event_Update_Descriptor
+      *Descriptor = Object_Input_Get_Descriptor(*Object_Input)
+      If *Descriptor
+        *Object\Name_Inherited = *Object\Name + ": " + NBT_Tag_Get_String(NBT_Tag(*Descriptor\NBT_Tag, "Name"))
+        NBT_Error_Get()
+      Else
+        *Object\Name_Inherited = *Object\Name
+      EndIf
+      If *Object_Data_Inspector\Window
+        SetWindowTitle(*Object_Data_Inspector\Window\ID, *Object\Name_Inherited)
+      EndIf
+      
     Case #Object_Link_Event_Update
       *Object_Data_Inspector\Update_ListIcon = #True
       
@@ -770,8 +785,8 @@ Procedure Object_Data_Inspector_Window_Event_SizeWindow()
     ProcedureReturn 
   EndIf
   
-  ResizeGadget(*Object_Data_Inspector\ListIcon, #PB_Ignore, #PB_Ignore, WindowWidth(Event_Window)-20, 320)
-  ResizeGadget(*Object_Data_Inspector\Editor, #PB_Ignore, 340, WindowWidth(Event_Window)-20, WindowHeight(Event_Window)-380)
+  ResizeGadget(*Object_Data_Inspector\ListIcon, #PB_Ignore, #PB_Ignore, WindowWidth(Event_Window), 320)
+  ResizeGadget(*Object_Data_Inspector\Editor, #PB_Ignore, 330, WindowWidth(Event_Window), WindowHeight(Event_Window)-370)
   ResizeGadget(*Object_Data_Inspector\Button_Set, WindowWidth(Event_Window)-100, WindowHeight(Event_Window)-30, #PB_Ignore, #PB_Ignore)
   
   ResizeGadget(*Object_Data_Inspector\CheckBox[0], #PB_Ignore, WindowHeight(Event_Window)-30, #PB_Ignore, #PB_Ignore)
@@ -825,13 +840,13 @@ Procedure Object_Data_Inspector_Window_Open(*Object.Object)
   If Not *Object_Data_Inspector\Window
     
     Width = 300
-    Height = 460
+    Height = 430
     
-    *Object_Data_Inspector\Window = Window_Create(*Object, "Data Inspector", "Inspector", #False, 0, 0, Width, Height, #True)
+    *Object_Data_Inspector\Window = Window_Create(*Object, *Object\Name_Inherited, *Object\Name, #False, 0, 0, Width, Height, #True)
     
     ; #### Gadgets
     
-    *Object_Data_Inspector\ListIcon = ListIconGadget(#PB_Any, 10, 10, Width-20, Height-100, "Type", 50, #PB_ListIcon_GridLines | #PB_ListIcon_FullRowSelect | #PB_ListIcon_AlwaysShowSelection)
+    *Object_Data_Inspector\ListIcon = ListIconGadget(#PB_Any, 0, 0, Width, 320, "Type", 50, #PB_ListIcon_GridLines | #PB_ListIcon_FullRowSelect | #PB_ListIcon_AlwaysShowSelection)
     AddGadgetColumn(*Object_Data_Inspector\ListIcon, 1, "Value", 500)
     
     ; #### Add ListIcon items
@@ -844,8 +859,8 @@ Procedure Object_Data_Inspector_Window_Open(*Object.Object)
     AddGadgetItem(*Object_Data_Inspector\ListIcon,  6, "int32")    : SetGadgetItemData(*Object_Data_Inspector\ListIcon,  6,  6)
     AddGadgetItem(*Object_Data_Inspector\ListIcon,  7, "uint64")   : SetGadgetItemData(*Object_Data_Inspector\ListIcon,  7,  7)
     AddGadgetItem(*Object_Data_Inspector\ListIcon,  8, "int64")    : SetGadgetItemData(*Object_Data_Inspector\ListIcon,  8,  8)
-    AddGadgetItem(*Object_Data_Inspector\ListIcon,  9, "float32")   : SetGadgetItemData(*Object_Data_Inspector\ListIcon,  9,  9)
-    AddGadgetItem(*Object_Data_Inspector\ListIcon, 10, "float64")   : SetGadgetItemData(*Object_Data_Inspector\ListIcon, 10, 10)
+    AddGadgetItem(*Object_Data_Inspector\ListIcon,  9, "float32")  : SetGadgetItemData(*Object_Data_Inspector\ListIcon,  9,  9)
+    AddGadgetItem(*Object_Data_Inspector\ListIcon, 10, "float64")  : SetGadgetItemData(*Object_Data_Inspector\ListIcon, 10, 10)
     AddGadgetItem(*Object_Data_Inspector\ListIcon, 11, "Ascii")    : SetGadgetItemData(*Object_Data_Inspector\ListIcon, 11, 11)
     AddGadgetItem(*Object_Data_Inspector\ListIcon, 12, "UTF8")     : SetGadgetItemData(*Object_Data_Inspector\ListIcon, 12, 12)
     ;AddGadgetItem(*Object_Data_Inspector\ListIcon, 13, "UTF16")    : SetGadgetItemData(*Object_Data_Inspector\ListIcon, 13, 13)
@@ -853,7 +868,7 @@ Procedure Object_Data_Inspector_Window_Open(*Object.Object)
     AddGadgetItem(*Object_Data_Inspector\ListIcon, 13, "UCS2")     : SetGadgetItemData(*Object_Data_Inspector\ListIcon, 13, 15)
     ;AddGadgetItem(*Object_Data_Inspector\ListIcon, 16, "UCS4")     : SetGadgetItemData(*Object_Data_Inspector\ListIcon, 16, 16)
     
-    *Object_Data_Inspector\Editor = EditorGadget(#PB_Any, 10, Height-80, Width-20, 40)
+    *Object_Data_Inspector\Editor = EditorGadget(#PB_Any, 0, 330, Width, Height-370)
     
     *Object_Data_Inspector\Button_Set = ButtonGadget(#PB_Any, Width-100, Height-30, 90, 20, "Write")
     
@@ -869,7 +884,7 @@ Procedure Object_Data_Inspector_Window_Open(*Object.Object)
     BindEvent(#PB_Event_Menu, @Object_Data_Inspector_Window_Event_Menu(), *Object_Data_Inspector\Window\ID)
     BindEvent(#PB_Event_CloseWindow, @Object_Data_Inspector_Window_Event_CloseWindow(), *Object_Data_Inspector\Window\ID)
     
-    Window_Bounds(*Object_Data_Inspector\Window, 300, 460, #PB_Default, #PB_Default)
+    Window_Bounds(*Object_Data_Inspector\Window, 300, 430, #PB_Default, #PB_Default)
     
     *Object_Data_Inspector\Update_ListIcon = #True
     
@@ -949,8 +964,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 826
-; FirstLine = 834
+; CursorPosition = 663
+; FirstLine = 646
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP
