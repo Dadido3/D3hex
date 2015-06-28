@@ -522,7 +522,7 @@ Procedure Object_Editor_Output_Get_Descriptor(*Object_Output.Object_Output)
     ProcedureReturn #Null
   EndIf
   
-  NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Name", #NBT_Tag_String), *Object\Name + " selection")
+  NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Name", #NBT_Tag_String), "Selection of "+*Object\Name_Inherited)
   
   ProcedureReturn *Object_Output\Descriptor
 EndProcedure
@@ -1009,7 +1009,7 @@ Procedure Object_Editor_Canvas_Redraw(*Object.Object)
   FrontColor(RGB(0,0,255))
   BackColor(RGB(255,255,255))
   
-  DrawText(0, 0, Str(*Object_Editor\Scroll_Line))
+  ;DrawText(0, 0, Str(*Object_Editor\Scroll_Line))
   
   ; #### Display the Adress in X-Direction
   For i = 0 To *Object_Editor\Line_Bytes - 1
@@ -1212,7 +1212,7 @@ Procedure Object_Editor_Statusbar_Update(*Object.Object)
     ProcedureReturn #False
   EndIf
   
-  If *Object_Editor\Window\ID = Window_Get_Active()
+  If *Object_Editor\Window = Window_Get_Active()
     If *Object_Editor\Select_Start < *Object_Editor\Select_End
       StatusBarText(Main_Window\StatusBar_ID, 0, "Offset: "+Hex(*Object_Editor\Select_Start))
     Else
@@ -2447,8 +2447,8 @@ MenuItem(#Object_Editor_PopupMenu_Select_All, "Select All", ImageID(Icon_Select_
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 2305
-; FirstLine = 2305
+; CursorPosition = 1220
+; FirstLine = 1206
 ; Folding = -------
 ; EnableUnicode
 ; EnableXP

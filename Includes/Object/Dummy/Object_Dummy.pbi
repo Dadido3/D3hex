@@ -57,6 +57,7 @@ Declare   _Object_Dummy_Delete(*Object.Object)
 Declare   Object_Dummy_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
 Declare   Object_Dummy_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
 
+Declare   Object_Dummy_Get_Descriptor(*Object_Output.Object_Output)
 Declare.q Object_Dummy_Get_Size(*Object_Output.Object_Output)
 Declare   Object_Dummy_Get_Data(*Object_Output.Object_Output, Position.q, Size.i, *Data, *Metadata)
 Declare   Object_Dummy_Set_Data(*Object_Output.Object_Output, Position.q, Size.i, *Data)
@@ -91,6 +92,7 @@ Procedure Object_Dummy_Create(Requester)
   
   ; #### Add Output
   *Object_Output = Object_Output_Add(*Object)
+  *Object_Output\Function_Get_Descriptor = @Object_Dummy_Get_Descriptor()
   *Object_Output\Function_Get_Size = @Object_Dummy_Get_Size()
   *Object_Output\Function_Get_Data = @Object_Dummy_Get_Data()
   *Object_Output\Function_Set_Data = @Object_Dummy_Set_Data()
@@ -183,6 +185,25 @@ Procedure Object_Dummy_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
   NBT_Tag_Get_Array(*NBT_Tag, *Object_Dummy\Raw_Data, *Object_Dummy\Raw_Data_Size)
   
   ProcedureReturn #True
+EndProcedure
+
+Procedure Object_Dummy_Get_Descriptor(*Object_Output.Object_Output)
+  If Not *Object_Output
+    ProcedureReturn #Null
+  EndIf
+  Protected *Object.Object = *Object_Output\Object
+  If Not *Object
+    ProcedureReturn #Null
+  EndIf
+  
+  Protected *Object_Dummy.Object_Dummy = *Object\Custom_Data
+  If Not *Object_Dummy
+    ProcedureReturn #Null
+  EndIf
+  
+  NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Name", #NBT_Tag_String), "Dummy")
+  
+  ProcedureReturn *Object_Output\Descriptor
 EndProcedure
 
 Procedure.q Object_Dummy_Get_Size(*Object_Output.Object_Output)
@@ -376,8 +397,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 83
-; FirstLine = 62
+; CursorPosition = 96
+; FirstLine = 87
 ; Folding = --
 ; EnableUnicode
 ; EnableXP

@@ -186,7 +186,7 @@ Structure gzFile : EndStructure
 
 #Z_NULL = 0  ; For initializing zalloc, zfree, opaque
 
-ImportC "../Libraries\zlib.x64.lib"
+ImportC "../Libraries/zlib.lib"
   zlibVersion           () ; Returns a pointer to a string
   deflateInit_          (*stream.z_stream, level, *version_string, stream_size)
   deflate               (*stream.z_stream, flush)
@@ -257,8 +257,8 @@ ImportC "../Libraries\zlib.x64.lib"
   crc32                 (crc.l, *buf, len.l)
   crc32_combine         (crc1.l, crc2.l, len2)
 EndImport
-; IDE Options = PureBasic 5.30 Beta 1 (Windows - x64)
-; CursorPosition = 188
-; FirstLine = 153
+; IDE Options = PureBasic 5.31 (Windows - x64)
+; CursorPosition = 196
+; FirstLine = 177
 ; EnableXP
 ; DisableDebugger

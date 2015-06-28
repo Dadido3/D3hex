@@ -7,7 +7,7 @@
   <section name="data">
     <explorer view="Includes\Object\Data_Inspector\" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2015-06-27 23:41" user="David Vogel" host="DAVIDS"/>
+    <lastopen date="2015-06-28 03:43" user="David Vogel" host="DAVIDS"/>
   </section>
   <section name="files">
     <file name="Includes\About.pbi">
@@ -20,7 +20,7 @@
     </file>
     <file name="Includes\D3docker\D3docker.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+++"/>
-      <fingerprint md5="eafe7333be2f4e78ecd0fe2b8ac59cb5"/>
+      <fingerprint md5="a18917c7da12699e32c16c02c05bb855"/>
     </file>
     <file name="Includes\D3HT.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
@@ -44,7 +44,7 @@
     </file>
     <file name="Includes\Object.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
-      <fingerprint md5="1aacf4a42bd280a169cb838bf006cbc3"/>
+      <fingerprint md5="9197d0c323626f3aa7716ff8a5da5a38"/>
     </file>
     <file name="Includes\Object\Binary_Operation\Object_Binary_Operation.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
@@ -64,7 +64,7 @@
     </file>
     <file name="Includes\Object\Editor\Object_Editor.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
-      <fingerprint md5="edf552b4f79397de40a4036095794ae1"/>
+      <fingerprint md5="3b0595bc10ed838ddc639a9571a87783"/>
     </file>
     <file name="Includes\Object\Editor\Object_Editor_Goto.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
@@ -76,7 +76,7 @@
     </file>
     <file name="Includes\Object\File\Object_File.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
-      <fingerprint md5="116f74d81be950fc0a4189cb95aa2df4"/>
+      <fingerprint md5="5d402eb558f9ed8b030d858468e57ee7"/>
     </file>
     <file name="Includes\Object\History\Object_History.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
@@ -92,11 +92,11 @@
     </file>
     <file name="Includes\Object\Network_Terminal\Object_Network_Terminal.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
-      <fingerprint md5="74a61aa5a4b9813b52c581882f017b8e"/>
+      <fingerprint md5="3e50d48546c35b28ac63edf49e4d2188"/>
     </file>
     <file name="Includes\Object\Process\Object_Process.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
-      <fingerprint md5="764156ff9866a6072f263bfbcd9601c1"/>
+      <fingerprint md5="7ec30580a9324b2bfe5f616715de679d"/>
     </file>
     <file name="Includes\Object\Random\Object_Random.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
@@ -140,7 +140,7 @@
     </file>
     <file name="Main.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="98f34667855e2c2b2a9fa8fd00abcc14"/>
+      <fingerprint md5="6a7ed574a0aec4ca73b4524517b19e61"/>
     </file>
   </section>
   <section name="targets">
@@ -167,7 +167,7 @@
       <options unicode="1" xpskin="1" user="1" onerror="1" debug="1"/>
       <purifier enable="0" granularity="1,1,1,1"/>
       <icon enable="1">Data\Images\Icon.ico</icon>
-      <compilecount enable="1" value="3019"/>
+      <compilecount enable="1" value="3089"/>
       <buildcount enable="1" value="48"/>
       <versioninfo enable="1">
         <field3 value="D3hex"/>

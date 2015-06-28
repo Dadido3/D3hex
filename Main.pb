@@ -127,12 +127,12 @@
 ;   - Added Set_Data_Check and Convolute_Check functions
 ;   - Added Object_Datatypes
 ;   - Fixed crash because of wrong pointer returned from Window_Create(...)
-;
+;   
 ; - V0.930 (15.08.2014)
 ;   - Added Object_Binary_Operation
 ;   - Added Object_Copy
 ;   - Update every structure allocation to AllocateStructure(...) and FreeStructure(...)
-;
+;   
 ; - V0.940 (05.01.2015)
 ;   - Fixed possible crash with Object_Editor (String generation in search wrote Null-Bytes outside of the memory)
 ;   - NBT loading And saving is a bit faster
@@ -145,12 +145,12 @@
 ;   - Object descriptor changed To NBT
 ;   - Object_Editor: limited marked output To selection
 ;   - Object_Random: limited output To size
-;
+;   
 ; - V0.941 (06.01.2015)
 ;   - Object_Editor: Fixed writing at the end of data
 ;   - Object_View2D: Added standard configuration
-;
-; - V0.955 (INDEV)
+;   
+; - V0.957 (INDEV)
 ;   - Object_File: Ignore result of File-requesters if it is ""
 ;   - Network_Terminal:
 ;     - Data_Set is not triggering an update event
@@ -164,7 +164,9 @@
 ;   - Names of the object-windows now depend on the parent objects
 ;   - Object_Data_Inspector:
 ;     - Resized the gadget a bit
-;   - Many other small changes
+;   - Fixed crash
+;   - Statusbar works again for Object_Editor
+;   - Many other small changes and refactoring
 ;   
 ; ##################################################### Begin #######################################################
 
@@ -184,7 +186,7 @@ XIncludeFile "Includes/UnitEngine.pbi"
 
 ; ##################################################### Constants ###################################################
 
-#Version = 0955
+#Version = 0957
 
 Enumeration
   #Data_Raw
@@ -267,10 +269,10 @@ Enumeration 1
   
   #Menu_Goto
   
-  #Menu_TileV
-  #Menu_TileH
-  #Menu_Cascade
-  #Menu_Arrange
+  ;#Menu_TileV
+  ;#Menu_TileH
+  ;#Menu_Cascade
+  ;#Menu_Arrange
   
   #Menu_Help
   #Menu_About
@@ -435,13 +437,6 @@ Procedure Main_Window_Open(Width, Height)
   MenuBar()
   MenuItem(#Menu_Exit, "Exit")
   
-  MenuTitle("Nodes")
-  MenuItem(#Menu_Node_Editor, "Editor", ImageID(Icon_Node_Editor))
-  MenuBar()
-  MenuItem(#Menu_Node_Clear_Config, "Clear configuration", ImageID(Icon_Node_Clear_Config))
-  MenuItem(#Menu_Node_Load_Config, "Load configuration", ImageID(Icon_Node_Load_Config))
-  MenuItem(#Menu_Node_Save_Config, "Save configuration", ImageID(Icon_Node_Save_Config))
-  
   MenuTitle("Edit")
   MenuItem(#Menu_Undo, "Undo", ImageID(Icon_Undo))
   MenuItem(#Menu_Redo, "Redo", ImageID(Icon_Redo))
@@ -455,17 +450,24 @@ Procedure Main_Window_Open(Width, Height)
   MenuBar()
   MenuItem(#Menu_Goto, "Goto", ImageID(Icon_Goto))
   
+  MenuTitle("Nodes")
+  MenuItem(#Menu_Node_Editor, "Editor", ImageID(Icon_Node_Editor))
+  MenuBar()
+  MenuItem(#Menu_Node_Clear_Config, "Clear configuration", ImageID(Icon_Node_Clear_Config))
+  MenuItem(#Menu_Node_Load_Config, "Load configuration", ImageID(Icon_Node_Load_Config))
+  MenuItem(#Menu_Node_Save_Config, "Save configuration", ImageID(Icon_Node_Save_Config))
+  
   ;MenuTitle("View")
   ;MenuItem(#Menu_View_Resize, "Resize", ImageID(Icon_Resize))
   
   ;MenuTitle("Visualisation")
   ;MenuItem(#Menu_Visualisation_Hilbert, "Hilbert View", ImageID(Icon_Hilbert))
   
-  MenuTitle("Windows")
-  MenuItem(#Menu_TileV, "Tile vertically")
-  MenuItem(#Menu_TileH, "Tile horizontally")
-  MenuItem(#Menu_Cascade, "Cascade")
-  MenuItem(#Menu_Arrange, "Arrange")
+  ;MenuTitle("Windows")
+  ;MenuItem(#Menu_TileV, "Tile vertically")
+  ;MenuItem(#Menu_TileH, "Tile horizontally")
+  ;MenuItem(#Menu_Cascade, "Cascade")
+  ;MenuItem(#Menu_Arrange, "Arrange")
   
   MenuTitle("?")
   MenuItem(#Menu_Help, "Help")
@@ -837,8 +839,8 @@ DataSection
   
 EndDataSection
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 186
-; FirstLine = 153
+; CursorPosition = 169
+; FirstLine = 131
 ; Folding = --
 ; EnableUnicode
 ; EnableXP

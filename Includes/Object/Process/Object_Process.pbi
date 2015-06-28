@@ -55,7 +55,7 @@ Structure Object_Process
   
   ; #### Process stuff
   PID.i
-  
+  Process_Name.s
   hProcess.i
 EndStructure
 
@@ -363,9 +363,10 @@ Procedure Object_Process_Get_Descriptor(*Object_Output.Object_Output)
   EndIf
   
   If *Object_Process\hProcess
-    NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Name", #NBT_Tag_String), "Process") ; TODO: get process name
+    NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Name", #NBT_Tag_String), "Process: "+*Object_Process\Process_Name)
     NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Type", #NBT_Tag_String), "Process")
     NBT_Tag_Set_Number(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Process_Handle", #NBT_Tag_Quad), *Object_Process\hProcess)
+    ProcedureReturn *Object_Output\Descriptor
   Else
     ; #### Delete all tags
     While NBT_Tag_Delete(NBT_Tag_Index(*Object_Output\Descriptor\NBT_Tag, 0))
@@ -373,7 +374,7 @@ Procedure Object_Process_Get_Descriptor(*Object_Output.Object_Output)
     NBT_Error_Get()
   EndIf
   
-  ProcedureReturn *Object_Output\Descriptor
+  ProcedureReturn #Null
 EndProcedure
 
 Procedure.q Object_Process_Get_Size(*Object_Output.Object_Output)
@@ -743,6 +744,7 @@ Procedure Object_Process_Window_Event_ListIcon()
   
   If GetGadgetState(*Object_Process\ListIcon) >= 0
     *Object_Process\PID = GetGadgetItemData(*Object_Process\ListIcon, GetGadgetState(*Object_Process\ListIcon))
+    *Object_Process\Process_Name = GetGadgetItemText(*Object_Process\ListIcon, GetGadgetState(*Object_Process\ListIcon), 1)
   EndIf
   
   If Event_Type = #PB_EventType_LeftDoubleClick
@@ -983,8 +985,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 141
-; FirstLine = 119
+; CursorPosition = 154
+; FirstLine = 139
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

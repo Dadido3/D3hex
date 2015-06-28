@@ -469,6 +469,7 @@ Procedure Object_File_Get_Descriptor(*Object_Output.Object_Output)
     NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Name", #NBT_Tag_String), GetFilePart(*Object_File\Filename))
     NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Type", #NBT_Tag_String), "File")
     NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Filename", #NBT_Tag_String), *Object_File\Filename)
+    ProcedureReturn *Object_Output\Descriptor
   Else
     ; #### Delete all tags
     While NBT_Tag_Delete(NBT_Tag_Index(*Object_Output\Descriptor\NBT_Tag, 0))
@@ -476,7 +477,7 @@ Procedure Object_File_Get_Descriptor(*Object_Output.Object_Output)
     NBT_Error_Get()
   EndIf
   
-  ProcedureReturn *Object_Output\Descriptor
+  ProcedureReturn #Null
 EndProcedure
 
 Procedure.q Object_File_Get_Size(*Object_Output.Object_Output)
@@ -1174,8 +1175,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1032
-; FirstLine = 1016
+; CursorPosition = 478
+; FirstLine = 453
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

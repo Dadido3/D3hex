@@ -169,9 +169,6 @@ Procedure Object_Network_Terminal_Connection_Open(*Object.Object)
   ; #### Send event for the updated descriptor
   Object_Event_Descriptor\Type = #Object_Link_Event_Update_Descriptor
   Object_Output_Event(Object_Output_Get(*Object, 0), Object_Event_Descriptor)
-  
-  ; #### Send event for the updated descriptor
-  Object_Event_Descriptor\Type = #Object_Link_Event_Update_Descriptor
   Object_Output_Event(Object_Output_Get(*Object, 1), Object_Event_Descriptor)
   
   ; #### Send event to update the data
@@ -219,9 +216,6 @@ Procedure Object_Network_Terminal_Connection_Close(*Object.Object)
   ; #### Send event for the updated descriptor
   Object_Event_Descriptor\Type = #Object_Link_Event_Update_Descriptor
   Object_Output_Event(Object_Output_Get(*Object, 0), Object_Event_Descriptor)
-  
-  ; #### Send event for the updated descriptor
-  Object_Event_Descriptor\Type = #Object_Link_Event_Update_Descriptor
   Object_Output_Event(Object_Output_Get(*Object, 1), Object_Event_Descriptor)
   
   If *Object_Network_Terminal\Window
@@ -468,7 +462,15 @@ Procedure Object_Network_Terminal_Get_Descriptor(*Object_Output.Object_Output)
   EndIf
   
   If *Object_Network_Terminal\Connection_ID
-    NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Name", #NBT_Tag_String), *Object_Network_Terminal\Adress+":"+Str(*Object_Network_Terminal\Port))
+    Select *Object_Output\i
+      Case 0 ; The "Output"
+        NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Name", #NBT_Tag_String), "Send: "+*Object_Network_Terminal\Adress+":"+Str(*Object_Network_Terminal\Port))
+        
+      Case 1 ; The "Input"
+        NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Name", #NBT_Tag_String), "Receive: "+*Object_Network_Terminal\Adress+":"+Str(*Object_Network_Terminal\Port))
+        
+    EndSelect
+    ProcedureReturn *Object_Output\Descriptor
   Else
     ; #### Delete all tags
     While NBT_Tag_Delete(NBT_Tag_Index(*Object_Output\Descriptor\NBT_Tag, 0))
@@ -476,7 +478,7 @@ Procedure Object_Network_Terminal_Get_Descriptor(*Object_Output.Object_Output)
     NBT_Error_Get()
   EndIf
   
-  ProcedureReturn *Object_Output\Descriptor
+  ProcedureReturn #Null
 EndProcedure
 
 Procedure.q Object_Network_Terminal_Get_Size(*Object_Output.Object_Output)
@@ -1179,6 +1181,10 @@ Procedure Object_Network_Terminal_Network(*Object.Object)
         If *Object_Network_Terminal\Window
           SetGadgetText(*Object_Network_Terminal\Button_Open, "Open")
           SetGadgetState(*Object_Network_Terminal\Button_Open, #False)
+          ; #### Send event for the updated descriptor
+          Object_Event\Type = #Object_Link_Event_Update_Descriptor
+          Object_Output_Event(Object_Output_Get(*Object, 0), Object_Event)
+          Object_Output_Event(Object_Output_Get(*Object, 1), Object_Event)
         EndIf
         
     EndSelect
@@ -1234,8 +1240,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 203
-; FirstLine = 190
+; CursorPosition = 1186
+; FirstLine = 1148
 ; Folding = ------
 ; EnableUnicode
 ; EnableXP

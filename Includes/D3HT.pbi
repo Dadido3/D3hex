@@ -1,22 +1,26 @@
 ; ##################################################### License / Copyright #########################################
 ; 
-;     D3HT
-;     Copyright (C) 2011-2015  David Vogel
-; 
-;     This library is free software; you can redistribute it and/or
-;     modify it under the terms of the GNU Lesser General Public
-;     License As published by the Free Software Foundation; either
-;     version 2.1 of the License, Or (at your option) any later version.
-; 
-;     This library is distributed in the hope that it will be useful,
-;     but WITHOUT ANY WARRANTY; without even the implied warranty of
-;     MERCHANTABILITY Or FITNESS For A PARTICULAR PURPOSE.  See the GNU
-;     Lesser General Public License For more details.
-; 
-;     You should have received a copy of the GNU Lesser General Public
-;     License along With this library; if not, write to the Free Software
-;     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
-;     USA
+;     The MIT License (MIT)
+;     
+;     Copyright (c) 2011-2015  David Vogel
+;     
+;     Permission is hereby granted, free of charge, To any person obtaining a copy
+;     of this software And associated documentation files (the "Software"), To deal
+;     in the Software without restriction, including without limitation the rights
+;     To use, copy, modify, merge, publish, distribute, sublicense, And/Or sell
+;     copies of the Software, And To permit persons To whom the Software is
+;     furnished To do so, subject To the following conditions:
+;     
+;     The above copyright notice And this permission notice shall be included in all
+;     copies Or substantial portions of the Software.
+;     
+;     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS Or
+;     IMPLIED, INCLUDING BUT Not LIMITED To THE WARRANTIES OF MERCHANTABILITY,
+;     FITNESS For A PARTICULAR PURPOSE And NONINFRINGEMENT. IN NO EVENT SHALL THE
+;     AUTHORS Or COPYRIGHT HOLDERS BE LIABLE For ANY CLAIM, DAMAGES Or OTHER
+;     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT Or OTHERWISE, ARISING FROM,
+;     OUT OF Or IN CONNECTION With THE SOFTWARE Or THE USE Or OTHER DEALINGS IN THE
+;     SOFTWARE.
 ;
 ; #################################################### Documentation #############################################
 ; 
@@ -694,8 +698,7 @@ Procedure D3HT_Element_Free(*D3HT_Table.D3HT_Table, *Key.Ascii)
   ProcedureReturn #D3HT_Result_Fail
 EndProcedure
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 186
-; FirstLine = 134
+; CursorPosition = 3
 ; Folding = ------
 ; EnableXP
 ; DisableDebugger

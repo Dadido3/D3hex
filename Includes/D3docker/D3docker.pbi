@@ -169,8 +169,6 @@ Module D3docker
     
     *Callback.Window_Callback
     
-    Title.s
-    
     Max_Width.l
     Min_Width.l
     Max_Height.l
@@ -446,6 +444,7 @@ Module D3docker
     Protected rect.RECT
     Protected *Points.POINTS
     Protected Center_X.l, Center_Y.l
+    Protected i
     
     If Not *Window
       ProcedureReturn #PB_ProcessPureBasicEvents
@@ -474,6 +473,20 @@ Module D3docker
               EndIf
           EndSelect
         EndWith
+        
+      Case #WM_SETTEXT
+        If *Window\Container
+          *Window\Container\Title = PeekS(lParam)
+          Container_Docker_Redraw(*Window\Gadget, *Window\Container)
+          If *Window\Container\Parent And *Window\Container\Parent\Type = #Container_Type_Tabbed And *Window\Container\Parent\Gadget_TabBar
+            For i = 0 To CountTabBarGadgetItems(*Window\Container\Parent\Gadget_TabBar)-1
+              If GetTabBarGadgetItemData(*Window\Container\Parent\Gadget_TabBar, i) = *Window\Container
+                SetTabBarGadgetItemText(*Window\Container\Parent\Gadget_TabBar, i, *Window\Container\Title)
+                Break
+              EndIf
+            Next
+          EndIf
+        EndIf
         
       Case #WM_EXITSIZEMOVE
         *params = GetParams(*Window\Gadget)
@@ -576,7 +589,6 @@ Module D3docker
       \Window()\Window = Window
       \Window()\hWnd = WindowID(\Window()\Window)
       \Window()\Gadget = *Gadget
-      \Window()\Title = Title
       ;SetWindowData(\Window()\Window, \Window())
       SetWindowCallback(@Window_Callback(), \Window()\Window)
       
@@ -2171,8 +2183,8 @@ Module D3docker
   
 EndModule
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1331
-; FirstLine = 1330
+; CursorPosition = 482
+; FirstLine = 442
 ; Folding = --------
 ; EnableUnicode
 ; EnableXP

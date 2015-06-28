@@ -394,6 +394,13 @@ Procedure Object_Link_Disconnect(*Object_Input.Object_Input)
     *Object_Input\Function_Event(*Object_Input, Object_Event)
   EndIf
   
+  ; #### Send "update descriptor" event
+  Protected Object_Event_Descriptor.Object_Event
+  Object_Event_Descriptor\Type = #Object_Link_Event_Update_Descriptor
+  If *Object_Input\Function_Event
+    *Object_Input\Function_Event(*Object_Input, Object_Event_Descriptor)
+  EndIf
+  
   ProcedureReturn #True
 EndProcedure
 
@@ -656,7 +663,7 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 434
-; FirstLine = 399
+; CursorPosition = 401
+; FirstLine = 372
 ; Folding = ----
 ; EnableXP

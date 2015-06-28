@@ -123,7 +123,8 @@ Procedure About_Editor_Fill()
   AddGadgetItem(About\Editor, -1, "╚══════════════════════╝")
   AddGadgetItem(About\Editor, -1, "")
   AddGadgetItem(About\Editor, -1, "► Stargate for his TabBarGadget")
-  AddGadgetItem(About\Editor, -1, "► PureBasic community as a good source for help and information")
+  AddGadgetItem(About\Editor, -1, "► The PureBasic community as a good source for help and information")
+  AddGadgetItem(About\Editor, -1, "► Jean-loup Gailly and Mark Adler for zlib")
   AddGadgetItem(About\Editor, -1, "")
   AddGadgetItem(About\Editor, -1, "╔══════════════════════╗")
   AddGadgetItem(About\Editor, -1, "║       License:       ║")
@@ -271,7 +272,7 @@ DataSection
 EndDataSection
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 125
-; FirstLine = 110
+; CursorPosition = 126
+; FirstLine = 111
 ; Folding = --
 ; EnableXP
