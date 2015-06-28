@@ -261,7 +261,7 @@ Module D3docker
   Declare    Diamond_Delete(*Gadget.GADGET, *Diamond.Diamond)
   
   Declare   _Window_Bounds(*Gadget.GADGET, *Window.Window, Min_Width.l, Min_Height.l, Max_Width.l, Max_Height.l)
-  Declare   _Window_Set_Active(*Gadget.GADGET, *Window.Window, Post_Event=#False)
+  Declare   _Window_Set_Active(*Gadget.GADGET, *Window.Window, Post_Event=#False, Tabbed_Select=#True)
   Declare    Window_Get_By_Handle(hWnd)
   Declare    Window_Get_By_Number(Window)
   
@@ -270,7 +270,7 @@ Module D3docker
   Declare    Container_Get_By_Coordinate(*Gadget.GADGET, *Container.Container, X, Y)
   Declare    Container_Merge_To_Parent(*Gadget.GADGET, *Container.Container)
   Declare    Container_Update_Limits(*Gadget.GADGET, *Container.Container)
-  Declare   _Container_Delete(*Gadget.GADGET, *Container.Container, Iteration=0)
+  Declare   _Container_Delete(*Gadget.GADGET, *Container.Container, Iteration=0, Recursive=#True)
   Declare    Container_Set_Parent(*Gadget.GADGET, *Container.Container, *Parent.Container, Position)
   Declare    Container_Resize(*Gadget.GADGET, *Container.Container, X.l, Y.l, Width.d, Height.d, *Exclude_Resize.Container=#Null, Iteration=0)
   Declare    Container_Resize_Between(*Gadget.GADGET, *Container.Container, Index, Difference)
@@ -689,7 +689,7 @@ Module D3docker
     ProcedureReturn _Window_Bounds(*Window\Gadget, *Window, Min_Width, Min_Height, Max_Width, Max_Height)
   EndProcedure
   
-  Procedure _Window_Set_Active(*Gadget.GADGET, *Window.Window, Post_Event=#False)
+  Procedure _Window_Set_Active(*Gadget.GADGET, *Window.Window, Post_Event=#False, Tabbed_Select=#True)
     If Not *Gadget
       ProcedureReturn #False
     EndIf
@@ -710,7 +710,9 @@ Module D3docker
       If *Window
         If *Window\Container
           ; #### Change the current tab, if it is in any
-          Container_Tabbed_Select(*Gadget, *Window\Container, 0)
+          If Tabbed_Select
+            Container_Tabbed_Select(*Gadget, *Window\Container, 0)
+          EndIf
           
           ; #### Redraw the active container
           ;SetActiveWindow(\Parent_Window)
@@ -999,6 +1001,7 @@ Module D3docker
           ForEach *Container\Container()
             Container_Hide(*Gadget, *Container\Container(), State, Iteration+1)
           Next
+          
         Case #Container_Type_Docker
           Select State
             Case #True
@@ -1012,14 +1015,17 @@ Module D3docker
               EndIf
               HideGadget(*Container\Gadget_Canvas, #False)
           EndSelect
+          
         Case #Container_Type_Split_H
           ForEach *Container\Container()
             Container_Hide(*Gadget, *Container\Container(), State, Iteration+1)
           Next
+          
         Case #Container_Type_Split_V
           ForEach *Container\Container()
             Container_Hide(*Gadget, *Container\Container(), State, Iteration+1)
           Next
+          
         Case #Container_Type_Spliter
           Select State
             Case #True
@@ -1027,6 +1033,7 @@ Module D3docker
             Case #False
               HideGadget(*Container\Gadget_Canvas, #False)
           EndSelect
+          
         Case #Container_Type_Tabbed
           Select State
             Case #True
@@ -1059,12 +1066,12 @@ Module D3docker
         If *Container\Parent\Type = #Container_Type_Tabbed
           ForEach *Container\Parent\Container()
             If *Container\Parent\Container() = *Container
-              Container_Tabbed_Select(*Gadget, *Container\Parent, ListIndex(*Container\Parent\Container()), #True, #False)
+              Container_Tabbed_Select(*Gadget, *Container\Parent, ListIndex(*Container\Parent\Container()), SetGadgetState, #False)
               Break
             EndIf
           Next
         Else
-          Container_Tabbed_Select(*Gadget, *Container\Parent, 0, #True, #False)
+          Container_Tabbed_Select(*Gadget, *Container\Parent, 0, SetGadgetState, #False)
         EndIf
       EndIf
       
@@ -1083,7 +1090,7 @@ Module D3docker
             *Selection = *Container\Container()
             Container_Hide(*Gadget, *Container\Container(), #False)
             If Activate_Window
-              _Window_Set_Active(*Gadget, *Container\Container()\Window, #True)
+              _Window_Set_Active(*Gadget, *Container\Container()\Window, #True, #False)
             EndIf
           Else
             Container_Hide(*Gadget, *Container\Container(), #True)
@@ -1305,12 +1312,12 @@ Module D3docker
     ProcedureReturn *Container
   EndProcedure
   
-  Procedure _Container_Delete(*Gadget.GADGET, *Container.Container, Iteration=0)
+  Procedure _Container_Delete(*Gadget.GADGET, *Container.Container, Iteration=0, Recursive=#True)
     If Not *Gadget
-      ProcedureReturn #Null
+      ProcedureReturn #False
     EndIf
     If Not *Container
-      ProcedureReturn #Null
+      ProcedureReturn #False
     EndIf
     Protected Splitter_Bool
     Protected rect.RECT
@@ -1318,9 +1325,15 @@ Module D3docker
     Protected Active_Gadget.i
     Protected *params.GADGET_PARAMS=GetParams(*Gadget)
     With *params
-      ForEach *Container\Container()
-        _Container_Delete(*Gadget, *Container\Container(), Iteration+1)
-      Next
+      If Recursive
+        ForEach *Container\Container()
+          _Container_Delete(*Gadget, *Container\Container(), Iteration+1)
+        Next
+      EndIf
+      
+      If *Container\Window
+        *Container\Window\Container = #Null
+      EndIf
       
       If *Container\Parent
         ; #### Remove pointer from the parent
@@ -1332,7 +1345,7 @@ Module D3docker
         Next
         
         ; #### Remove tab if the parent is #Container_Type_Tabbed
-        If *Container\Parent\Type = #Container_Type_Tabbed And *Container\Parent\Gadget_TabBar
+        If *Container\Parent\Type = #Container_Type_Tabbed And *Container\Parent\Gadget_TabBar And Iteration = 0
           For i = 0 To CountTabBarGadgetItems(*Container\Parent\Gadget_TabBar)-1
             If GetTabBarGadgetItemData(*Container\Parent\Gadget_TabBar, i) = *Container
               RemoveTabBarGadgetItem(*Container\Parent\Gadget_TabBar, i)
@@ -1389,7 +1402,6 @@ Module D3docker
             rect\bottom = rect\top + *Container\Height - #Container_Docker_Bar_Height
             AdjustWindowRectEx_(rect, GetWindowLong_(*Container\Window\hWnd, #GWL_STYLE), #Null, GetWindowLong_(*Container\Window\hWnd, #GWL_EXSTYLE))
             ResizeWindow(*Container\Window\Window, rect\left, rect\top, *Container\Width, *Container\Height-#Container_Docker_Bar_Height)
-            *Container\Window\Container = #Null
          EndIf
          
         Case #Container_Type_Spliter
@@ -1463,9 +1475,10 @@ Module D3docker
         Container_Set_Parent(*Gadget, *Container\Container(), *Container\Parent, List_Index)
       Wend
       
-      _Container_Delete(*Gadget, *Container)
+      _Container_Delete(*Gadget, *Container, 0, #False)
       
       ; #### Merge containers of the same type
+      ; TODO: Check recursion in Container_Merge_To_Parent
       If *Container\Parent
         ForEach *Container\Parent\Container()
           If *Container\Parent\Container()\Type = *Container\Parent\Type
@@ -1479,13 +1492,13 @@ Module D3docker
   
   Procedure Container_Set_Parent(*Gadget.GADGET, *Container.Container, *Parent.Container, Position)
     If Not *Gadget
-      ProcedureReturn #Null
+      ProcedureReturn #False
     EndIf
     If Not *Container
-      ProcedureReturn #Null
+      ProcedureReturn #False
     EndIf
     If Not *Parent
-      ProcedureReturn #Null
+      ProcedureReturn #False
     EndIf
     Protected Index, i
     Protected *params.GADGET_PARAMS=GetParams(*Gadget)
@@ -2158,8 +2171,8 @@ Module D3docker
   
 EndModule
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1085
-; FirstLine = 1062
+; CursorPosition = 1331
+; FirstLine = 1330
 ; Folding = --------
 ; EnableUnicode
 ; EnableXP
