@@ -25,7 +25,7 @@ It is planned to implement a plugin system, which allows to extend the available
 In this case it would be possible to contribute in any language, which can compile c like shared libraries (.dll files).
 
 ## License
-D3hex is release under the [GPL](./License/License.txt).
+D3hex is release under the [GPL](./License/GNU GPL v2.0.txt).
 
 ## Screenshots
 ![<Image missing>](https://raw.githubusercontent.com/Dadido3/D3hex/master/Screenshots/4.png)
