@@ -16,8 +16,8 @@ This means that all functions of the software are available as single nodes, whi
 In a very simple case you just connect a source to the hex-editor node. This could look similar to this:
 ![<Image missing>](https://raw.githubusercontent.com/Dadido3/D3hex/master/Screenshots/Nodes_Simple.png)  
 The "History" node is used to virtualize all operations made by the "Editor" node.
-This allows undo and redo operations until you finally press "save".
-Without the "History" node you write directly into the "File".
+This allows undo and redo operations, until you finally press "save".
+Without the "History" node, you would write directly into the "File".
 
 ## Language
 The software is completely written in [PureBasic](http://www.purebasic.com), which produces lightweigth and native 32-bit and 64-bit applications.
