@@ -61,13 +61,10 @@ DeclareModule D3HT
   ; ################################################### Constants ###################################################
   #Version = 1211
   
-  #Result_Fail = 0
-  #Result_Success = 1
+  #Result_Fail = #False
+  #Result_Success = #True
   
   #Default = -1
-  
-  #Buffer_Elements_Default = 1024
-  #Sidesearch_Deep_Default = 2
   
   Enumeration
     #Alg_CRC32
@@ -105,7 +102,7 @@ DeclareModule D3HT
   Declare   Get_Elements(*Table)
   Declare   Get_Memoryusage(*Table)
   
-  Declare   Create(Key_Size, Value_Size, Buffer_Elements=-1, Sidesearch_Deep=-1, Algorithm=#Alg_CRC32)
+  Declare   Create(Key_Size, Value_Size, Buffer_Elements=#Default, Sidesearch_Deep=#Default, Algorithm=#Alg_CRC32)
   Declare   Destroy(*Table)
   
 EndDeclareModule
@@ -117,6 +114,10 @@ EndDeclareModule
 Module D3HT
   ; ################################################### Prototypes ##################################################
   Prototype Hash(*Key.Ascii, Key_Size, Start_Hash)
+  
+  ; ################################################### Constants ###################################################
+  #Buffer_Elements_Default = 1024
+  #Sidesearch_Deep_Default = 2
   
   ; ################################################### Structures / Variables ######################################
   Structure Table_Buffer
@@ -180,7 +181,7 @@ Module D3HT
     ProcedureReturn Start_Hash
   EndProcedure
   
-  Procedure Create(Key_Size, Value_Size, Buffer_Elements=-1, Sidesearch_Deep=-1, Algorithm=#Alg_CRC32)
+  Procedure Create(Key_Size, Value_Size, Buffer_Elements=#Default, Sidesearch_Deep=#Default, Algorithm=#Alg_CRC32)
     Protected *Table.Table
     
     If Buffer_Elements < 0
@@ -748,8 +749,8 @@ EndModule
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 59
-; FirstLine = 43
+; CursorPosition = 506
+; FirstLine = 27
 ; Folding = ------
 ; EnableXP
 ; DisableDebugger
