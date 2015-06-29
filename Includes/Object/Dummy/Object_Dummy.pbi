@@ -254,7 +254,7 @@ Procedure Object_Dummy_Get_Data(*Object_Output.Object_Output, Position.q, Size.i
     FillMemory(*Metadata, Size, #Metadata_NoError | #Metadata_Readable | #Metadata_Writeable, #PB_Ascii)
   EndIf
   
-  ProcedureReturn Memory_Range_Copy(*Object_Dummy\Raw_Data, Position, *Data, 0, Size, *Object_Dummy\Raw_Data_Size, Size)
+  ProcedureReturn Memory::Range_Copy(*Object_Dummy\Raw_Data, Position, *Data, 0, Size, *Object_Dummy\Raw_Data_Size, Size)
 EndProcedure
 
 Procedure Object_Dummy_Set_Data(*Object_Output.Object_Output, Position.q, Size.i, *Data)
@@ -304,7 +304,7 @@ Procedure Object_Dummy_Set_Data(*Object_Output.Object_Output, Position.q, Size.i
   ;  Size = File_Size - Position
   ;EndIf
   
-  Result = Memory_Range_Copy(*Data, 0, *Object_Dummy\Raw_Data, Position, Size, Size, *Object_Dummy\Raw_Data_Size)
+  Result = Memory::Range_Copy(*Data, 0, *Object_Dummy\Raw_Data, Position, Size, Size, *Object_Dummy\Raw_Data_Size)
   
   Object_Event\Type = #Object_Link_Event_Update
   Object_Event\Position = Position
@@ -347,7 +347,7 @@ Procedure Object_Dummy_Convolute(*Object_Output.Object_Output, Position.q, Offse
   *Object_Dummy\Raw_Data_Size + Offset
   
   If Offset < 0
-    Memory_Range_Move(*Object_Dummy\Raw_Data+Position, 0, *Object_Dummy\Raw_Data+Position, Offset, Raw_Data_Size_Old-Position, Raw_Data_Size_Old-Position, Raw_Data_Size_Old-Position)
+    Memory::Range_Move(*Object_Dummy\Raw_Data+Position, 0, *Object_Dummy\Raw_Data+Position, Offset, Raw_Data_Size_Old-Position, Raw_Data_Size_Old-Position, Raw_Data_Size_Old-Position)
   EndIf
   
   New_Size = Quad_Divide_Ceil(*Object_Dummy\Raw_Data_Size, #Object_Dummy_MemoryAllocation_Step) * #Object_Dummy_MemoryAllocation_Step
@@ -361,7 +361,7 @@ Procedure Object_Dummy_Convolute(*Object_Output.Object_Output, Position.q, Offse
   EndIf
   
   If Offset > 0
-    Memory_Range_Move(*Object_Dummy\Raw_Data, Position, *Object_Dummy\Raw_Data, Position+Offset, Raw_Data_Size_Old-Position, Raw_Data_Size_Old, *Object_Dummy\Raw_Data_Size)
+    Memory::Range_Move(*Object_Dummy\Raw_Data, Position, *Object_Dummy\Raw_Data, Position+Offset, Raw_Data_Size_Old-Position, Raw_Data_Size_Old, *Object_Dummy\Raw_Data_Size)
     If Position + Offset <= *Object_Dummy\Raw_Data_Size ; probably redundant
       FillMemory(*Object_Dummy\Raw_Data+Position, Offset)
     EndIf
@@ -397,8 +397,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 96
-; FirstLine = 87
+; CursorPosition = 363
+; FirstLine = 352
 ; Folding = --
 ; EnableUnicode
 ; EnableXP

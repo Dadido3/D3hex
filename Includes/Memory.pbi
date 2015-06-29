@@ -17,208 +17,237 @@
 ;     With this program; if not, write to the Free Software Foundation, Inc.,
 ;     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ;
-; ############################################ Variablen ####################################################
+; ##################################################### Documentation ###############################################
+; 
+;
+; ##################################################### Includes ####################################################
 
-Structure Memory_Operation
-  Src_Offset.q
-  Src_Size.q
-  
-  Dst_Offset.q
-  Dst_Size.q
-  
-  Copy_Size.q
-EndStructure
+; ###################################################################################################################
+; ##################################################### Public ######################################################
+; ###################################################################################################################
 
-; ############################################ Proceduren ####################################################
+DeclareModule Memory
+  EnableExplicit
+  ; ################################################### Constants ###################################################
+  
+  ; ################################################### Structures ##################################################
+  Structure Operation
+    Src_Offset.q
+    Src_Size.q
+    
+    Dst_Offset.q
+    Dst_Size.q
+    
+    Copy_Size.q
+  EndStructure
+  
+  ; ################################################### Functions ###################################################
+  Declare   Operation_Check(*Operation.Operation)
+  Declare   Range_Fill(Ascii.a, Fill_Size.q, *Dst, Dst_Offset.q, Dst_Size.q=-1)
+  Declare   Range_Copy(*Src, Src_Offset.q, *Dst, Dst_Offset.q, Copy_Size.q, Src_Size.q=-1, Dst_Size.q=-1)
+  Declare   Range_Move(*Src, Src_Offset.q, *Dst, Dst_Offset.q, Copy_Size.q, Src_Size.q=-1, Dst_Size.q=-1)
+  Declare   Mirror(*Memory, Size)
+  
+EndDeclareModule
 
-; #### Cuts the Offset's / Sizes of the memory operation to prevent memory violations
-Procedure Memory_Operation_Check(*Memory_Operation.Memory_Operation)
-  Protected Temp.q
-  
-  If *Memory_Operation\Src_Offset < 0
-    *Memory_Operation\Copy_Size  + *Memory_Operation\Src_Offset
-    *Memory_Operation\Dst_Offset - *Memory_Operation\Src_Offset
-    *Memory_Operation\Src_Offset - *Memory_Operation\Src_Offset
-  EndIf
-  
-  If *Memory_Operation\Dst_Offset < 0
-    *Memory_Operation\Copy_Size  + *Memory_Operation\Dst_Offset
-    *Memory_Operation\Src_Offset - *Memory_Operation\Dst_Offset
-    *Memory_Operation\Dst_Offset - *Memory_Operation\Dst_Offset
-  EndIf
-  
-  Temp = *Memory_Operation\Src_Size - *Memory_Operation\Src_Offset
-  If *Memory_Operation\Copy_Size > Temp
-    *Memory_Operation\Copy_Size = Temp
-  EndIf
-  
-  Temp = *Memory_Operation\Dst_Size - *Memory_Operation\Dst_Offset
-  If *Memory_Operation\Copy_Size > Temp
-    *Memory_Operation\Copy_Size = Temp
-  EndIf
-  
-  If *Memory_Operation\Copy_Size < 0
-    *Memory_Operation\Copy_Size = 0
-  EndIf
-  
-  ProcedureReturn #True
-EndProcedure
+; ###################################################################################################################
+; ##################################################### Private #####################################################
+; ###################################################################################################################
 
-; #### Fills a *Destination with a specified amount of data.
-; #### It cuts everything, to prevent memory violations
-Procedure Memory_Range_Fill(Ascii.a, Fill_Size.q, *Dst, Dst_Offset.q, Dst_Size.q=-1)
-  Protected Temp.q
+Module Memory
+  ; ################################################### Functions ###################################################
   
-  If Not *Dst
-    ProcedureReturn #False
-  EndIf
-  
-  If Dst_Size = -1
-    Dst_Size.q = MemorySize(*Dst)
-  EndIf
-  
-  If Dst_Offset < 0
-    Fill_Size  + Dst_Offset
-    Dst_Offset - Dst_Offset
-  EndIf
-  
-  Temp = Dst_Size - Dst_Offset
-  If Fill_Size > Temp
-    Fill_Size = Temp
-  EndIf
-  
-  If Fill_Size > 0
-    FillMemory(*Dst+Dst_Offset, Fill_Size, Ascii)
-  EndIf
-  
-  ProcedureReturn #True
-EndProcedure
-
-; #### Copies a specified amount of data (Copy_Size) from the source to the destination.
-; #### It cuts everything, to prevent memory violations
-Procedure Memory_Range_Copy(*Src, Src_Offset.q, *Dst, Dst_Offset.q, Copy_Size.q, Src_Size.q=-1, Dst_Size.q=-1)
-  Protected Temp.q
-  If Not *Src
-    ProcedureReturn #False
-  EndIf
-  
-  If Not *Dst
-    ProcedureReturn #False
-  EndIf
-  
-  If Src_Size = -1
-    Src_Size.q = MemorySize(*Src)
-  EndIf
-  If Dst_Size = -1
-    Dst_Size.q = MemorySize(*Dst)
-  EndIf
-  
-  If Src_Offset < 0
-    Copy_Size  + Src_Offset
-    Dst_Offset - Src_Offset
-    Src_Offset - Src_Offset
-  EndIf
-  
-  If Dst_Offset < 0
-    Copy_Size  + Dst_Offset
-    Src_Offset - Dst_Offset
-    Dst_Offset - Dst_Offset
-  EndIf
-  
-  Temp = Src_Size - Src_Offset
-  If Copy_Size > Temp
-    Copy_Size = Temp
-  EndIf
-  
-  Temp = Dst_Size - Dst_Offset
-  If Copy_Size > Temp
-    Copy_Size = Temp
-  EndIf
-  
-  If Copy_Size > 0
-    CopyMemory(*Src+Src_Offset, *Dst+Dst_Offset, Copy_Size)
-  EndIf
-  
-  ProcedureReturn #True
-EndProcedure
-
-; #### Copies (MoveMemory) a specified amount of data (Copy_Size) from the source to the destination.
-; #### It cuts everything, to prevent memory violations
-Procedure Memory_Range_Move(*Src, Src_Offset.q, *Dst, Dst_Offset.q, Copy_Size.q, Src_Size.q=-1, Dst_Size.q=-1)
-  Protected Temp.q
-  If Not *Src
-    ProcedureReturn #False
-  EndIf
-  
-  If Not *Dst
-    ProcedureReturn #False
-  EndIf
-  
-  If Src_Size = -1
-    Src_Size.q = MemorySize(*Src)
-  EndIf
-  If Dst_Size = -1
-    Dst_Size.q = MemorySize(*Dst)
-  EndIf
-  
-  If Src_Offset < 0
-    Copy_Size  + Src_Offset
-    Dst_Offset - Src_Offset
-    Src_Offset - Src_Offset
-  EndIf
-  
-  If Dst_Offset < 0
-    Copy_Size  + Dst_Offset
-    Src_Offset - Dst_Offset
-    Dst_Offset - Dst_Offset
-  EndIf
-  
-  Temp = Src_Size - Src_Offset
-  If Copy_Size > Temp
-    Copy_Size = Temp
-  EndIf
-  
-  Temp = Dst_Size - Dst_Offset
-  If Copy_Size > Temp
-    Copy_Size = Temp
-  EndIf
-  
-  If Copy_Size > 0
-    MoveMemory(*Src+Src_Offset, *Dst+Dst_Offset, Copy_Size)
-  EndIf
-  
-  ProcedureReturn #True
-EndProcedure
-
-; #### Mirrors the memory, usable for little/big endian switching
-Procedure Memory_Mirror(*Memory, Memory_Size)
-  Protected Elements, i
-  Protected Temp.a, *A.Ascii, *B.Ascii
-  
-  If Not *Memory
-    ProcedureReturn #False
-  EndIf
-  
-  If Memory_Size < 1
+  ; #### Cuts the Offset's / Sizes of the memory operation to prevent memory violations
+  Procedure Operation_Check(*Operation.Operation)
+    Protected Temp.q
+    
+    If *Operation\Src_Offset < 0
+      *Operation\Copy_Size  + *Operation\Src_Offset
+      *Operation\Dst_Offset - *Operation\Src_Offset
+      *Operation\Src_Offset - *Operation\Src_Offset
+    EndIf
+    
+    If *Operation\Dst_Offset < 0
+      *Operation\Copy_Size  + *Operation\Dst_Offset
+      *Operation\Src_Offset - *Operation\Dst_Offset
+      *Operation\Dst_Offset - *Operation\Dst_Offset
+    EndIf
+    
+    Temp = *Operation\Src_Size - *Operation\Src_Offset
+    If *Operation\Copy_Size > Temp
+      *Operation\Copy_Size = Temp
+    EndIf
+    
+    Temp = *Operation\Dst_Size - *Operation\Dst_Offset
+    If *Operation\Copy_Size > Temp
+      *Operation\Copy_Size = Temp
+    EndIf
+    
+    If *Operation\Copy_Size < 0
+      *Operation\Copy_Size = 0
+    EndIf
+    
     ProcedureReturn #True
-  EndIf
+  EndProcedure
   
-  Elements = Memory_Size/2
-  *A = *Memory
-  *B = *Memory + Memory_Size - 1
+  ; #### Fills a *Destination with a specified amount of data.
+  ; #### It cuts everything, to prevent memory violations
+  Procedure Range_Fill(Ascii.a, Fill_Size.q, *Dst, Dst_Offset.q, Dst_Size.q=-1)
+    Protected Temp.q
+    
+    If Not *Dst
+      ProcedureReturn #False
+    EndIf
+    
+    If Dst_Size = -1
+      Dst_Size.q = MemorySize(*Dst)
+    EndIf
+    
+    If Dst_Offset < 0
+      Fill_Size  + Dst_Offset
+      Dst_Offset - Dst_Offset
+    EndIf
+    
+    Temp = Dst_Size - Dst_Offset
+    If Fill_Size > Temp
+      Fill_Size = Temp
+    EndIf
+    
+    If Fill_Size > 0
+      FillMemory(*Dst+Dst_Offset, Fill_Size, Ascii)
+    EndIf
+    
+    ProcedureReturn #True
+  EndProcedure
   
-  For i = 0 To Elements - 1
-    Temp = *A\a
-    *A\a = *B\a
-    *B\a = Temp
-    *A + 1
-    *B - 1
-  Next
+  ; #### Copies a specified amount of data (Copy_Size) from the source to the destination.
+  ; #### It cuts everything, to prevent memory violations
+  Procedure Range_Copy(*Src, Src_Offset.q, *Dst, Dst_Offset.q, Copy_Size.q, Src_Size.q=-1, Dst_Size.q=-1)
+    Protected Temp.q
+    If Not *Src
+      ProcedureReturn #False
+    EndIf
+    
+    If Not *Dst
+      ProcedureReturn #False
+    EndIf
+    
+    If Src_Size = -1
+      Src_Size.q = MemorySize(*Src)
+    EndIf
+    If Dst_Size = -1
+      Dst_Size.q = MemorySize(*Dst)
+    EndIf
+    
+    If Src_Offset < 0
+      Copy_Size  + Src_Offset
+      Dst_Offset - Src_Offset
+      Src_Offset - Src_Offset
+    EndIf
+    
+    If Dst_Offset < 0
+      Copy_Size  + Dst_Offset
+      Src_Offset - Dst_Offset
+      Dst_Offset - Dst_Offset
+    EndIf
+    
+    Temp = Src_Size - Src_Offset
+    If Copy_Size > Temp
+      Copy_Size = Temp
+    EndIf
+    
+    Temp = Dst_Size - Dst_Offset
+    If Copy_Size > Temp
+      Copy_Size = Temp
+    EndIf
+    
+    If Copy_Size > 0
+      CopyMemory(*Src+Src_Offset, *Dst+Dst_Offset, Copy_Size)
+    EndIf
+    
+    ProcedureReturn #True
+  EndProcedure
   
-  ProcedureReturn #True
-EndProcedure
+  ; #### Copies (MoveMemory) a specified amount of data (Copy_Size) from the source to the destination.
+  ; #### It cuts everything, to prevent memory violations
+  Procedure Range_Move(*Src, Src_Offset.q, *Dst, Dst_Offset.q, Copy_Size.q, Src_Size.q=-1, Dst_Size.q=-1)
+    Protected Temp.q
+    If Not *Src
+      ProcedureReturn #False
+    EndIf
+    
+    If Not *Dst
+      ProcedureReturn #False
+    EndIf
+    
+    If Src_Size = -1
+      Src_Size.q = MemorySize(*Src)
+    EndIf
+    If Dst_Size = -1
+      Dst_Size.q = MemorySize(*Dst)
+    EndIf
+    
+    If Src_Offset < 0
+      Copy_Size  + Src_Offset
+      Dst_Offset - Src_Offset
+      Src_Offset - Src_Offset
+    EndIf
+    
+    If Dst_Offset < 0
+      Copy_Size  + Dst_Offset
+      Src_Offset - Dst_Offset
+      Dst_Offset - Dst_Offset
+    EndIf
+    
+    Temp = Src_Size - Src_Offset
+    If Copy_Size > Temp
+      Copy_Size = Temp
+    EndIf
+    
+    Temp = Dst_Size - Dst_Offset
+    If Copy_Size > Temp
+      Copy_Size = Temp
+    EndIf
+    
+    If Copy_Size > 0
+      MoveMemory(*Src+Src_Offset, *Dst+Dst_Offset, Copy_Size)
+    EndIf
+    
+    ProcedureReturn #True
+  EndProcedure
+  
+  ; #### Mirrors the memory, usable for little/big endian switching
+  Procedure Mirror(*Memory, Size)
+    Protected Elements, i
+    Protected Temp.a, *A.Ascii, *B.Ascii
+    
+    If Not *Memory
+      ProcedureReturn #False
+    EndIf
+    
+    If Size < 1
+      ProcedureReturn #True
+    EndIf
+    
+    Elements = Size/2
+    *A = *Memory
+    *B = *Memory + Size - 1
+    
+    For i = 0 To Elements - 1
+      Temp = *A\a
+      *A\a = *B\a
+      *B\a = Temp
+      *A + 1
+      *B - 1
+    Next
+    
+    ProcedureReturn #True
+  EndProcedure
+EndModule
+
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 3
+; CursorPosition = 246
+; FirstLine = 201
 ; Folding = -
 ; EnableXP
 ; DisableDebugger

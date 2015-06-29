@@ -486,7 +486,7 @@ Procedure Object_Editor_Search_Prepare_Keyword(*Object.Object)
   Select *Object_Editor_Search\Type
     Case #Integer_U_1, #Integer_S_1, #Integer_U_2, #Integer_S_2, #Integer_S_4, #Integer_S_8, #Float_4, #Float_8
       If *Object_Editor_Search\Big_Endian
-        Memory_Mirror(*Object_Editor_Search\Raw_Keyword, *Object_Editor_Search\Raw_Keyword_Size)
+        Memory::Mirror(*Object_Editor_Search\Raw_Keyword, *Object_Editor_Search\Raw_Keyword_Size)
       EndIf
   EndSelect
   
@@ -658,7 +658,7 @@ Procedure Object_Editor_Search_Prepare_Replacement(*Object.Object)
   Select *Object_Editor_Search\Type
     Case #Integer_U_1, #Integer_S_1, #Integer_U_2, #Integer_S_2, #Integer_S_4, #Integer_S_8, #Float_4, #Float_8
       If *Object_Editor_Search\Big_Endian
-        Memory_Mirror(*Object_Editor_Search\Raw_Replacement, *Object_Editor_Search\Raw_Replacement_Size)
+        Memory::Mirror(*Object_Editor_Search\Raw_Replacement, *Object_Editor_Search\Raw_Replacement_Size)
       EndIf
   EndSelect
   
@@ -1902,8 +1902,8 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1814
-; FirstLine = 1769
+; CursorPosition = 659
+; FirstLine = 656
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

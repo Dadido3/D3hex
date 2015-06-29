@@ -254,7 +254,7 @@ Procedure.s Object_Data_Inspector_Data_2_String(*Object.Object, Type.i, Flags.i)
         If Object_Input_Get_Data(FirstElement(*Object\Input()), 0, 2, @Other_Data, @Ascii_Metadata)
           If Ascii_Metadata & #Metadata_Readable
             If Flags & #Object_Data_Inspector_Flag_Big_Endian
-              Memory_Mirror(@Other_Data, 2)
+              Memory::Mirror(@Other_Data, 2)
             EndIf
             ProcedureReturn StrU(PeekU(@Other_Data), #PB_Unicode)
           EndIf
@@ -266,7 +266,7 @@ Procedure.s Object_Data_Inspector_Data_2_String(*Object.Object, Type.i, Flags.i)
         If Object_Input_Get_Data(FirstElement(*Object\Input()), 0, 2, @Other_Data, @Ascii_Metadata)
           If Ascii_Metadata & #Metadata_Readable
             If Flags & #Object_Data_Inspector_Flag_Big_Endian
-              Memory_Mirror(@Other_Data, 2)
+              Memory::Mirror(@Other_Data, 2)
             EndIf
             ProcedureReturn Str(PeekW(@Other_Data))
           EndIf
@@ -278,7 +278,7 @@ Procedure.s Object_Data_Inspector_Data_2_String(*Object.Object, Type.i, Flags.i)
         If Object_Input_Get_Data(FirstElement(*Object\Input()), 0, 4, @Other_Data, @Ascii_Metadata)
           If Ascii_Metadata & #Metadata_Readable
             If Flags & #Object_Data_Inspector_Flag_Big_Endian
-              Memory_Mirror(@Other_Data, 4)
+              Memory::Mirror(@Other_Data, 4)
             EndIf
             ProcedureReturn StrU(PeekL(@Other_Data), #PB_Long)
           EndIf
@@ -290,7 +290,7 @@ Procedure.s Object_Data_Inspector_Data_2_String(*Object.Object, Type.i, Flags.i)
         If Object_Input_Get_Data(FirstElement(*Object\Input()), 0, 4, @Other_Data, @Ascii_Metadata)
           If Ascii_Metadata & #Metadata_Readable
             If Flags & #Object_Data_Inspector_Flag_Big_Endian
-              Memory_Mirror(@Other_Data, 4)
+              Memory::Mirror(@Other_Data, 4)
             EndIf
             ProcedureReturn Str(PeekL(@Other_Data))
           EndIf
@@ -302,7 +302,7 @@ Procedure.s Object_Data_Inspector_Data_2_String(*Object.Object, Type.i, Flags.i)
         If Object_Input_Get_Data(FirstElement(*Object\Input()), 0, 8, @Other_Data, @Ascii_Metadata)
           If Ascii_Metadata & #Metadata_Readable
             If Flags & #Object_Data_Inspector_Flag_Big_Endian
-              Memory_Mirror(@Other_Data, 8)
+              Memory::Mirror(@Other_Data, 8)
             EndIf
             ProcedureReturn StrU(PeekQ(@Other_Data), #PB_Quad)
           EndIf
@@ -314,7 +314,7 @@ Procedure.s Object_Data_Inspector_Data_2_String(*Object.Object, Type.i, Flags.i)
         If Object_Input_Get_Data(FirstElement(*Object\Input()), 0, 8, @Other_Data, @Ascii_Metadata)
           If Ascii_Metadata & #Metadata_Readable
             If Flags & #Object_Data_Inspector_Flag_Big_Endian
-              Memory_Mirror(@Other_Data, 8)
+              Memory::Mirror(@Other_Data, 8)
             EndIf
             ProcedureReturn Str(PeekQ(@Other_Data))
           EndIf
@@ -326,7 +326,7 @@ Procedure.s Object_Data_Inspector_Data_2_String(*Object.Object, Type.i, Flags.i)
         If Object_Input_Get_Data(FirstElement(*Object\Input()), 0, 4, @Other_Data, @Ascii_Metadata)
           If Ascii_Metadata & #Metadata_Readable
             If Flags & #Object_Data_Inspector_Flag_Big_Endian
-              Memory_Mirror(@Other_Data, 4)
+              Memory::Mirror(@Other_Data, 4)
             EndIf
             ProcedureReturn RTrim(RTrim(StrF(PeekF(@Other_Data), 50), "0"), ".")
           EndIf
@@ -338,7 +338,7 @@ Procedure.s Object_Data_Inspector_Data_2_String(*Object.Object, Type.i, Flags.i)
         If Object_Input_Get_Data(FirstElement(*Object\Input()), 0, 8, @Other_Data, @Ascii_Metadata)
           If Ascii_Metadata & #Metadata_Readable
             If Flags & #Object_Data_Inspector_Flag_Big_Endian
-              Memory_Mirror(@Other_Data, 8)
+              Memory::Mirror(@Other_Data, 8)
             EndIf
             ProcedureReturn RTrim(RTrim(StrD(PeekD(@Other_Data), 350), "0"), ".")
           EndIf
@@ -412,7 +412,7 @@ Procedure.s Object_Data_Inspector_Data_2_String(*Object.Object, Type.i, Flags.i)
       If Object_Input_Get_Data(FirstElement(*Object\Input()), 0, Size, *Temp_Data, *Temp_Metadata)
         If Flags & #Object_Data_Inspector_Flag_Big_Endian
           For i = 0 To Size/2-1
-            Memory_Mirror(*Temp_Data+i*2, 2)
+            Memory::Mirror(*Temp_Data+i*2, 2)
           Next
         EndIf
         String = PeekS(*Temp_Data, Size, #PB_Unicode)
@@ -471,7 +471,7 @@ Procedure Object_Data_Inspector_String_2_Data(*Object.Object, Type.i, String.s, 
     Case #Object_Data_Inspector_Integer_U_2; = #PB_Unicode
       PokeU(@Other_Data, Val(String))
       If Flags & #Object_Data_Inspector_Flag_Big_Endian
-        Memory_Mirror(@Other_Data, 2)
+        Memory::Mirror(@Other_Data, 2)
       EndIf
       If Object_Input_Set_Data(FirstElement(*Object\Input()), 0, 2, @Other_Data)
         ProcedureReturn #True
@@ -480,7 +480,7 @@ Procedure Object_Data_Inspector_String_2_Data(*Object.Object, Type.i, String.s, 
     Case #Object_Data_Inspector_Integer_S_2; = #PB_Word
       PokeW(@Other_Data, Val(String))
       If Flags & #Object_Data_Inspector_Flag_Big_Endian
-        Memory_Mirror(@Other_Data, 2)
+        Memory::Mirror(@Other_Data, 2)
       EndIf
       If Object_Input_Set_Data(FirstElement(*Object\Input()), 0, 2, @Other_Data)
         ProcedureReturn #True
@@ -489,7 +489,7 @@ Procedure Object_Data_Inspector_String_2_Data(*Object.Object, Type.i, String.s, 
     Case #Object_Data_Inspector_Integer_U_4; = #PB_Long (Unsigned)
       PokeL(@Other_Data, Val(String))
       If Flags & #Object_Data_Inspector_Flag_Big_Endian
-        Memory_Mirror(@Other_Data, 2)
+        Memory::Mirror(@Other_Data, 2)
       EndIf
       If Object_Input_Set_Data(FirstElement(*Object\Input()), 0, 4, @Other_Data)
         ProcedureReturn #True
@@ -498,7 +498,7 @@ Procedure Object_Data_Inspector_String_2_Data(*Object.Object, Type.i, String.s, 
     Case #Object_Data_Inspector_Integer_S_4; = #PB_Long
       PokeL(@Other_Data, Val(String))
       If Flags & #Object_Data_Inspector_Flag_Big_Endian
-        Memory_Mirror(@Other_Data, 4)
+        Memory::Mirror(@Other_Data, 4)
       EndIf
       If Object_Input_Set_Data(FirstElement(*Object\Input()), 0, 4, @Other_Data)
         ProcedureReturn #True
@@ -507,7 +507,7 @@ Procedure Object_Data_Inspector_String_2_Data(*Object.Object, Type.i, String.s, 
     Case #Object_Data_Inspector_Integer_U_8; = #PB_Quad (Unsigned)
       PokeQ(@Other_Data, Val(String))
       If Flags & #Object_Data_Inspector_Flag_Big_Endian
-        Memory_Mirror(@Other_Data, 8)
+        Memory::Mirror(@Other_Data, 8)
       EndIf
       If Object_Input_Set_Data(FirstElement(*Object\Input()), 0, 8, @Other_Data)
         ProcedureReturn #True
@@ -516,7 +516,7 @@ Procedure Object_Data_Inspector_String_2_Data(*Object.Object, Type.i, String.s, 
     Case #Object_Data_Inspector_Integer_S_8; = #PB_Quad
       PokeQ(@Other_Data, Val(String))
       If Flags & #Object_Data_Inspector_Flag_Big_Endian
-        Memory_Mirror(@Other_Data, 8)
+        Memory::Mirror(@Other_Data, 8)
       EndIf
       If Object_Input_Set_Data(FirstElement(*Object\Input()), 0, 8, @Other_Data)
         ProcedureReturn #True
@@ -525,7 +525,7 @@ Procedure Object_Data_Inspector_String_2_Data(*Object.Object, Type.i, String.s, 
     Case #Object_Data_Inspector_Float_4    ; = #PB_Float
       PokeF(@Other_Data, ValF(String))
       If Flags & #Object_Data_Inspector_Flag_Big_Endian
-        Memory_Mirror(@Other_Data, 4)
+        Memory::Mirror(@Other_Data, 4)
       EndIf
       If Object_Input_Set_Data(FirstElement(*Object\Input()), 0, 4, @Other_Data)
         ProcedureReturn #True
@@ -534,7 +534,7 @@ Procedure Object_Data_Inspector_String_2_Data(*Object.Object, Type.i, String.s, 
     Case #Object_Data_Inspector_Float_8    ; = #PB_Double
       PokeD(@Other_Data, ValD(String))
       If Flags & #Object_Data_Inspector_Flag_Big_Endian
-        Memory_Mirror(@Other_Data, 8)
+        Memory::Mirror(@Other_Data, 8)
       EndIf
       If Object_Input_Set_Data(FirstElement(*Object\Input()), 0, 8, @Other_Data)
         ProcedureReturn #True
@@ -592,7 +592,7 @@ Procedure Object_Data_Inspector_String_2_Data(*Object.Object, Type.i, String.s, 
       
       If Flags & #Object_Data_Inspector_Flag_Big_Endian
         For i = 0 To Size/2-1
-          Memory_Mirror(*Temp_Data+i*2, 2)
+          Memory::Mirror(*Temp_Data+i*2, 2)
         Next
       EndIf
       
@@ -964,8 +964,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 663
-; FirstLine = 646
+; CursorPosition = 594
+; FirstLine = 590
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP

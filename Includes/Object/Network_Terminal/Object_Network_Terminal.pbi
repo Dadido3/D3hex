@@ -536,8 +536,8 @@ Procedure Object_Network_Terminal_Get_Data(*Object_Output.Object_Output, Positio
     Case 0 ; The "Output"
       ForEach *Object_Network_Terminal\Output_Chunk()
         If *Object_Network_Terminal\Output_Chunk()\Start < Position + Size And *Object_Network_Terminal\Output_Chunk()\Start + *Object_Network_Terminal\Output_Chunk()\Size > Position
-          Memory_Range_Copy(*Object_Network_Terminal\Output_Chunk()\Data, 0, *Data, *Object_Network_Terminal\Output_Chunk()\Start-Position, *Object_Network_Terminal\Output_Chunk()\Size, *Object_Network_Terminal\Output_Chunk()\Size, Size)
-          Memory_Range_Fill(#Metadata_NoError | #Metadata_Readable, *Object_Network_Terminal\Output_Chunk()\Size, *Metadata, *Object_Network_Terminal\Output_Chunk()\Start-Position, Size)
+          Memory::Range_Copy(*Object_Network_Terminal\Output_Chunk()\Data, 0, *Data, *Object_Network_Terminal\Output_Chunk()\Start-Position, *Object_Network_Terminal\Output_Chunk()\Size, *Object_Network_Terminal\Output_Chunk()\Size, Size)
+          Memory::Range_Fill(#Metadata_NoError | #Metadata_Readable, *Object_Network_Terminal\Output_Chunk()\Size, *Metadata, *Object_Network_Terminal\Output_Chunk()\Start-Position, Size)
         EndIf
       Next
       ProcedureReturn #True
@@ -545,8 +545,8 @@ Procedure Object_Network_Terminal_Get_Data(*Object_Output.Object_Output, Positio
     Case 1 ; The "Input"
       ForEach *Object_Network_Terminal\Input_Chunk()
         If *Object_Network_Terminal\Input_Chunk()\Start < Position + Size And *Object_Network_Terminal\Input_Chunk()\Start + *Object_Network_Terminal\Input_Chunk()\Size > Position
-          Memory_Range_Copy(*Object_Network_Terminal\Input_Chunk()\Data, 0, *Data, *Object_Network_Terminal\Input_Chunk()\Start-Position, *Object_Network_Terminal\Input_Chunk()\Size, *Object_Network_Terminal\Input_Chunk()\Size, Size)
-          Memory_Range_Fill(#Metadata_NoError | #Metadata_Readable, *Object_Network_Terminal\Input_Chunk()\Size, *Metadata, *Object_Network_Terminal\Input_Chunk()\Start-Position, Size)
+          Memory::Range_Copy(*Object_Network_Terminal\Input_Chunk()\Data, 0, *Data, *Object_Network_Terminal\Input_Chunk()\Start-Position, *Object_Network_Terminal\Input_Chunk()\Size, *Object_Network_Terminal\Input_Chunk()\Size, Size)
+          Memory::Range_Fill(#Metadata_NoError | #Metadata_Readable, *Object_Network_Terminal\Input_Chunk()\Size, *Metadata, *Object_Network_Terminal\Input_Chunk()\Start-Position, Size)
         EndIf
       Next
       ProcedureReturn #True
@@ -1240,8 +1240,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 158
-; FirstLine = 154
+; CursorPosition = 547
+; FirstLine = 543
 ; Folding = ------
 ; EnableUnicode
 ; EnableXP
