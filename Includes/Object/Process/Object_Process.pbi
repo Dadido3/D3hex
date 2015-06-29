@@ -115,7 +115,7 @@ Procedure Object_Process_Open(*Object.Object)
     Object_Event\Size = Object_Process_Get_Size(FirstElement(*Object\Output()))
     Object_Output_Event(FirstElement(*Object\Output()), Object_Event)
   Else
-    Logging_Entry_Add_Error("Couldn't open Process", "PID="+*Object_Process\PID+" couldn't be opened.")
+    Logger::Entry_Add_Error("Couldn't open Process", "PID="+*Object_Process\PID+" couldn't be opened.")
     ; #### Send event to update the data
     Object_Event\Type = #Object_Link_Event_Update
     Object_Event\Position = 0
@@ -434,7 +434,7 @@ Procedure Object_Process_Get_Data(*Object_Output.Object_Output, Position.q, Size
   EndIf
   
   If Not *Object_Process\hProcess
-    ;Logging_Entry_Add_Error("There is no Process opened", "There is no Process opened. Couldn't read.")
+    ;Logger::Entry_Add_Error("There is no Process opened", "There is no Process opened. Couldn't read.")
     ProcedureReturn #False
   EndIf
   
@@ -516,7 +516,7 @@ Procedure Object_Process_Set_Data(*Object_Output.Object_Output, Position.q, Size
   EndIf
   
   If Not *Object_Process\hProcess
-    Logging_Entry_Add_Error("There is no Process opened", "There is no Process opened. Couldn't write.")
+    Logger::Entry_Add_Error("There is no Process opened", "There is no Process opened. Couldn't write.")
     ProcedureReturn #False
   EndIf
   
@@ -570,7 +570,7 @@ Procedure Object_Process_Set_Data(*Object_Output.Object_Output, Position.q, Size
   If Size = 0 And Result = #True
     ProcedureReturn #True
   Else
-    Logging_Entry_Add_Error("Couldn't write all data to the Process", "Wasn't able to write all the data, at least one page you are writing to isn't accessible.")
+    Logger::Entry_Add_Error("Couldn't write all data to the Process", "Wasn't able to write all the data, at least one page you are writing to isn't accessible.")
     ProcedureReturn Result
   EndIf
 EndProcedure
@@ -593,7 +593,7 @@ Procedure Object_Process_Convolute(*Object_Output.Object_Output, Position.q, Off
   EndIf
   
   ; #### Convolution isn't available
-  Logging_Entry_Add_Error("Convolution not available", "It's not possible to convolute process memory.")
+  Logger::Entry_Add_Error("Convolution not available", "It's not possible to convolute process memory.")
   
   ProcedureReturn #False
 EndProcedure
@@ -612,7 +612,7 @@ Procedure Object_Process_Set_Data_Check(*Object_Output.Object_Output, Position.q
   EndIf
   
   If Not *Object_Process\hProcess
-    Logging_Entry_Add_Error("There is no Process opened", "There is no Process opened. Couldn't write.")
+    Logger::Entry_Add_Error("There is no Process opened", "There is no Process opened. Couldn't write.")
     ProcedureReturn #False
   EndIf
   
@@ -646,7 +646,7 @@ Procedure Object_Process_Set_Data_Check(*Object_Output.Object_Output, Position.q
   If Size = 0 And Result = #True
     ProcedureReturn #True
   Else
-    Logging_Entry_Add_Error("Can't write data here", "It's not possible to write all the data, at least one page you are writing to isn't accessible.")
+    Logger::Entry_Add_Error("Can't write data here", "It's not possible to write all the data, at least one page you are writing to isn't accessible.")
     ProcedureReturn Result
   EndIf
 EndProcedure
@@ -665,7 +665,7 @@ Procedure Object_Process_Convolute_Check(*Object_Output.Object_Output, Position.
   EndIf
   
   ; #### Convolution isn't available
-  Logging_Entry_Add_Error("Convolution not available", "It's not possible to convolute process memory.")
+  Logger::Entry_Add_Error("Convolution not available", "It's not possible to convolute process memory.")
   
   ProcedureReturn #False
 EndProcedure
@@ -985,8 +985,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 154
-; FirstLine = 139
+; CursorPosition = 667
+; FirstLine = 622
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

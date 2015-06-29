@@ -147,7 +147,7 @@ Procedure Node_Editor_Configuration_Save(Filename.s)
   *NBT_Element = NBT_Element_Add()
   
   If Not *NBT_Element
-    Logging_Entry_Add_Error("Couldn't save configuration", "NBT_Element_Add() failed. ("+NBT_Error_Get()+")")
+    Logger::Entry_Add_Error("Couldn't save configuration", "NBT_Element_Add() failed. ("+NBT_Error_Get()+")")
     ProcedureReturn #False
   EndIf
   
@@ -201,12 +201,12 @@ Procedure Node_Editor_Configuration_Save(Filename.s)
   
   If NBT_Write_File(*NBT_Element, Filename)
     If NBT_Error_Available()
-      Logging_Entry_Add_Error("Error while saving configuration", "NBT_Write_File(*NBT_Element, '"+Filename+"') failed. ("+NBT_Error_Get()+")")
+      Logger::Entry_Add_Error("Error while saving configuration", "NBT_Write_File(*NBT_Element, '"+Filename+"') failed. ("+NBT_Error_Get()+")")
     EndIf
     NBT_Element_Delete(*NBT_Element)
     ProcedureReturn #True
   Else
-    Logging_Entry_Add_Error("Couldn't save configuration", "General NBT exception. ("+NBT_Error_Get()+")")
+    Logger::Entry_Add_Error("Couldn't save configuration", "General NBT exception. ("+NBT_Error_Get()+")")
     NBT_Element_Delete(*NBT_Element)
     ProcedureReturn #False
   EndIf
@@ -231,7 +231,7 @@ Procedure Node_Editor_Configuration_Load(Filename.s)
   *NBT_Element = NBT_Read_File(Filename)
   
   If Not *NBT_Element
-    Logging_Entry_Add_Error("Couldn't load configuration", "NBT_Read_File('"+Filename+"') failed. ("+NBT_Error_Get()+")")
+    Logger::Entry_Add_Error("Couldn't load configuration", "NBT_Read_File('"+Filename+"') failed. ("+NBT_Error_Get()+")")
     ProcedureReturn #False
   EndIf
   
@@ -308,7 +308,7 @@ Procedure Node_Editor_Configuration_Load(Filename.s)
   EndIf
   
   If NBT_Error_Available()
-    Logging_Entry_Add_Error("Error while reading configuration", "General NBT exception. ("+NBT_Error_Get()+")")
+    Logger::Entry_Add_Error("Error while reading configuration", "General NBT exception. ("+NBT_Error_Get()+")")
   EndIf
   
   NBT_Element_Delete(*NBT_Element)
@@ -1087,8 +1087,8 @@ DataSection
   Node_Editor_Icon_Align:         : IncludeBinary "../Data/Icons/Node_Align.png"
 EndDataSection
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1072
-; FirstLine = 1042
+; CursorPosition = 310
+; FirstLine = 265
 ; Folding = ----
 ; EnableUnicode
 ; EnableXP

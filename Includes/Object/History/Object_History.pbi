@@ -305,18 +305,18 @@ Procedure Object_History_Write(*Object.Object)
     Select *Object_History\Operation_Past()\Type
       Case #Object_History_Operation_Type_Write
         If Not Object_Input_Set_Data(FirstElement(*Object\Input()), *Object_History\Operation_Past()\Position, *Object_History\Operation_Past()\Data_Size, *Object_History\Operation_Past()\Data)
-          Logging_Entry_Add_Error("Write failed", "Couldn't write to the destination. Aborting write process.")
+          Logger::Entry_Add_Error("Write failed", "Couldn't write to the destination. Aborting write process.")
           ProcedureReturn #False
         EndIf
         
       Case #Object_History_Operation_Type_Convolute
         If Not Object_Input_Convolute(FirstElement(*Object\Input()), *Object_History\Operation_Past()\Position, *Object_History\Operation_Past()\Offset)
-          Logging_Entry_Add_Error("Convolute failed", "Couldn't convolute the destination. Aborting write process.")
+          Logger::Entry_Add_Error("Convolute failed", "Couldn't convolute the destination. Aborting write process.")
           ProcedureReturn #False
         EndIf
         
       Default
-        Logging_Entry_Add_Error("Unkown operation in the history", "If you see this, something really went wrong here!")
+        Logger::Entry_Add_Error("Unkown operation in the history", "If you see this, something really went wrong here!")
         ProcedureReturn #False
         
     EndSelect
@@ -1283,7 +1283,7 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1198
-; FirstLine = 1182
+; CursorPosition = 318
+; FirstLine = 303
 ; Folding = ------
 ; EnableXP

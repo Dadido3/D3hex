@@ -368,7 +368,7 @@ EndProcedure
 
 ; ##################################################### Includes ####################################################
 
-XIncludeFile "Includes/Logging.pbi"
+XIncludeFile "Includes/Logger.pbi"
 XIncludeFile "Includes/Object_Type.pbi"
 XIncludeFile "Includes/Object.pbi"
 XIncludeFile "Includes/About.pbi"
@@ -545,6 +545,8 @@ EndProcedure
 Main\Version = #Version
 
 Main_Window_Open(1200, 700)
+
+Logger::Init(Main_Window\ID)
 
 ;Define *A.Object = Object_Dummy_Create()
 ;Define *B.Object = Object_Editor_Create()
@@ -786,7 +788,7 @@ Repeat
   
   Node_Editor_Main()
   About_Main()
-  Logging_Main()
+  Logger::Main()
   
   ForEach Object()
     If Object()\Function_Main
@@ -839,8 +841,8 @@ DataSection
   
 EndDataSection
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 169
-; FirstLine = 131
+; CursorPosition = 791
+; FirstLine = 777
 ; Folding = --
 ; EnableUnicode
 ; EnableXP

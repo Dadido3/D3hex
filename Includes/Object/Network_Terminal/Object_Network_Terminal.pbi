@@ -156,7 +156,7 @@ Procedure Object_Network_Terminal_Connection_Open(*Object.Object)
   
   If *Object_Network_Terminal\Connection_ID
   Else
-    Logging_Entry_Add_Error("Couldn't open connection", "'"+*Object_Network_Terminal\Adress+":"+Str(*Object_Network_Terminal\Port)+"' couldn't be opened.")
+    Logger::Entry_Add_Error("Couldn't open connection", "'"+*Object_Network_Terminal\Adress+":"+Str(*Object_Network_Terminal\Port)+"' couldn't be opened.")
   EndIf
   
   ForEach *Object_Network_Terminal\Output_Chunk()
@@ -1240,8 +1240,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1186
-; FirstLine = 1148
+; CursorPosition = 158
+; FirstLine = 154
 ; Folding = ------
 ; EnableUnicode
 ; EnableXP

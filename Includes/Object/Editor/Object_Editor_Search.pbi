@@ -1128,7 +1128,7 @@ Procedure Object_Editor_Search_Window_Event_Button_Replace()
         Convolute_Difference = *Object_Editor_Search\Raw_Replacement_Size - *Object_Editor_Search\Raw_Keyword_Size
         If *Object_Editor_Search\No_Convolution Or Convolute_Difference = 0
           If Not Object_Input_Set_Data(FirstElement(*Object\Input()), *Object_Editor_Search\Found_Position, *Object_Editor_Search\Raw_Replacement_Size, *Object_Editor_Search\Raw_Replacement)
-            Logging_Entry_Add_Error("Couldn't replace keyword", "The destination is probably in read only mode. Replace-Operation not successful.")
+            Logger::Entry_Add_Error("Couldn't replace keyword", "The destination is probably in read only mode. Replace-Operation not successful.")
             *Object_Editor_Search\State = #Object_Editor_Search_State_None
             *Object_Editor_Search\Update_Input = #True
           EndIf
@@ -1136,12 +1136,12 @@ Procedure Object_Editor_Search_Window_Event_Button_Replace()
           If Object_Input_Convolute(FirstElement(*Object\Input()), *Object_Editor_Search\Found_Position, Convolute_Difference)
             *Object_Editor_Search\Position + Convolute_Difference
             If Not Object_Input_Set_Data(FirstElement(*Object\Input()), *Object_Editor_Search\Found_Position, *Object_Editor_Search\Raw_Replacement_Size, *Object_Editor_Search\Raw_Replacement)
-              Logging_Entry_Add_Error("Couldn't replace keyword", "The destination is probably in read only mode. Replace-Operation not successful.")
+              Logger::Entry_Add_Error("Couldn't replace keyword", "The destination is probably in read only mode. Replace-Operation not successful.")
               *Object_Editor_Search\State = #Object_Editor_Search_State_None
               *Object_Editor_Search\Update_Input = #True
             EndIf
           Else
-            Logging_Entry_Add_Error("Couldn't convolute", "The destination can't be convoluted. Replace-Operation not successful.")
+            Logger::Entry_Add_Error("Couldn't convolute", "The destination can't be convoluted. Replace-Operation not successful.")
             *Object_Editor_Search\State = #Object_Editor_Search_State_None
             *Object_Editor_Search\Update_Input = #True
           EndIf
@@ -1755,19 +1755,19 @@ Procedure Object_Editor_Search_Do(*Object.Object)
                   Convolute_Difference = *Object_Editor_Search\Raw_Replacement_Size - *Object_Editor_Search\Raw_Keyword_Size
                   If *Object_Editor_Search\No_Convolution Or Convolute_Difference = 0
                     If Not Object_Input_Set_Data(FirstElement(*Object\Input()), *Object_Editor_Search\Found_Position, *Object_Editor_Search\Raw_Replacement_Size, *Object_Editor_Search\Raw_Replacement)
-                      Logging_Entry_Add_Error("Couldn't replace keyword", "The destination is probably in read only mode. Replace-Operation not successful.")
+                      Logger::Entry_Add_Error("Couldn't replace keyword", "The destination is probably in read only mode. Replace-Operation not successful.")
                       *Object_Editor_Search\State = #Object_Editor_Search_State_None
                       *Object_Editor_Search\Update_Input = #True
                     EndIf
                   Else
                     If Object_Input_Convolute(FirstElement(*Object\Input()), *Object_Editor_Search\Found_Position, Convolute_Difference)
                       If Not Object_Input_Set_Data(FirstElement(*Object\Input()), *Object_Editor_Search\Found_Position, *Object_Editor_Search\Raw_Replacement_Size, *Object_Editor_Search\Raw_Replacement)
-                        Logging_Entry_Add_Error("Couldn't replace keyword", "The destination is probably in read only mode. Replace-Operation not successful.")
+                        Logger::Entry_Add_Error("Couldn't replace keyword", "The destination is probably in read only mode. Replace-Operation not successful.")
                         *Object_Editor_Search\State = #Object_Editor_Search_State_None
                         *Object_Editor_Search\Update_Input = #True
                       EndIf
                     Else
-                      Logging_Entry_Add_Error("Couldn't convolute", "The destination can't be convoluted. Replace-Operation not successful.")
+                      Logger::Entry_Add_Error("Couldn't convolute", "The destination can't be convoluted. Replace-Operation not successful.")
                       *Object_Editor_Search\State = #Object_Editor_Search_State_None
                       *Object_Editor_Search\Update_Input = #True
                     EndIf
@@ -1800,19 +1800,19 @@ Procedure Object_Editor_Search_Do(*Object.Object)
                     Convolute_Difference = *Object_Editor_Search\Raw_Replacement_Size - *Object_Editor_Search\Raw_Keyword_Size
                     If *Object_Editor_Search\No_Convolution Or Convolute_Difference = 0
                       If Not Object_Input_Set_Data(FirstElement(*Object\Input()), *Object_Editor_Search\Found_Position, *Object_Editor_Search\Raw_Replacement_Size, *Object_Editor_Search\Raw_Replacement)
-                        Logging_Entry_Add_Error("Couldn't replace keyword", "The destination is probably in read only mode. Replace-Operation not successful.")
+                        Logger::Entry_Add_Error("Couldn't replace keyword", "The destination is probably in read only mode. Replace-Operation not successful.")
                         *Object_Editor_Search\State = #Object_Editor_Search_State_None
                         *Object_Editor_Search\Update_Input = #True
                       EndIf
                     Else
                       If Object_Input_Convolute(FirstElement(*Object\Input()), *Object_Editor_Search\Found_Position, Convolute_Difference)
                         If Not Object_Input_Set_Data(FirstElement(*Object\Input()), *Object_Editor_Search\Found_Position, *Object_Editor_Search\Raw_Replacement_Size, *Object_Editor_Search\Raw_Replacement)
-                          Logging_Entry_Add_Error("Couldn't replace keyword", "The destination is probably in read only mode. Replace-Operation not successful.")
+                          Logger::Entry_Add_Error("Couldn't replace keyword", "The destination is probably in read only mode. Replace-Operation not successful.")
                           *Object_Editor_Search\State = #Object_Editor_Search_State_None
                           *Object_Editor_Search\Update_Input = #True
                         EndIf
                       Else
-                        Logging_Entry_Add_Error("Couldn't convolute", "The destination can't be convoluted. Replace-Operation not successful.")
+                        Logger::Entry_Add_Error("Couldn't convolute", "The destination can't be convoluted. Replace-Operation not successful.")
                         *Object_Editor_Search\State = #Object_Editor_Search_State_None
                         *Object_Editor_Search\Update_Input = #True
                       EndIf
@@ -1902,8 +1902,8 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1258
-; FirstLine = 1254
+; CursorPosition = 1814
+; FirstLine = 1769
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

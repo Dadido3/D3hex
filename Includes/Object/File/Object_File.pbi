@@ -136,7 +136,7 @@ Procedure Object_File_HDD_Create(*Object.Object) ; #### That function doesn't cr
     Object_Event\Size = Lof(*Object_File\File_ID)
     Object_Output_Event(FirstElement(*Object\Output()), Object_Event)
   Else
-    Logging_Entry_Add_Error("Couldn't create file", "'"+*Object_File\Filename+"' couldn't be created. The file object now behaves like a new file.")
+    Logger::Entry_Add_Error("Couldn't create file", "'"+*Object_File\Filename+"' couldn't be created. The file object now behaves like a new file.")
     Object_Event\Type = #Object_Link_Event_Update
     Object_Event\Position = 0
     Object_Event\Size = 0
@@ -198,7 +198,7 @@ Procedure Object_File_HDD_Open(*Object.Object)
     Object_Event\Size = Lof(*Object_File\File_ID)
     Object_Output_Event(FirstElement(*Object\Output()), Object_Event)
   Else
-    Logging_Entry_Add_Error("Couldn't open file", "'"+*Object_File\Filename+"' couldn't be opened. The file object now behaves like a new file.")
+    Logger::Entry_Add_Error("Couldn't open file", "'"+*Object_File\Filename+"' couldn't be opened. The file object now behaves like a new file.")
     Object_Event\Type = #Object_Link_Event_Update
     Object_Event\Position = 0
     Object_Event\Size = 0
@@ -584,12 +584,12 @@ Procedure Object_File_Set_Data(*Object_Output.Object_Output, Position.q, Size.i,
   EndIf
   
   If Not *Object_File\File_ID
-    Logging_Entry_Add_Error("There is no file opened", "There is no file opened. Couldn't write.")
+    Logger::Entry_Add_Error("There is no file opened", "There is no file opened. Couldn't write.")
     ProcedureReturn #False
   EndIf
   
   If Not *Object_File\Mode = #Object_File_Mode_Write
-    Logging_Entry_Add_Error("Couldn't write to the file", "The file is in read only mode.")
+    Logger::Entry_Add_Error("Couldn't write to the file", "The file is in read only mode.")
     ProcedureReturn #False
   EndIf
   
@@ -612,7 +612,7 @@ Procedure Object_File_Set_Data(*Object_Output.Object_Output, Position.q, Size.i,
     
     ProcedureReturn #True
   Else
-    Logging_Entry_Add_Error("Couldn't write data to the file", "The file is probably in read only mode.")
+    Logger::Entry_Add_Error("Couldn't write data to the file", "The file is probably in read only mode.")
   EndIf
   
   ProcedureReturn #False
@@ -644,7 +644,7 @@ Procedure Object_File_Convolute(*Object_Output.Object_Output, Position.q, Offset
   EndIf
   
   If Not *Object_File\File_ID
-    Logging_Entry_Add_Error("There is no file opened", "There is no file opened. Couldn't write.")
+    Logger::Entry_Add_Error("There is no file opened", "There is no file opened. Couldn't write.")
     ProcedureReturn #False
   EndIf
   
@@ -659,7 +659,7 @@ Procedure Object_File_Convolute(*Object_Output.Object_Output, Position.q, Offset
   EndIf
   
   If Not *Object_File\Mode = #Object_File_Mode_Write
-    Logging_Entry_Add_Error("Couldn't convolute the file", "The file is in read only mode.")
+    Logger::Entry_Add_Error("Couldn't convolute the file", "The file is in read only mode.")
     ProcedureReturn #False
   EndIf
   
@@ -717,7 +717,7 @@ Procedure Object_File_Convolute(*Object_Output.Object_Output, Position.q, Offset
     Object_Event\Size = File_Size - Position + Temp_Offset
     Object_Output_Event(FirstElement(*Object\Output()), Object_Event)
   Else
-    Logging_Entry_Add_Error("Couldn't convolute the file", "The file is probably in read only mode.")
+    Logger::Entry_Add_Error("Couldn't convolute the file", "The file is probably in read only mode.")
   EndIf
   
   ProcedureReturn Successful
@@ -737,7 +737,7 @@ Procedure Object_File_Set_Data_Check(*Object_Output.Object_Output, Position.q, S
   EndIf
   
   If Not *Object_File\Mode = #Object_File_Mode_Write And *Object_File\File_ID
-    Logging_Entry_Add_Error("Couldn't write to the file", "The file is in read only mode.")
+    Logger::Entry_Add_Error("Couldn't write to the file", "The file is in read only mode.")
     ProcedureReturn #False
   EndIf
   
@@ -758,7 +758,7 @@ Procedure Object_File_Convolute_Check(*Object_Output.Object_Output, Position.q, 
   EndIf
   
   If Not *Object_File\Mode = #Object_File_Mode_Write And *Object_File\File_ID
-    Logging_Entry_Add_Error("Couldn't convolute the file", "The file is in read only mode.")
+    Logger::Entry_Add_Error("Couldn't convolute the file", "The file is in read only mode.")
     ProcedureReturn #False
   EndIf
   
@@ -1175,8 +1175,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 478
-; FirstLine = 453
+; CursorPosition = 760
+; FirstLine = 715
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP
