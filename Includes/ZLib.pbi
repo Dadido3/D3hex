@@ -286,23 +286,23 @@
   ; And the compiler's view of z_stream:
   
   Macro deflateInit(strm, level)
-    ZLIB::deflateInit_((strm), (level), zlibVersion(), SizeOf(z_stream))
+    ZLIB::deflateInit_((strm), (level), ZLIB::zlibVersion(), SizeOf(ZLIB::z_stream))
   EndMacro
   
   Macro inflateInit(strm)
-    ZLIB::inflateInit_((strm), (level), (method), (windowBits), (memLevel), (strategy), zlibVersion(), SizeOf(z_stream))
+    ZLIB::inflateInit_((strm), (level), (method), (windowBits), (memLevel), (strategy), ZLIB::zlibVersion(), SizeOf(ZLIB::z_stream))
   EndMacro
   
   Macro deflateInit2(strm, level, method, windowBits, memLevel, strategy)
-    ZLIB::deflateInit2_((strm), zlibVersion(), SizeOf(z_stream))
+    ZLIB::deflateInit2_((strm), ZLIB::zlibVersion(), SizeOf(ZLIB::z_stream))
   EndMacro
   
   Macro inflateInit2(strm, windowBits)
-    ZLIB::deflateInit2_((strm), (windowBits), zlibVersion(), SizeOf(z_stream))
+    ZLIB::deflateInit2_((strm), (windowBits), ZLIB::zlibVersion(), SizeOf(ZLIB::z_stream))
   EndMacro
   
   Macro inflateBackInit(strm, windowBits, window)
-    ZLIB::inflateBackInit_((strm), (windowBits), (window), zlibVersion(), SizeOf(z_stream))
+    ZLIB::inflateBackInit_((strm), (windowBits), (window), ZLIB::zlibVersion(), SizeOf(ZLIB::z_stream))
   EndMacro
   
 EndDeclareModule
@@ -311,7 +311,7 @@ Module ZLIB
   
 EndModule
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 308
+; CursorPosition = 288
 ; FirstLine = 266
 ; Folding = --
 ; EnableXP
