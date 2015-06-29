@@ -203,7 +203,7 @@ Procedure Object_View2D_Create(Requester)
   *Object_Input\Function_Event = @Object_View2D_Input_Event()
   
   *Object_View2D_Input = *Object_Input\Custom_Data
-  *Object_View2D_Input\D3HT_Chunk = D3HT_Create(SizeOf(Object_View2D_Input_Chunk_ID), SizeOf(Integer), 65536)
+  *Object_View2D_Input\D3HT_Chunk = D3HT::Create(SizeOf(Object_View2D_Input_Chunk_ID), SizeOf(Integer), 65536)
   *Object_View2D_Input\Pixel_Format = #PixelFormat_24_BGR
   *Object_View2D_Input\Bits_Per_Pixel = 24
   *Object_View2D_Input\Width = 1024
@@ -234,7 +234,7 @@ Procedure _Object_View2D_Delete(*Object.Object)
         *Object_View2D_Input\Chunk()\Image_ID = #Null
       Next
       
-      D3HT_Destroy(*Object_View2D_Input\D3HT_Chunk)
+      D3HT::Destroy(*Object_View2D_Input\D3HT_Chunk)
       
       FreeStructure(*Object\Input()\Custom_Data)
       *Object\Input()\Custom_Data = #Null
@@ -325,7 +325,7 @@ Procedure Object_View2D_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
         *Object_View2D_Input\Chunk()\Image_ID = #Null
       Next
       
-      D3HT_Destroy(*Object_View2D_Input\D3HT_Chunk)
+      D3HT::Destroy(*Object_View2D_Input\D3HT_Chunk)
       
       FreeStructure(*Object\Input()\Custom_Data)
       *Object\Input()\Custom_Data = #Null
@@ -347,7 +347,7 @@ Procedure Object_View2D_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
         *Object_Input\Function_Event = @Object_View2D_Input_Event()
         *Object_View2D_Input = *Object_Input\Custom_Data
         If *Object_View2D_Input
-          *Object_View2D_Input\D3HT_Chunk = D3HT_Create(SizeOf(Object_View2D_Input_Chunk_ID), SizeOf(Integer), 65536)
+          *Object_View2D_Input\D3HT_Chunk = D3HT::Create(SizeOf(Object_View2D_Input_Chunk_ID), SizeOf(Integer), 65536)
           *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Manually")       : *Object_View2D_Input\Manually = NBT_Tag_Get_Number(*NBT_Tag)
           *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Pixel_Format")   : *Object_View2D_Input\Pixel_Format = NBT_Tag_Get_Number(*NBT_Tag)
           *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Bits_Per_Pixel") : *Object_View2D_Input\Bits_Per_Pixel  = NBT_Tag_Get_Number(*NBT_Tag)
@@ -542,7 +542,7 @@ Procedure Object_View2D_Organize(*Object.Object)
           If *Object_View2D_Input\Chunk()\Image_ID
             FreeImage(*Object_View2D_Input\Chunk()\Image_ID)
           EndIf
-          D3HT_Element_Free(*Object_View2D_Input\D3HT_Chunk, *Object_View2D_Input\Chunk()\ID)
+          D3HT::Element_Free(*Object_View2D_Input\D3HT_Chunk, *Object_View2D_Input\Chunk()\ID)
           DeleteElement(*Object_View2D_Input\Chunk())
         EndIf
       Next
@@ -586,7 +586,7 @@ Procedure Object_View2D_Organize(*Object.Object)
           Object_View2D_Input_Chunk_ID\X = ix
           Object_View2D_Input_Chunk_ID\Y = iy
           
-          If Not D3HT_Element_Get(*Object_View2D_Input\D3HT_Chunk, Object_View2D_Input_Chunk_ID, #Null)
+          If Not D3HT::Element_Get(*Object_View2D_Input\D3HT_Chunk, Object_View2D_Input_Chunk_ID, #Null)
             AddElement(*Object_View2D_Input\Chunk())
             
             *Object_View2D_Input\Chunk()\ID = Object_View2D_Input_Chunk_ID
@@ -595,7 +595,7 @@ Procedure Object_View2D_Organize(*Object.Object)
             *Object_View2D_Input\Chunk()\Width = #Object_View2D_Chunk_Size_X
             *Object_View2D_Input\Chunk()\Height = #Object_View2D_Chunk_Size_Y
             
-            D3HT_Element_Set(*Object_View2D_Input\D3HT_Chunk, Object_View2D_Input_Chunk_ID, *Object_View2D_Input\Chunk(), #False)
+            D3HT::Element_Set(*Object_View2D_Input\D3HT_Chunk, Object_View2D_Input_Chunk_ID, *Object_View2D_Input\Chunk(), #False)
           EndIf
         Next
       Next
@@ -1361,7 +1361,7 @@ DataSection
   Object_View2D_Icon_Normalize:   : IncludeBinary "../../../Data/Icons/Graph_Normalize.png"
 EndDataSection
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1237
-; FirstLine = 1224
+; CursorPosition = 597
+; FirstLine = 593
 ; Folding = ----
 ; EnableXP

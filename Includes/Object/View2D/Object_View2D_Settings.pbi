@@ -336,7 +336,7 @@ Procedure Object_View2D_Settings_Window_Event_Button_In_Add()
   *Object_Input\Function_Event = @Object_View2D_Input_Event()
   
   *Object_View2D_Input = *Object_Input\Custom_Data
-  *Object_View2D_Input\D3HT_Chunk = D3HT_Create(SizeOf(Object_View2D_Input_Chunk_ID), SizeOf(Integer), 65536)
+  *Object_View2D_Input\D3HT_Chunk = D3HT::Create(SizeOf(Object_View2D_Input_Chunk_ID), SizeOf(Integer), 65536)
   *Object_View2D_Input\Pixel_Format = #PixelFormat_24_BGR
   *Object_View2D_Input\Bits_Per_Pixel = 24
   *Object_View2D_Input\Width = 1024
@@ -383,7 +383,7 @@ Procedure Object_View2D_Settings_Window_Event_Button_In_Delete()
           *Object_View2D_Input\Chunk()\Image_ID = #Null
         Next
         
-        D3HT_Destroy(*Object_View2D_Input\D3HT_Chunk)
+        D3HT::Destroy(*Object_View2D_Input\D3HT_Chunk)
         
         FreeStructure(*Object\Input()\Custom_Data)
         *Object\Input()\Custom_Data = #Null
@@ -579,7 +579,7 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 445
-; FirstLine = 426
+; CursorPosition = 385
+; FirstLine = 381
 ; Folding = --
 ; EnableXP
