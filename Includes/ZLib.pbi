@@ -78,24 +78,24 @@
   ; ║ long │ 32 bit   │ 32 bit │ 64 bit ║
   ; ╚══════╧══════════╧════════╧════════╝
   ; #### In zlib uInt is defined as "unsigned int" and uLong as "unsigned long".
-  Macro int : l : EndMacro
-  Macro uInt : l : EndMacro
+  Macro C_int : l : EndMacro
+  Macro C_uInt : l : EndMacro
   CompilerIf #PB_Compiler_OS = #PB_OS_Linux Or #PB_Compiler_OS = #PB_OS_MacOS
-    Macro long : i : EndMacro
-    Macro uLong : i : EndMacro
+    Macro C_long : i : EndMacro
+    Macro C_uLong : i : EndMacro
   CompilerElse
-    Macro long : l : EndMacro
-    Macro uLong : l : EndMacro
+    Macro C_long : l : EndMacro
+    Macro C_uLong : l : EndMacro
   CompilerEndIf
   
   Structure z_stream Align #PB_Structure_AlignC ; SizeOf_x64(Z_Stream) = 88, SizeOf_x86(Z_Stream) = 56
     *next_in.Byte     ; next input byte
-    avail_in.uInt     ; number of bytes available at next_in
-    total_in.uLong    ; total nb of input bytes read so far
+    avail_in.C_uInt   ; number of bytes available at next_in
+    total_in.C_uLong  ; total nb of input bytes read so far
   
     *next_out.Byte    ; next output byte should be put there
-    avail_out.uInt    ; remaining free space at next_out
-    total_out.uLong   ; total nb of bytes output so far
+    avail_out.C_uInt  ; remaining free space at next_out
+    total_out.C_uLong ; total nb of bytes output so far
   
     *msg              ; last error message, NULL if no error
     *state            ; not visible by applications
@@ -104,28 +104,28 @@
     *zfree            ; used to free the internal state
     *opaque           ; private data object passed to zalloc and zfree
   
-    data_type.int     ; best guess about the data type: binary or text
+    data_type.C_int   ; best guess about the data type: binary or text
     adler.l           ; adler32 value of the uncompressed data
-    reserved.uLong    ; reserved for future use
+    reserved.C_uLong  ; reserved for future use
   EndStructure
   
   ;     gzip header information passed To And from zlib routines.  See RFC 1952
   ;  For more details on the meanings of these fields.
   
   Structure gz_header Align #PB_Structure_AlignC ; SizeOf_x64(Z_Stream) = 72, SizeOf_x86(Z_Stream) = 52
-      text.int        ; true if compressed data believed to be text
-      time.uLong      ; modification time
-      xflags.int      ; extra flags (not used when writing a gzip file)
-      os.int          ; operating system
+      text.C_int      ; true if compressed data believed to be text
+      time.C_uLong    ; modification time
+      xflags.C_int    ; extra flags (not used when writing a gzip file)
+      os.C_int        ; operating system
       *extra          ; pointer to extra field or Z_NULL if none
-      extra_len.uInt  ; extra field length (valid if extra != Z_NULL)
-      extra_max.uInt  ; space at extra (only when reading header)
+      extra_len.C_uInt; extra field length (valid if extra != Z_NULL)
+      extra_max.C_uInt; space at extra (only when reading header)
       *name           ; pointer to zero-terminated file name or Z_NULL
-      name_max.uInt   ; space at name (only when reading header)
+      name_max.C_uInt ; space at name (only when reading header)
       *comment        ; pointer to zero-terminated comment or Z_NULL
-      comm_max.uInt   ; space at comment (only when reading header)
-      hcrc.int        ; true if there was or will be a header crc
-      done.int        ; true when done reading gzip header (not used when writing a gzip file)
+      comm_max.C_uInt ; space at comment (only when reading header)
+      hcrc.C_int      ; true if there was or will be a header crc
+      done.C_int      ; true when done reading gzip header (not used when writing a gzip file)
   EndStructure
   
   Structure gzFile : EndStructure
@@ -224,12 +224,14 @@
     deflateReset          (*stream.z_stream)
     deflateParams         (*stream.z_stream, level, strategy)
     deflateTune           (*stream.z_stream, good_length, max_lazy, nice_length, max_chain)
-    deflateBound          (*stream.z_stream, sourceLen.l)
+    deflateBound          (*stream.z_stream, sourceLen)
+    deflatePending        (*stream.z_stream, *pending, *bits)
     deflatePrime          (*stream.z_stream, bits, value)
     deflateSetHeader      (*stream.z_stream, *head.gz_header)
     
     inflateInit2_         (*stream.z_stream, windowBits, *version_string, stream_size)
     inflateSetDictionary  (*stream.z_stream, *dictionary, dictLength)
+    inflateGetDictionary  (*stream.z_stream, *dictionary, *dictLength.Long)
     inflateSync           (*stream.z_stream)
     inflateCopy           (*dest.z_stream, *source.z_stream)
     inflateReset          (*stream.z_stream)
@@ -241,13 +243,13 @@
     inflateBack           (*stream.z_stream, *in, *in_desc, *out, *out_desc)
     inflateBackEnd        (*stream.z_stream)
     
-    zlibCompileFlags.l    ()
+    zlibCompileFlags      ()
     
-    compress              (*dest, *destLen, *source, sourceLen.l)
-    compress2             (*dest, *destLen, *source, sourceLen.l, level)
+    compress              (*dest, *destLen, *source, sourceLen)
+    compress2             (*dest, *destLen, *source, sourceLen, level)
     compressBound         (sourceLen.l)
     
-    uncompress            (*dest, *destLen, *source, sourceLen.l)
+    uncompress            (*dest, *destLen, *source, sourceLen)
     
     gzopen                (path.s, mode.s)
     gzdopen               (fd, mode.s)
@@ -280,14 +282,37 @@
     crc32_combine         (crc1.l, crc2.l, len2)
   EndImport
   
+  ; deflateInit And inflateInit are macros To allow checking the zlib version
+  ; And the compiler's view of z_stream:
+  
+  Macro deflateInit(strm, level)
+    ZLIB::deflateInit_((strm), (level), zlibVersion(), SizeOf(z_stream))
+  EndMacro
+  
+  Macro inflateInit(strm)
+    ZLIB::inflateInit_((strm), (level), (method), (windowBits), (memLevel), (strategy), zlibVersion(), SizeOf(z_stream))
+  EndMacro
+  
+  Macro deflateInit2(strm, level, method, windowBits, memLevel, strategy)
+    ZLIB::deflateInit2_((strm), zlibVersion(), SizeOf(z_stream))
+  EndMacro
+  
+  Macro inflateInit2(strm, windowBits)
+    ZLIB::deflateInit2_((strm), (windowBits), zlibVersion(), SizeOf(z_stream))
+  EndMacro
+  
+  Macro inflateBackInit(strm, windowBits, window)
+    ZLIB::inflateBackInit_((strm), (windowBits), (window), zlibVersion(), SizeOf(z_stream))
+  EndMacro
+  
 EndDeclareModule
 
-Module zlib
+Module ZLIB
   
 EndModule
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 114
-; FirstLine = 84
+; CursorPosition = 308
+; FirstLine = 266
 ; Folding = --
 ; EnableXP
 ; DisableDebugger
