@@ -614,7 +614,7 @@ Procedure Object_Copy_ProgressBar_Update(*Object.Object)
           Size = Object_Input_Get_Size(LastElement(*Object\Input()))
       EndSelect
       
-      Text = UnitEngine_Format_Integer(*Object_Copy\Position_Read, #UnitEngine_SiPrefix, "B")+"/"+UnitEngine_Format_Integer(Size, #UnitEngine_SiPrefix, "B")
+      Text = UnitEngine::Format_Integer(*Object_Copy\Position_Read, UnitEngine::#SiPrefix, "B")+"/"+UnitEngine::Format_Integer(Size, UnitEngine::#SiPrefix, "B")
       
       SetGadgetState(*Object_Copy\ProgressBar, *Object_Copy\Position_Read*1000/Size)
       SetGadgetText(*Object_Copy\Text, Text)
@@ -667,8 +667,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 201
-; FirstLine = 174
+; CursorPosition = 616
+; FirstLine = 612
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP
