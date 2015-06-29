@@ -92,8 +92,8 @@ Declare   Object_Data_Inspector_Main(*Object.Object)
 Declare   _Object_Data_Inspector_Delete(*Object.Object)
 Declare   Object_Data_Inspector_Window_Open(*Object.Object)
 
-Declare   Object_Data_Inspector_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
-Declare   Object_Data_Inspector_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
+Declare   Object_Data_Inspector_Configuration_Get(*Object.Object, *Parent_Tag.NBT::Tag)
+Declare   Object_Data_Inspector_Configuration_Set(*Object.Object, *Parent_Tag.NBT::Tag)
 
 Declare   Object_Data_Inspector_Input_Event(*Object_Input.Object_Input, *Object_Event.Object_Event)
 
@@ -151,8 +151,8 @@ Procedure _Object_Data_Inspector_Delete(*Object.Object)
   ProcedureReturn #True
 EndProcedure
 
-Procedure Object_Data_Inspector_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
-  Protected *NBT_Tag.NBT_Tag
+Procedure Object_Data_Inspector_Configuration_Get(*Object.Object, *Parent_Tag.NBT::Tag)
+  Protected *NBT_Tag.NBT::Tag
   
   If Not *Object
     ProcedureReturn #False
@@ -170,8 +170,8 @@ Procedure Object_Data_Inspector_Configuration_Get(*Object.Object, *Parent_Tag.NB
   ProcedureReturn #True
 EndProcedure
 
-Procedure Object_Data_Inspector_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
-  Protected *NBT_Tag.NBT_Tag
+Procedure Object_Data_Inspector_Configuration_Set(*Object.Object, *Parent_Tag.NBT::Tag)
+  Protected *NBT_Tag.NBT::Tag
   Protected New_Size.i, *Temp
   
   If Not *Object
@@ -661,14 +661,14 @@ Procedure Object_Data_Inspector_Input_Event(*Object_Input.Object_Input, *Object_
     ProcedureReturn #False
   EndIf
   
-  Protected *Descriptor.NBT_Element
+  Protected *Descriptor.NBT::Element
   
   Select *Object_Event\Type
     Case #Object_Link_Event_Update_Descriptor
       *Descriptor = Object_Input_Get_Descriptor(*Object_Input)
       If *Descriptor
-        *Object\Name_Inherited = *Object\Name + ": " + NBT_Tag_Get_String(NBT_Tag(*Descriptor\NBT_Tag, "Name"))
-        NBT_Error_Get()
+        *Object\Name_Inherited = *Object\Name + ": " + NBT::Tag_Get_String(NBT::Tag(*Descriptor\Tag, "Name"))
+        NBT::Error_Get()
       Else
         *Object\Name_Inherited = *Object\Name
       EndIf
@@ -964,8 +964,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 594
-; FirstLine = 590
+; CursorPosition = 670
+; FirstLine = 654
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP

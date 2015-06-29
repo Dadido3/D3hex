@@ -43,8 +43,8 @@ Prototype   Object_Function_Main(*Object)
 Prototype   Object_Function_Delete(*Object)
 Prototype   Object_Function_Window(*Object)
 
-Prototype   Object_Function_Configuration_Get(*Object, *Parent_Tag.NBT_Tag)
-Prototype   Object_Function_Configuration_Set(*Object, *Parent_Tag.NBT_Tag)
+Prototype   Object_Function_Configuration_Get(*Object, *Parent_Tag.NBT::Tag)
+Prototype   Object_Function_Configuration_Set(*Object, *Parent_Tag.NBT::Tag)
 
 Prototype   Object_Function_Event(*Object, *Object_Event)
 
@@ -131,7 +131,7 @@ Structure Object_Output
   ; #### Custom Data
   *Custom_Data
   
-  *Descriptor.NBT_Element
+  *Descriptor.NBT::Element
   
   i.l
   
@@ -289,7 +289,7 @@ Procedure Object_Output_Add(*Object.Object, Name.s="", Short_Name.s="")
   Next
   PopListPosition(*Object\Output())
   
-  *Object\Output()\Descriptor = NBT_Element_Add()
+  *Object\Output()\Descriptor = NBT::Element_Add()
   
   *Object\Redraw = #True
   
@@ -329,7 +329,7 @@ Procedure Object_Output_Delete(*Object.Object, *Object_Output.Object_Output)
     Object_Link_Disconnect(*Object_Output\Linked())
   Next
   
-  NBT_Element_Delete(*Object\Output()\Descriptor)
+  NBT::Element_Delete(*Object\Output()\Descriptor)
   
   ForEach *Object\Output()
     If *Object\Output() = *Object_Output
@@ -663,7 +663,7 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 401
-; FirstLine = 372
+; CursorPosition = 133
+; FirstLine = 143
 ; Folding = ----
 ; EnableXP

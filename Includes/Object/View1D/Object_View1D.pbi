@@ -135,8 +135,8 @@ Declare   Object_View1D_Main(*Object.Object)
 Declare   _Object_View1D_Delete(*Object.Object)
 Declare   Object_View1D_Window_Open(*Object.Object)
 
-Declare   Object_View1D_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
-Declare   Object_View1D_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
+Declare   Object_View1D_Configuration_Get(*Object.Object, *Parent_Tag.NBT::Tag)
+Declare   Object_View1D_Configuration_Set(*Object.Object, *Parent_Tag.NBT::Tag)
 
 Declare   Object_View1D_Input_Event(*Object_Input.Object_Input, *Object_Event.Object_Event)
 
@@ -214,7 +214,7 @@ Procedure _Object_View1D_Delete(*Object.Object)
   ProcedureReturn #True
 EndProcedure
 
-Procedure Object_View1D_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
+Procedure Object_View1D_Configuration_Get(*Object.Object, *Parent_Tag.NBT::Tag)
   If Not *Object
     ProcedureReturn #False
   EndIf
@@ -226,29 +226,29 @@ Procedure Object_View1D_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
     ProcedureReturn #False
   EndIf
   
-  Protected *NBT_Tag.NBT_Tag
-  Protected *NBT_Tag_List.NBT_Tag
-  Protected *NBT_Tag_Compound.NBT_Tag
+  Protected *NBT_Tag.NBT::Tag
+  Protected *NBT_Tag_List.NBT::Tag
+  Protected *NBT_Tag_Compound.NBT::Tag
   Protected *Object_View1D_Input.Object_View1D_Input
   
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Offset_X", #NBT_Tag_Double)  : NBT_Tag_Set_Double(*NBT_Tag, *Object_View1D\Offset_X)
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Offset_Y", #NBT_Tag_Double)  : NBT_Tag_Set_Double(*NBT_Tag, *Object_View1D\Offset_Y)
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Zoom_X", #NBT_Tag_Double)    : NBT_Tag_Set_Double(*NBT_Tag, *Object_View1D\Zoom_X)
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Zoom_Y", #NBT_Tag_Double)    : NBT_Tag_Set_Double(*NBT_Tag, *Object_View1D\Zoom_Y)
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Connect", #NBT_Tag_Byte)     : NBT_Tag_Set_Number(*NBT_Tag, *Object_View1D\Connect)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Offset_X", NBT::#Tag_Double)  : NBT::Tag_Set_Double(*NBT_Tag, *Object_View1D\Offset_X)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Offset_Y", NBT::#Tag_Double)  : NBT::Tag_Set_Double(*NBT_Tag, *Object_View1D\Offset_Y)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Zoom_X", NBT::#Tag_Double)    : NBT::Tag_Set_Double(*NBT_Tag, *Object_View1D\Zoom_X)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Zoom_Y", NBT::#Tag_Double)    : NBT::Tag_Set_Double(*NBT_Tag, *Object_View1D\Zoom_Y)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Connect", NBT::#Tag_Byte)     : NBT::Tag_Set_Number(*NBT_Tag, *Object_View1D\Connect)
   
-  *NBT_Tag_List = NBT_Tag_Add(*Parent_Tag, "Inputs", #NBT_Tag_List, #NBT_Tag_Compound)
+  *NBT_Tag_List = NBT::Tag_Add(*Parent_Tag, "Inputs", NBT::#Tag_List, NBT::#Tag_Compound)
   If *NBT_Tag_List
     ForEach *Object\Input()
       *Object_View1D_Input = *Object\Input()\Custom_Data
       
-      *NBT_Tag_Compound = NBT_Tag_Add(*NBT_Tag_List, "", #NBT_Tag_Compound)
+      *NBT_Tag_Compound = NBT::Tag_Add(*NBT_Tag_List, "", NBT::#Tag_Compound)
       If *NBT_Tag_Compound
-        *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "ElementType", #NBT_Tag_Long) : NBT_Tag_Set_Number(*NBT_Tag, *Object_View1D_Input\ElementType)
-        *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "ElementSize", #NBT_Tag_Long) : NBT_Tag_Set_Number(*NBT_Tag, *Object_View1D_Input\ElementSize)
-        *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "Manually", #NBT_Tag_Long)    : NBT_Tag_Set_Number(*NBT_Tag, *Object_View1D_Input\Manually)
-        *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "Offset", #NBT_Tag_Quad)      : NBT_Tag_Set_Number(*NBT_Tag, *Object_View1D_Input\Offset)
-        *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "Color", #NBT_Tag_Long)       : NBT_Tag_Set_Number(*NBT_Tag, *Object_View1D_Input\Color)
+        *NBT_Tag = NBT::Tag_Add(*NBT_Tag_Compound, "ElementType", NBT::#Tag_Long) : NBT::Tag_Set_Number(*NBT_Tag, *Object_View1D_Input\ElementType)
+        *NBT_Tag = NBT::Tag_Add(*NBT_Tag_Compound, "ElementSize", NBT::#Tag_Long) : NBT::Tag_Set_Number(*NBT_Tag, *Object_View1D_Input\ElementSize)
+        *NBT_Tag = NBT::Tag_Add(*NBT_Tag_Compound, "Manually", NBT::#Tag_Long)    : NBT::Tag_Set_Number(*NBT_Tag, *Object_View1D_Input\Manually)
+        *NBT_Tag = NBT::Tag_Add(*NBT_Tag_Compound, "Offset", NBT::#Tag_Quad)      : NBT::Tag_Set_Number(*NBT_Tag, *Object_View1D_Input\Offset)
+        *NBT_Tag = NBT::Tag_Add(*NBT_Tag_Compound, "Color", NBT::#Tag_Long)       : NBT::Tag_Set_Number(*NBT_Tag, *Object_View1D_Input\Color)
       EndIf
     Next
   EndIf
@@ -256,7 +256,7 @@ Procedure Object_View1D_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
   ProcedureReturn #True
 EndProcedure
 
-Procedure Object_View1D_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
+Procedure Object_View1D_Configuration_Set(*Object.Object, *Parent_Tag.NBT::Tag)
   If Not *Object
     ProcedureReturn #False
   EndIf
@@ -268,18 +268,18 @@ Procedure Object_View1D_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
     ProcedureReturn #False
   EndIf
   
-  Protected *NBT_Tag.NBT_Tag
-  Protected *NBT_Tag_List.NBT_Tag
-  Protected *NBT_Tag_Compound.NBT_Tag
+  Protected *NBT_Tag.NBT::Tag
+  Protected *NBT_Tag_List.NBT::Tag
+  Protected *NBT_Tag_Compound.NBT::Tag
   Protected *Object_View1D_Input.Object_View1D_Input
   Protected *Object_Input.Object_Input
   Protected Elements, i
   
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Offset_X") : *Object_View1D\Offset_X = NBT_Tag_Get_Double(*NBT_Tag)
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Offset_Y") : *Object_View1D\Offset_Y = NBT_Tag_Get_Double(*NBT_Tag)
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Zoom_X")   : *Object_View1D\Zoom_X = NBT_Tag_Get_Double(*NBT_Tag)
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Zoom_Y")   : *Object_View1D\Zoom_Y = NBT_Tag_Get_Double(*NBT_Tag)
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Connect")  : *Object_View1D\Connect = NBT_Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Offset_X") : *Object_View1D\Offset_X = NBT::Tag_Get_Double(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Offset_Y") : *Object_View1D\Offset_Y = NBT::Tag_Get_Double(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Zoom_X")   : *Object_View1D\Zoom_X = NBT::Tag_Get_Double(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Zoom_Y")   : *Object_View1D\Zoom_Y = NBT::Tag_Get_Double(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Connect")  : *Object_View1D\Connect = NBT::Tag_Get_Number(*NBT_Tag)
   
   ; #### Delete all inputs
   While FirstElement(*Object\Input())
@@ -290,12 +290,12 @@ Procedure Object_View1D_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
     Object_Input_Delete(*Object, *Object\Input())
   Wend
   
-  *NBT_Tag_List = NBT_Tag(*Parent_Tag, "Inputs")
+  *NBT_Tag_List = NBT::Tag(*Parent_Tag, "Inputs")
   If *NBT_Tag_List
-    Elements = NBT_Tag_Count(*NBT_Tag_List)
+    Elements = NBT::Tag_Count(*NBT_Tag_List)
     
     For i = 0 To Elements-1
-      *NBT_Tag_Compound = NBT_Tag_Index(*NBT_Tag_List, i)
+      *NBT_Tag_Compound = NBT::Tag_Index(*NBT_Tag_List, i)
       If *NBT_Tag_Compound
         
         ; #### Add Input
@@ -304,11 +304,11 @@ Procedure Object_View1D_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
         *Object_Input\Function_Event = @Object_View1D_Input_Event()
         *Object_View1D_Input = *Object_Input\Custom_Data
         If *Object_View1D_Input
-          *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "ElementType") : *Object_View1D_Input\ElementType = NBT_Tag_Get_Number(*NBT_Tag)
-          *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "ElementSize") : *Object_View1D_Input\ElementSize = NBT_Tag_Get_Number(*NBT_Tag)
-          *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Manually")    : *Object_View1D_Input\Manually = NBT_Tag_Get_Number(*NBT_Tag)
-          *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Offset")      : *Object_View1D_Input\Offset = NBT_Tag_Get_Number(*NBT_Tag)
-          *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Color")       : *Object_View1D_Input\Color = NBT_Tag_Get_Number(*NBT_Tag)
+          *NBT_Tag = NBT::Tag(*NBT_Tag_Compound, "ElementType") : *Object_View1D_Input\ElementType = NBT::Tag_Get_Number(*NBT_Tag)
+          *NBT_Tag = NBT::Tag(*NBT_Tag_Compound, "ElementSize") : *Object_View1D_Input\ElementSize = NBT::Tag_Get_Number(*NBT_Tag)
+          *NBT_Tag = NBT::Tag(*NBT_Tag_Compound, "Manually")    : *Object_View1D_Input\Manually = NBT::Tag_Get_Number(*NBT_Tag)
+          *NBT_Tag = NBT::Tag(*NBT_Tag_Compound, "Offset")      : *Object_View1D_Input\Offset = NBT::Tag_Get_Number(*NBT_Tag)
+          *NBT_Tag = NBT::Tag(*NBT_Tag_Compound, "Color")       : *Object_View1D_Input\Color = NBT::Tag_Get_Number(*NBT_Tag)
         EndIf
         
       EndIf
@@ -369,14 +369,14 @@ Procedure Object_View1D_Input_Event(*Object_Input.Object_Input, *Object_Event.Ob
     ProcedureReturn #False
   EndIf
   
-  Protected *Descriptor.NBT_Element
+  Protected *Descriptor.NBT::Element
   
   Select *Object_Event\Type
     Case #Object_Link_Event_Update_Descriptor
       *Descriptor = Object_Input_Get_Descriptor(*Object_Input)
       If *Descriptor
-        *Object\Name_Inherited = *Object\Name + ": " + NBT_Tag_Get_String(NBT_Tag(*Descriptor\NBT_Tag, "Name"))
-        NBT_Error_Get()
+        *Object\Name_Inherited = *Object\Name + ": " + NBT::Tag_Get_String(NBT::Tag(*Descriptor\Tag, "Name"))
+        NBT::Error_Get()
       Else
         *Object\Name_Inherited = *Object\Name
       EndIf
@@ -1271,7 +1271,7 @@ DataSection
   Object_View1D_Icon_Normalize_Y: : IncludeBinary "../../../Data/Icons/Graph_Normalize_Y.png"
 EndDataSection
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1117
-; FirstLine = 1117
+; CursorPosition = 378
+; FirstLine = 362
 ; Folding = ----
 ; EnableXP

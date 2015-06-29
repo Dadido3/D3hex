@@ -101,8 +101,8 @@ Declare   Object_History_Main(*Object.Object)
 Declare   _Object_History_Delete(*Object.Object)
 Declare   Object_History_Window_Open(*Object.Object)
 
-Declare   Object_History_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
-Declare   Object_History_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
+Declare   Object_History_Configuration_Get(*Object.Object, *Parent_Tag.NBT::Tag)
+Declare   Object_History_Configuration_Set(*Object.Object, *Parent_Tag.NBT::Tag)
 
 Declare   Object_History_Input_Event(*Object_Input.Object_Input, *Object_Event.Object_Event)
 Declare   Object_History_Output_Event(*Object_Output.Object_Output, *Object_Event.Object_Event)
@@ -405,8 +405,8 @@ Procedure _Object_History_Delete(*Object.Object)
   ProcedureReturn #True
 EndProcedure
 
-Procedure Object_History_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
-  Protected *NBT_Tag.NBT_Tag
+Procedure Object_History_Configuration_Get(*Object.Object, *Parent_Tag.NBT::Tag)
+  Protected *NBT_Tag.NBT::Tag
   
   If Not *Object
     ProcedureReturn #False
@@ -419,13 +419,13 @@ Procedure Object_History_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
     ProcedureReturn #False
   EndIf
   
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Always_Writable", #NBT_Tag_Quad)  : NBT_Tag_Set_Number(*NBT_Tag, *Object_History\Always_Writable)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Always_Writable", NBT::#Tag_Quad)  : NBT::Tag_Set_Number(*NBT_Tag, *Object_History\Always_Writable)
   
   ProcedureReturn #True
 EndProcedure
 
-Procedure Object_History_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
-  Protected *NBT_Tag.NBT_Tag
+Procedure Object_History_Configuration_Set(*Object.Object, *Parent_Tag.NBT::Tag)
+  Protected *NBT_Tag.NBT::Tag
   Protected New_Size.i, *Temp
   
   If Not *Object
@@ -439,7 +439,7 @@ Procedure Object_History_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
     ProcedureReturn #False
   EndIf
   
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Always_Writable") : *Object_History\Always_Writable = NBT_Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Always_Writable") : *Object_History\Always_Writable = NBT::Tag_Get_Number(*NBT_Tag)
   
   ProcedureReturn #True
 EndProcedure
@@ -460,14 +460,14 @@ Procedure Object_History_Input_Event(*Object_Input.Object_Input, *Object_Event.O
     ProcedureReturn #False
   EndIf
   
-  Protected *Descriptor.NBT_Element
+  Protected *Descriptor.NBT::Element
   
   Select *Object_Event\Type
     Case #Object_Link_Event_Update_Descriptor
       *Descriptor = Object_Input_Get_Descriptor(FirstElement(*Object\Input()))
       If *Descriptor
-        *Object\Name_Inherited = *Object\Name + ": " + NBT_Tag_Get_String(NBT_Tag(*Descriptor\NBT_Tag, "Name"))
-        NBT_Error_Get()
+        *Object\Name_Inherited = *Object\Name + ": " + NBT::Tag_Get_String(NBT::Tag(*Descriptor\Tag, "Name"))
+        NBT::Error_Get()
       Else
         *Object\Name_Inherited = *Object\Name
       EndIf
@@ -1283,7 +1283,7 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 318
-; FirstLine = 303
+; CursorPosition = 469
+; FirstLine = 456
 ; Folding = ------
 ; EnableXP

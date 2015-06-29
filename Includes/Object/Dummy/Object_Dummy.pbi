@@ -54,8 +54,8 @@ EndStructure
 
 Declare   _Object_Dummy_Delete(*Object.Object)
 
-Declare   Object_Dummy_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
-Declare   Object_Dummy_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
+Declare   Object_Dummy_Configuration_Get(*Object.Object, *Parent_Tag.NBT::Tag)
+Declare   Object_Dummy_Configuration_Set(*Object.Object, *Parent_Tag.NBT::Tag)
 
 Declare   Object_Dummy_Get_Descriptor(*Object_Output.Object_Output)
 Declare.q Object_Dummy_Get_Size(*Object_Output.Object_Output)
@@ -134,8 +134,8 @@ Procedure _Object_Dummy_Delete(*Object.Object)
   ProcedureReturn #True
 EndProcedure
 
-Procedure Object_Dummy_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
-  Protected *NBT_Tag.NBT_Tag
+Procedure Object_Dummy_Configuration_Get(*Object.Object, *Parent_Tag.NBT::Tag)
+  Protected *NBT_Tag.NBT::Tag
   
   If Not *Object
     ProcedureReturn #False
@@ -148,13 +148,13 @@ Procedure Object_Dummy_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
     ProcedureReturn #False
   EndIf
   
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Data", #NBT_Tag_Byte_Array)  : NBT_Tag_Set_Array(*NBT_Tag, *Object_Dummy\Raw_Data, *Object_Dummy\Raw_Data_Size)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Data", NBT::#Tag_Byte_Array)  : NBT::Tag_Set_Array(*NBT_Tag, *Object_Dummy\Raw_Data, *Object_Dummy\Raw_Data_Size)
   
   ProcedureReturn #True
 EndProcedure
 
-Procedure Object_Dummy_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
-  Protected *NBT_Tag.NBT_Tag
+Procedure Object_Dummy_Configuration_Set(*Object.Object, *Parent_Tag.NBT::Tag)
+  Protected *NBT_Tag.NBT::Tag
   Protected New_Size.i, *Temp
   
   If Not *Object
@@ -168,10 +168,10 @@ Procedure Object_Dummy_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
     ProcedureReturn #False
   EndIf
   
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Data")  
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Data")  
   
   ; #### Reallocate Memory
-  *Object_Dummy\Raw_Data_Size = NBT_Tag_Count(*NBT_Tag)
+  *Object_Dummy\Raw_Data_Size = NBT::Tag_Count(*NBT_Tag)
   New_Size = Quad_Divide_Ceil(*Object_Dummy\Raw_Data_Size, #Object_Dummy_MemoryAllocation_Step) * #Object_Dummy_MemoryAllocation_Step
   If New_Size <> MemorySize(*Object_Dummy\Raw_Data) And New_Size > 0
     *Temp = ReAllocateMemory(*Object_Dummy\Raw_Data, New_Size)
@@ -182,7 +182,7 @@ Procedure Object_Dummy_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
     EndIf
   EndIf
   
-  NBT_Tag_Get_Array(*NBT_Tag, *Object_Dummy\Raw_Data, *Object_Dummy\Raw_Data_Size)
+  NBT::Tag_Get_Array(*NBT_Tag, *Object_Dummy\Raw_Data, *Object_Dummy\Raw_Data_Size)
   
   ProcedureReturn #True
 EndProcedure
@@ -201,7 +201,7 @@ Procedure Object_Dummy_Get_Descriptor(*Object_Output.Object_Output)
     ProcedureReturn #Null
   EndIf
   
-  NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Name", #NBT_Tag_String), "Dummy")
+  NBT::Tag_Set_String(NBT::Tag_Add(*Object_Output\Descriptor\Tag, "Name", NBT::#Tag_String), "Dummy")
   
   ProcedureReturn *Object_Output\Descriptor
 EndProcedure
@@ -397,8 +397,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 363
-; FirstLine = 352
+; CursorPosition = 203
+; FirstLine = 178
 ; Folding = --
 ; EnableUnicode
 ; EnableXP

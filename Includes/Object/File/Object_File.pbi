@@ -78,8 +78,8 @@ Declare   Object_File_Main(*Object.Object)
 Declare   _Object_File_Delete(*Object.Object)
 Declare   Object_File_Window_Open(*Object.Object)
 
-Declare   Object_File_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
-Declare   Object_File_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
+Declare   Object_File_Configuration_Get(*Object.Object, *Parent_Tag.NBT::Tag)
+Declare   Object_File_Configuration_Set(*Object.Object, *Parent_Tag.NBT::Tag)
 
 Declare   Object_File_Output_Event(*Object_Output.Object_Output, *Object_Event.Object_Event)
 
@@ -330,8 +330,8 @@ Procedure _Object_File_Delete(*Object.Object)
   ProcedureReturn #True
 EndProcedure
 
-Procedure Object_File_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
-  Protected *NBT_Tag.NBT_Tag
+Procedure Object_File_Configuration_Get(*Object.Object, *Parent_Tag.NBT::Tag)
+  Protected *NBT_Tag.NBT::Tag
   
   If Not *Object
     ProcedureReturn #False
@@ -345,21 +345,21 @@ Procedure Object_File_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
   EndIf
   
   If *Object_File\File_ID
-    *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Opened", #NBT_Tag_Byte)      : NBT_Tag_Set_Number(*NBT_Tag, #True)
+    *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Opened", NBT::#Tag_Byte)      : NBT::Tag_Set_Number(*NBT_Tag, #True)
   Else
-    *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Opened", #NBT_Tag_Byte)      : NBT_Tag_Set_Number(*NBT_Tag, #False)
+    *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Opened", NBT::#Tag_Byte)      : NBT::Tag_Set_Number(*NBT_Tag, #False)
   EndIf
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Filename", #NBT_Tag_String)    : NBT_Tag_Set_String(*NBT_Tag, *Object_File\Filename)
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Mode", #NBT_Tag_Byte)          : NBT_Tag_Set_Number(*NBT_Tag, *Object_File\Mode)
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Shared_Read", #NBT_Tag_Byte)   : NBT_Tag_Set_Number(*NBT_Tag, *Object_File\Shared_Read)
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Shared_Write", #NBT_Tag_Byte)  : NBT_Tag_Set_Number(*NBT_Tag, *Object_File\Shared_Write)
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Cached", #NBT_Tag_Byte)        : NBT_Tag_Set_Number(*NBT_Tag, *Object_File\Cached)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Filename", NBT::#Tag_String)    : NBT::Tag_Set_String(*NBT_Tag, *Object_File\Filename)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Mode", NBT::#Tag_Byte)          : NBT::Tag_Set_Number(*NBT_Tag, *Object_File\Mode)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Shared_Read", NBT::#Tag_Byte)   : NBT::Tag_Set_Number(*NBT_Tag, *Object_File\Shared_Read)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Shared_Write", NBT::#Tag_Byte)  : NBT::Tag_Set_Number(*NBT_Tag, *Object_File\Shared_Write)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Cached", NBT::#Tag_Byte)        : NBT::Tag_Set_Number(*NBT_Tag, *Object_File\Cached)
   
   ProcedureReturn #True
 EndProcedure
 
-Procedure Object_File_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
-  Protected *NBT_Tag.NBT_Tag
+Procedure Object_File_Configuration_Set(*Object.Object, *Parent_Tag.NBT::Tag)
+  Protected *NBT_Tag.NBT::Tag
   Protected New_Size.i, *Temp
   
   If Not *Object
@@ -373,14 +373,14 @@ Procedure Object_File_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
     ProcedureReturn #False
   EndIf
   
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Filename")     : *Object_File\Filename = NBT_Tag_Get_String(*NBT_Tag)
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Mode")         : *Object_File\Mode = NBT_Tag_Get_Number(*NBT_Tag)
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Shared_Read")  : *Object_File\Shared_Read = NBT_Tag_Get_Number(*NBT_Tag)
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Shared_Write") : *Object_File\Shared_Write = NBT_Tag_Get_Number(*NBT_Tag)
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Cached")       : *Object_File\Cached = NBT_Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Filename")     : *Object_File\Filename = NBT::Tag_Get_String(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Mode")         : *Object_File\Mode = NBT::Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Shared_Read")  : *Object_File\Shared_Read = NBT::Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Shared_Write") : *Object_File\Shared_Write = NBT::Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Cached")       : *Object_File\Cached = NBT::Tag_Get_Number(*NBT_Tag)
   
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Opened")
-  If NBT_Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Opened")
+  If NBT::Tag_Get_Number(*NBT_Tag)
     Object_File_HDD_Open(*Object)
   EndIf
   
@@ -466,15 +466,15 @@ Procedure Object_File_Get_Descriptor(*Object_Output.Object_Output)
   EndIf
   
   If *Object_File\File_ID
-    NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Name", #NBT_Tag_String), GetFilePart(*Object_File\Filename))
-    NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Type", #NBT_Tag_String), "File")
-    NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Filename", #NBT_Tag_String), *Object_File\Filename)
+    NBT::Tag_Set_String(NBT::Tag_Add(*Object_Output\Descriptor\Tag, "Name", NBT::#Tag_String), GetFilePart(*Object_File\Filename))
+    NBT::Tag_Set_String(NBT::Tag_Add(*Object_Output\Descriptor\Tag, "Type", NBT::#Tag_String), "File")
+    NBT::Tag_Set_String(NBT::Tag_Add(*Object_Output\Descriptor\Tag, "Filename", NBT::#Tag_String), *Object_File\Filename)
     ProcedureReturn *Object_Output\Descriptor
   Else
     ; #### Delete all tags
-    While NBT_Tag_Delete(NBT_Tag_Index(*Object_Output\Descriptor\NBT_Tag, 0))
+    While NBT::Tag_Delete(NBT::Tag_Index(*Object_Output\Descriptor\Tag, 0))
     Wend
-    NBT_Error_Get()
+    NBT::Error_Get()
   EndIf
   
   ProcedureReturn #Null
@@ -1175,8 +1175,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 760
-; FirstLine = 715
+; CursorPosition = 468
+; FirstLine = 458
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

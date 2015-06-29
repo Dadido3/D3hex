@@ -66,8 +66,8 @@ Declare   Object_Random_Main(*Object.Object)
 Declare   _Object_Random_Delete(*Object.Object)
 Declare   Object_Random_Window_Open(*Object.Object)
 
-Declare   Object_Random_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
-Declare   Object_Random_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
+Declare   Object_Random_Configuration_Get(*Object.Object, *Parent_Tag.NBT::Tag)
+Declare   Object_Random_Configuration_Set(*Object.Object, *Parent_Tag.NBT::Tag)
 
 Declare   Object_Random_Get_Descriptor(*Object_Output.Object_Output)
 Declare.q Object_Random_Get_Size(*Object_Output.Object_Output)
@@ -143,8 +143,8 @@ Procedure _Object_Random_Delete(*Object.Object)
   ProcedureReturn #True
 EndProcedure
 
-Procedure Object_Random_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
-  Protected *NBT_Tag.NBT_Tag
+Procedure Object_Random_Configuration_Get(*Object.Object, *Parent_Tag.NBT::Tag)
+  Protected *NBT_Tag.NBT::Tag
   
   If Not *Object
     ProcedureReturn #False
@@ -157,14 +157,14 @@ Procedure Object_Random_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
     ProcedureReturn #False
   EndIf
   
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Size", #NBT_Tag_Quad)  : NBT_Tag_Set_Number(*NBT_Tag, *Object_Random\Size)
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Seed", #NBT_Tag_Quad)  : NBT_Tag_Set_Number(*NBT_Tag, *Object_Random\Seed)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Size", NBT::#Tag_Quad)  : NBT::Tag_Set_Number(*NBT_Tag, *Object_Random\Size)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Seed", NBT::#Tag_Quad)  : NBT::Tag_Set_Number(*NBT_Tag, *Object_Random\Seed)
   
   ProcedureReturn #True
 EndProcedure
 
-Procedure Object_Random_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
-  Protected *NBT_Tag.NBT_Tag
+Procedure Object_Random_Configuration_Set(*Object.Object, *Parent_Tag.NBT::Tag)
+  Protected *NBT_Tag.NBT::Tag
   Protected New_Size.i, *Temp
   
   If Not *Object
@@ -178,8 +178,8 @@ Procedure Object_Random_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
     ProcedureReturn #False
   EndIf
   
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Size") : *Object_Random\Size = NBT_Tag_Get_Number(*NBT_Tag)
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Seed") : *Object_Random\Seed = NBT_Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Size") : *Object_Random\Size = NBT::Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Seed") : *Object_Random\Seed = NBT::Tag_Get_Number(*NBT_Tag)
   
   ProcedureReturn #True
 EndProcedure
@@ -198,7 +198,7 @@ Procedure Object_Random_Get_Descriptor(*Object_Output.Object_Output)
     ProcedureReturn #Null
   EndIf
   
-  NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Name", #NBT_Tag_String), "Random data")
+  NBT::Tag_Set_String(NBT::Tag_Add(*Object_Output\Descriptor\Tag, "Name", NBT::#Tag_String), "Random data")
   
   ProcedureReturn *Object_Output\Descriptor
 EndProcedure
@@ -573,7 +573,7 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 489
-; FirstLine = 473
+; CursorPosition = 200
+; FirstLine = 181
 ; Folding = ----
 ; EnableXP

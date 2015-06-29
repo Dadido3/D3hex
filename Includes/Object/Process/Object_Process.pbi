@@ -67,8 +67,8 @@ Declare   Object_Process_Main(*Object.Object)
 Declare   _Object_Process_Delete(*Object.Object)
 Declare   Object_Process_Window_Open(*Object.Object)
 
-Declare   Object_Process_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
-Declare   Object_Process_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
+Declare   Object_Process_Configuration_Get(*Object.Object, *Parent_Tag.NBT::Tag)
+Declare   Object_Process_Configuration_Set(*Object.Object, *Parent_Tag.NBT::Tag)
 
 Declare   Object_Process_Output_Event(*Object_Output.Object_Output, *Object_Event.Object_Event)
 
@@ -245,8 +245,8 @@ Procedure _Object_Process_Delete(*Object.Object)
   ProcedureReturn #True
 EndProcedure
 
-Procedure Object_Process_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
-  Protected *NBT_Tag.NBT_Tag
+Procedure Object_Process_Configuration_Get(*Object.Object, *Parent_Tag.NBT::Tag)
+  Protected *NBT_Tag.NBT::Tag
   
   If Not *Object
     ProcedureReturn #False
@@ -264,8 +264,8 @@ Procedure Object_Process_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
   ProcedureReturn #True
 EndProcedure
 
-Procedure Object_Process_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
-  Protected *NBT_Tag.NBT_Tag
+Procedure Object_Process_Configuration_Set(*Object.Object, *Parent_Tag.NBT::Tag)
+  Protected *NBT_Tag.NBT::Tag
   Protected New_Size.i, *Temp
   
   If Not *Object
@@ -363,15 +363,15 @@ Procedure Object_Process_Get_Descriptor(*Object_Output.Object_Output)
   EndIf
   
   If *Object_Process\hProcess
-    NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Name", #NBT_Tag_String), "Process: "+*Object_Process\Process_Name)
-    NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Type", #NBT_Tag_String), "Process")
-    NBT_Tag_Set_Number(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Process_Handle", #NBT_Tag_Quad), *Object_Process\hProcess)
+    NBT::Tag_Set_String(NBT::Tag_Add(*Object_Output\Descriptor\Tag, "Name", NBT::#Tag_String), "Process: "+*Object_Process\Process_Name)
+    NBT::Tag_Set_String(NBT::Tag_Add(*Object_Output\Descriptor\Tag, "Type", NBT::#Tag_String), "Process")
+    NBT::Tag_Set_Number(NBT::Tag_Add(*Object_Output\Descriptor\Tag, "Process_Handle", NBT::#Tag_Quad), *Object_Process\hProcess)
     ProcedureReturn *Object_Output\Descriptor
   Else
     ; #### Delete all tags
-    While NBT_Tag_Delete(NBT_Tag_Index(*Object_Output\Descriptor\NBT_Tag, 0))
+    While NBT::Tag_Delete(NBT::Tag_Index(*Object_Output\Descriptor\Tag, 0))
     Wend
-    NBT_Error_Get()
+    NBT::Error_Get()
   EndIf
   
   ProcedureReturn #Null
@@ -985,8 +985,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 667
-; FirstLine = 622
+; CursorPosition = 375
+; FirstLine = 349
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

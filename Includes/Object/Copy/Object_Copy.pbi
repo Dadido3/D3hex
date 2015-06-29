@@ -94,8 +94,8 @@ Declare   Object_Copy_Main(*Object.Object)
 Declare   _Object_Copy_Delete(*Object.Object)
 Declare   Object_Copy_Window_Open(*Object.Object)
 
-Declare   Object_Copy_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
-Declare   Object_Copy_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
+Declare   Object_Copy_Configuration_Get(*Object.Object, *Parent_Tag.NBT::Tag)
+Declare   Object_Copy_Configuration_Set(*Object.Object, *Parent_Tag.NBT::Tag)
 
 Declare   Object_Copy_Input_Event(*Object_Input.Object_Input, *Object_Event.Object_Event)
 
@@ -160,8 +160,8 @@ Procedure _Object_Copy_Delete(*Object.Object)
   ProcedureReturn #True
 EndProcedure
 
-Procedure Object_Copy_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
-  Protected *NBT_Tag.NBT_Tag
+Procedure Object_Copy_Configuration_Get(*Object.Object, *Parent_Tag.NBT::Tag)
+  Protected *NBT_Tag.NBT::Tag
   
   If Not *Object
     ProcedureReturn #False
@@ -174,16 +174,16 @@ Procedure Object_Copy_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
     ProcedureReturn #False
   EndIf
   
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Mode", #NBT_Tag_Quad)      : NBT_Tag_Set_Number(*NBT_Tag, *Object_Copy\Mode)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Mode", NBT::#Tag_Quad)      : NBT::Tag_Set_Number(*NBT_Tag, *Object_Copy\Mode)
   
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Append", #NBT_Tag_Quad)    : NBT_Tag_Set_Number(*NBT_Tag, *Object_Copy\Append)
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Truncate", #NBT_Tag_Quad)  : NBT_Tag_Set_Number(*NBT_Tag, *Object_Copy\Truncate)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Append", NBT::#Tag_Quad)    : NBT::Tag_Set_Number(*NBT_Tag, *Object_Copy\Append)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Truncate", NBT::#Tag_Quad)  : NBT::Tag_Set_Number(*NBT_Tag, *Object_Copy\Truncate)
   
   ProcedureReturn #True
 EndProcedure
 
-Procedure Object_Copy_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
-  Protected *NBT_Tag.NBT_Tag
+Procedure Object_Copy_Configuration_Set(*Object.Object, *Parent_Tag.NBT::Tag)
+  Protected *NBT_Tag.NBT::Tag
   
   If Not *Object
     ProcedureReturn #False
@@ -196,10 +196,10 @@ Procedure Object_Copy_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
     ProcedureReturn #False
   EndIf
   
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Mode")     : *Object_Copy\Mode     = NBT_Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Mode")     : *Object_Copy\Mode     = NBT::Tag_Get_Number(*NBT_Tag)
   
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Append")   : *Object_Copy\Append   = NBT_Tag_Get_Number(*NBT_Tag)
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Truncate") : *Object_Copy\Truncate = NBT_Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Append")   : *Object_Copy\Append   = NBT::Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Truncate") : *Object_Copy\Truncate = NBT::Tag_Get_Number(*NBT_Tag)
   
   ProcedureReturn #True
 EndProcedure
@@ -667,8 +667,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 389
-; FirstLine = 373
+; CursorPosition = 201
+; FirstLine = 174
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP

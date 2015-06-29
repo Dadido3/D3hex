@@ -135,42 +135,42 @@ Procedure Node_Editor_Configuration_Clear()
 EndProcedure
 
 Procedure Node_Editor_Configuration_Save(Filename.s)
-  Protected *NBT_Element.NBT_Element
-  Protected *NBT_Tag_Compound.NBT_Tag
-  Protected *NBT_Tag_List.NBT_Tag
-  Protected *NBT_Tag.NBT_Tag
+  Protected *NBT_Element.NBT::Element
+  Protected *NBT_Tag_Compound.NBT::Tag
+  Protected *NBT_Tag_List.NBT::Tag
+  Protected *NBT_Tag.NBT::Tag
   
   If LCase(GetExtensionPart(Filename)) <> LCase("D3hex")
     Filename + ".D3hex"
   EndIf
   
-  *NBT_Element = NBT_Element_Add()
+  *NBT_Element = NBT::Element_Add()
   
   If Not *NBT_Element
-    Logger::Entry_Add_Error("Couldn't save configuration", "NBT_Element_Add() failed. ("+NBT_Error_Get()+")")
+    Logger::Entry_Add_Error("Couldn't save configuration", "NBT_Element_Add() failed. ("+NBT::Error_Get()+")")
     ProcedureReturn #False
   EndIf
   
-  *NBT_Tag = NBT_Tag_Add(*NBT_Element\NBT_Tag, "Snapping", #NBT_Tag_Byte)   : NBT_Tag_Set_Number(*NBT_Tag, Node_Editor\Snapping)
-  *NBT_Tag = NBT_Tag_Add(*NBT_Element\NBT_Tag, "Offset_X", #NBT_Tag_Double) : NBT_Tag_Set_Double(*NBT_Tag, Node_Editor\Offset_X)
-  *NBT_Tag = NBT_Tag_Add(*NBT_Element\NBT_Tag, "Offset_Y", #NBT_Tag_Double) : NBT_Tag_Set_Double(*NBT_Tag, Node_Editor\Offset_Y)
-  *NBT_Tag = NBT_Tag_Add(*NBT_Element\NBT_Tag, "Zoom", #NBT_Tag_Double)     : NBT_Tag_Set_Double(*NBT_Tag, Node_Editor\Zoom)
+  *NBT_Tag = NBT::Tag_Add(*NBT_Element\Tag, "Snapping", NBT::#Tag_Byte)   : NBT::Tag_Set_Number(*NBT_Tag, Node_Editor\Snapping)
+  *NBT_Tag = NBT::Tag_Add(*NBT_Element\Tag, "Offset_X", NBT::#Tag_Double) : NBT::Tag_Set_Double(*NBT_Tag, Node_Editor\Offset_X)
+  *NBT_Tag = NBT::Tag_Add(*NBT_Element\Tag, "Offset_Y", NBT::#Tag_Double) : NBT::Tag_Set_Double(*NBT_Tag, Node_Editor\Offset_Y)
+  *NBT_Tag = NBT::Tag_Add(*NBT_Element\Tag, "Zoom", NBT::#Tag_Double)     : NBT::Tag_Set_Double(*NBT_Tag, Node_Editor\Zoom)
   
   ; #### Write the list of objects to the file
-  *NBT_Tag_List = NBT_Tag_Add(*NBT_Element\NBT_Tag, "Objects", #NBT_Tag_List, #NBT_Tag_Compound)
+  *NBT_Tag_List = NBT::Tag_Add(*NBT_Element\Tag, "Objects", NBT::#Tag_List, NBT::#Tag_Compound)
   If *NBT_Tag_List
     ForEach Object()
       If Object()\Type
-        *NBT_Tag_Compound = NBT_Tag_Add(*NBT_Tag_List, "", #NBT_Tag_Compound)
+        *NBT_Tag_Compound = NBT::Tag_Add(*NBT_Tag_List, "", NBT::#Tag_Compound)
         If *NBT_Tag_Compound
-          *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "Type_UID", #NBT_Tag_String)  : NBT_Tag_Set_String(*NBT_Tag, Object()\Type_Base\UID)
-          *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "ID", #NBT_Tag_Quad)          : NBT_Tag_Set_Number(*NBT_Tag, Object()\ID)
-          *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "X", #NBT_Tag_Double)         : NBT_Tag_Set_Double(*NBT_Tag, Object()\X)
-          *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "Y", #NBT_Tag_Double)         : NBT_Tag_Set_Double(*NBT_Tag, Object()\Y)
+          *NBT_Tag = NBT::Tag_Add(*NBT_Tag_Compound, "Type_UID", NBT::#Tag_String)  : NBT::Tag_Set_String(*NBT_Tag, Object()\Type_Base\UID)
+          *NBT_Tag = NBT::Tag_Add(*NBT_Tag_Compound, "ID", NBT::#Tag_Quad)          : NBT::Tag_Set_Number(*NBT_Tag, Object()\ID)
+          *NBT_Tag = NBT::Tag_Add(*NBT_Tag_Compound, "X", NBT::#Tag_Double)         : NBT::Tag_Set_Double(*NBT_Tag, Object()\X)
+          *NBT_Tag = NBT::Tag_Add(*NBT_Tag_Compound, "Y", NBT::#Tag_Double)         : NBT::Tag_Set_Double(*NBT_Tag, Object()\Y)
         EndIf
         
         ; #### Custom data stuff
-        *NBT_Tag_Compound = NBT_Tag_Add(*NBT_Tag_Compound, "Custom", #NBT_Tag_Compound)
+        *NBT_Tag_Compound = NBT::Tag_Add(*NBT_Tag_Compound, "Custom", NBT::#Tag_Compound)
         If *NBT_Tag_Compound
           If Object()\Function_Configuration_Get
             Object()\Function_Configuration_Get(Object(), *NBT_Tag_Compound)
@@ -182,32 +182,32 @@ Procedure Node_Editor_Configuration_Save(Filename.s)
   EndIf
   
   ; #### Write the list of links to the file
-  *NBT_Tag_List = NBT_Tag_Add(*NBT_Element\NBT_Tag, "Links", #NBT_Tag_List, #NBT_Tag_Compound)
+  *NBT_Tag_List = NBT::Tag_Add(*NBT_Element\Tag, "Links", NBT::#Tag_List, NBT::#Tag_Compound)
   If *NBT_Tag_List
     ForEach Object()
       ForEach Object()\Input()
         If Object()\Input()\Linked
-          *NBT_Tag_Compound = NBT_Tag_Add(*NBT_Tag_List, "", #NBT_Tag_Compound)
+          *NBT_Tag_Compound = NBT::Tag_Add(*NBT_Tag_List, "", NBT::#Tag_Compound)
           If *NBT_Tag_Compound
-            *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "Output_Object", #NBT_Tag_Quad)         : NBT_Tag_Set_Number(*NBT_Tag, Object()\Input()\Linked\Object\ID)
-            *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "Output_Object_i", #NBT_Tag_Quad)       : NBT_Tag_Set_Number(*NBT_Tag, Object()\Input()\Linked\i)
-            *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "Input_Object", #NBT_Tag_Quad)          : NBT_Tag_Set_Number(*NBT_Tag, Object()\ID)
-            *NBT_Tag = NBT_Tag_Add(*NBT_Tag_Compound, "Input_Object_i", #NBT_Tag_Quad)        : NBT_Tag_Set_Number(*NBT_Tag, Object()\Input()\i)
+            *NBT_Tag = NBT::Tag_Add(*NBT_Tag_Compound, "Output_Object", NBT::#Tag_Quad)         : NBT::Tag_Set_Number(*NBT_Tag, Object()\Input()\Linked\Object\ID)
+            *NBT_Tag = NBT::Tag_Add(*NBT_Tag_Compound, "Output_Object_i", NBT::#Tag_Quad)       : NBT::Tag_Set_Number(*NBT_Tag, Object()\Input()\Linked\i)
+            *NBT_Tag = NBT::Tag_Add(*NBT_Tag_Compound, "Input_Object", NBT::#Tag_Quad)          : NBT::Tag_Set_Number(*NBT_Tag, Object()\ID)
+            *NBT_Tag = NBT::Tag_Add(*NBT_Tag_Compound, "Input_Object_i", NBT::#Tag_Quad)        : NBT::Tag_Set_Number(*NBT_Tag, Object()\Input()\i)
           EndIf
         EndIf
       Next
     Next
   EndIf
   
-  If NBT_Write_File(*NBT_Element, Filename)
-    If NBT_Error_Available()
-      Logger::Entry_Add_Error("Error while saving configuration", "NBT_Write_File(*NBT_Element, '"+Filename+"') failed. ("+NBT_Error_Get()+")")
+  If NBT::Write_File(*NBT_Element, Filename)
+    If NBT::Error_Available()
+      Logger::Entry_Add_Error("Error while saving configuration", "NBT_Write_File(*NBT_Element, '"+Filename+"') failed. ("+NBT::Error_Get()+")")
     EndIf
-    NBT_Element_Delete(*NBT_Element)
+    NBT::Element_Delete(*NBT_Element)
     ProcedureReturn #True
   Else
-    Logger::Entry_Add_Error("Couldn't save configuration", "General NBT exception. ("+NBT_Error_Get()+")")
-    NBT_Element_Delete(*NBT_Element)
+    Logger::Entry_Add_Error("Couldn't save configuration", "General NBT exception. ("+NBT::Error_Get()+")")
+    NBT::Element_Delete(*NBT_Element)
     ProcedureReturn #False
   EndIf
 EndProcedure
@@ -215,10 +215,10 @@ EndProcedure
 Procedure Node_Editor_Configuration_Load(Filename.s)
   Protected Elements, i
   Protected Group_Name.s
-  Protected *NBT_Element.NBT_Element
-  Protected *NBT_Tag_Compound.NBT_Tag
-  Protected *NBT_Tag_List.NBT_Tag
-  Protected *NBT_Tag.NBT_Tag
+  Protected *NBT_Element.NBT::Element
+  Protected *NBT_Tag_Compound.NBT::Tag
+  Protected *NBT_Tag_List.NBT::Tag
+  Protected *NBT_Tag.NBT::Tag
   
   Protected *Object_Type.Object_Type
   Protected *Object.Object
@@ -228,39 +228,39 @@ Procedure Node_Editor_Configuration_Load(Filename.s)
   
   Node_Editor_Configuration_Clear()
   
-  *NBT_Element = NBT_Read_File(Filename)
+  *NBT_Element = NBT::Read_File(Filename)
   
   If Not *NBT_Element
-    Logger::Entry_Add_Error("Couldn't load configuration", "NBT_Read_File('"+Filename+"') failed. ("+NBT_Error_Get()+")")
+    Logger::Entry_Add_Error("Couldn't load configuration", "NBT_Read_File('"+Filename+"') failed. ("+NBT::Error_Get()+")")
     ProcedureReturn #False
   EndIf
   
-  *NBT_Tag = NBT_Tag(*NBT_Element\NBT_Tag, "Snapping")  : Node_Editor\Snapping = NBT_Tag_Get_Number(*NBT_Tag)
-  *NBT_Tag = NBT_Tag(*NBT_Element\NBT_Tag, "Offset_X")  : Node_Editor\Offset_X = NBT_Tag_Get_Double(*NBT_Tag)
-  *NBT_Tag = NBT_Tag(*NBT_Element\NBT_Tag, "Offset_Y")  : Node_Editor\Offset_Y = NBT_Tag_Get_Double(*NBT_Tag)
-  *NBT_Tag = NBT_Tag(*NBT_Element\NBT_Tag, "Zoom")      : Node_Editor\Zoom = NBT_Tag_Get_Double(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*NBT_Element\Tag, "Snapping")  : Node_Editor\Snapping = NBT::Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*NBT_Element\Tag, "Offset_X")  : Node_Editor\Offset_X = NBT::Tag_Get_Double(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*NBT_Element\Tag, "Offset_Y")  : Node_Editor\Offset_Y = NBT::Tag_Get_Double(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*NBT_Element\Tag, "Zoom")      : Node_Editor\Zoom = NBT::Tag_Get_Double(*NBT_Tag)
   
-  *NBT_Tag_List = NBT_Tag(*NBT_Element\NBT_Tag, "Objects")
+  *NBT_Tag_List = NBT::Tag(*NBT_Element\Tag, "Objects")
   If *NBT_Tag_List
-    Elements = NBT_Tag_Count(*NBT_Tag_List)
+    Elements = NBT::Tag_Count(*NBT_Tag_List)
     
     For i = 0 To Elements-1
-      *NBT_Tag_Compound = NBT_Tag_Index(*NBT_Tag_List, i)
+      *NBT_Tag_Compound = NBT::Tag_Index(*NBT_Tag_List, i)
       If *NBT_Tag_Compound
-        *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Type_UID") : *Object_Type = Object_Type_Get_UID(NBT_Tag_Get_String(*NBT_Tag))
+        *NBT_Tag = NBT::Tag(*NBT_Tag_Compound, "Type_UID") : *Object_Type = Object_Type_Get_UID(NBT::Tag_Get_String(*NBT_Tag))
         If *Object_Type
           *Object = *Object_Type\Function_Create(#False)
           If *Object
-            *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "ID")   : *Object\ID = NBT_Tag_Get_Number(*NBT_Tag)
-            *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "X")    : *Object\X = NBT_Tag_Get_Double(*NBT_Tag)
-            *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Y")    : *Object\Y = NBT_Tag_Get_Double(*NBT_Tag)
+            *NBT_Tag = NBT::Tag(*NBT_Tag_Compound, "ID")   : *Object\ID = NBT::Tag_Get_Number(*NBT_Tag)
+            *NBT_Tag = NBT::Tag(*NBT_Tag_Compound, "X")    : *Object\X = NBT::Tag_Get_Double(*NBT_Tag)
+            *NBT_Tag = NBT::Tag(*NBT_Tag_Compound, "Y")    : *Object\Y = NBT::Tag_Get_Double(*NBT_Tag)
             
             If Object_Main\ID_Counter < *Object\ID
               Object_Main\ID_Counter = *Object\ID
             EndIf
             
             ; #### Custom data stuff
-            *NBT_Tag_Compound = NBT_Tag(*NBT_Tag_Compound, "Custom")
+            *NBT_Tag_Compound = NBT::Tag(*NBT_Tag_Compound, "Custom")
             If *NBT_Tag_Compound
               If *Object\Function_Configuration_Set
                 *Object\Function_Configuration_Set(*Object, *NBT_Tag_Compound)
@@ -274,16 +274,16 @@ Procedure Node_Editor_Configuration_Load(Filename.s)
     
   EndIf
   
-  *NBT_Tag_List = NBT_Tag(*NBT_Element\NBT_Tag, "Links")
+  *NBT_Tag_List = NBT::Tag(*NBT_Element\Tag, "Links")
   If *NBT_Tag_List
-    Elements = NBT_Tag_Count(*NBT_Tag_List)
+    Elements = NBT::Tag_Count(*NBT_Tag_List)
     
     For i = 0 To Elements-1
-      *NBT_Tag_Compound = NBT_Tag_Index(*NBT_Tag_List, i)
+      *NBT_Tag_Compound = NBT::Tag_Index(*NBT_Tag_List, i)
       If *NBT_Tag_Compound
-        *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Output_Object")            : *Object = Object_Get(NBT_Tag_Get_Number(*NBT_Tag))
+        *NBT_Tag = NBT::Tag(*NBT_Tag_Compound, "Output_Object")            : *Object = Object_Get(NBT::Tag_Get_Number(*NBT_Tag))
         If *Object
-          *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Output_Object_i")        : Temp_Number = NBT_Tag_Get_Number(*NBT_Tag)
+          *NBT_Tag = NBT::Tag(*NBT_Tag_Compound, "Output_Object_i")        : Temp_Number = NBT::Tag_Get_Number(*NBT_Tag)
           ForEach *Object\Output()
             If *Object\Output()\i = Temp_Number
               *Object_Output = *Object\Output()
@@ -291,9 +291,9 @@ Procedure Node_Editor_Configuration_Load(Filename.s)
             EndIf
           Next
         EndIf
-        *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Input_Object")             : *Object = Object_Get(NBT_Tag_Get_Number(*NBT_Tag))
+        *NBT_Tag = NBT::Tag(*NBT_Tag_Compound, "Input_Object")             : *Object = Object_Get(NBT::Tag_Get_Number(*NBT_Tag))
         If *Object
-          *NBT_Tag = NBT_Tag(*NBT_Tag_Compound, "Input_Object_i")         : Temp_Number = NBT_Tag_Get_Number(*NBT_Tag)
+          *NBT_Tag = NBT::Tag(*NBT_Tag_Compound, "Input_Object_i")         : Temp_Number = NBT::Tag_Get_Number(*NBT_Tag)
           ForEach *Object\Input()
             If *Object\Input()\i = Temp_Number
               *Object_Input = *Object\Input()
@@ -307,11 +307,11 @@ Procedure Node_Editor_Configuration_Load(Filename.s)
     
   EndIf
   
-  If NBT_Error_Available()
-    Logger::Entry_Add_Error("Error while reading configuration", "General NBT exception. ("+NBT_Error_Get()+")")
+  If NBT::Error_Available()
+    Logger::Entry_Add_Error("Error while reading configuration", "General NBT exception. ("+NBT::Error_Get()+")")
   EndIf
   
-  NBT_Element_Delete(*NBT_Element)
+  NBT::Element_Delete(*NBT_Element)
   
   SetToolBarButtonState(Node_Editor\ToolBar, #Node_Editor_Menu_Grid_Snapping, Node_Editor\Snapping)
   
@@ -1087,8 +1087,8 @@ DataSection
   Node_Editor_Icon_Align:         : IncludeBinary "../Data/Icons/Node_Align.png"
 EndDataSection
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 310
-; FirstLine = 265
+; CursorPosition = 315
+; FirstLine = 275
 ; Folding = ----
 ; EnableUnicode
 ; EnableXP

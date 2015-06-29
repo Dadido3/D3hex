@@ -95,8 +95,8 @@ Declare   Object_Binary_Operation_Main(*Object.Object)
 Declare   _Object_Binary_Operation_Delete(*Object.Object)
 Declare   Object_Binary_Operation_Window_Open(*Object.Object)
 
-Declare   Object_Binary_Operation_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
-Declare   Object_Binary_Operation_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
+Declare   Object_Binary_Operation_Configuration_Get(*Object.Object, *Parent_Tag.NBT::Tag)
+Declare   Object_Binary_Operation_Configuration_Set(*Object.Object, *Parent_Tag.NBT::Tag)
 
 Declare   Object_Binary_Operation_Input_Event(*Object_Input.Object_Input, *Object_Event.Object_Event)
 
@@ -182,8 +182,8 @@ Procedure _Object_Binary_Operation_Delete(*Object.Object)
   ProcedureReturn #True
 EndProcedure
 
-Procedure Object_Binary_Operation_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
-  Protected *NBT_Tag.NBT_Tag
+Procedure Object_Binary_Operation_Configuration_Get(*Object.Object, *Parent_Tag.NBT::Tag)
+  Protected *NBT_Tag.NBT::Tag
   
   If Not *Object
     ProcedureReturn #False
@@ -196,24 +196,24 @@ Procedure Object_Binary_Operation_Configuration_Get(*Object.Object, *Parent_Tag.
     ProcedureReturn #False
   EndIf
   
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "A_Negate", #NBT_Tag_Quad)    : NBT_Tag_Set_Number(*NBT_Tag, *Object_Binary_Operation\A_Negate)
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "A_Repeat", #NBT_Tag_Quad)    : NBT_Tag_Set_Number(*NBT_Tag, *Object_Binary_Operation\A_Repeat)
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "A_Offset", #NBT_Tag_Quad)    : NBT_Tag_Set_Number(*NBT_Tag, *Object_Binary_Operation\A_Offset)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "A_Negate", NBT::#Tag_Quad)    : NBT::Tag_Set_Number(*NBT_Tag, *Object_Binary_Operation\A_Negate)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "A_Repeat", NBT::#Tag_Quad)    : NBT::Tag_Set_Number(*NBT_Tag, *Object_Binary_Operation\A_Repeat)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "A_Offset", NBT::#Tag_Quad)    : NBT::Tag_Set_Number(*NBT_Tag, *Object_Binary_Operation\A_Offset)
   
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "B_Negate", #NBT_Tag_Quad)    : NBT_Tag_Set_Number(*NBT_Tag, *Object_Binary_Operation\B_Negate)
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "B_Repeat", #NBT_Tag_Quad)    : NBT_Tag_Set_Number(*NBT_Tag, *Object_Binary_Operation\B_Repeat)
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "B_Offset", #NBT_Tag_Quad)    : NBT_Tag_Set_Number(*NBT_Tag, *Object_Binary_Operation\B_Offset)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "B_Negate", NBT::#Tag_Quad)    : NBT::Tag_Set_Number(*NBT_Tag, *Object_Binary_Operation\B_Negate)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "B_Repeat", NBT::#Tag_Quad)    : NBT::Tag_Set_Number(*NBT_Tag, *Object_Binary_Operation\B_Repeat)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "B_Offset", NBT::#Tag_Quad)    : NBT::Tag_Set_Number(*NBT_Tag, *Object_Binary_Operation\B_Offset)
   
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Operation", #NBT_Tag_Quad)   : NBT_Tag_Set_Number(*NBT_Tag, *Object_Binary_Operation\Operation)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Operation", NBT::#Tag_Quad)   : NBT::Tag_Set_Number(*NBT_Tag, *Object_Binary_Operation\Operation)
   
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Size_Mode", #NBT_Tag_Quad)   : NBT_Tag_Set_Number(*NBT_Tag, *Object_Binary_Operation\Size_Mode)
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Size_Custom", #NBT_Tag_Quad) : NBT_Tag_Set_Number(*NBT_Tag, *Object_Binary_Operation\Size_Custom)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Size_Mode", NBT::#Tag_Quad)   : NBT::Tag_Set_Number(*NBT_Tag, *Object_Binary_Operation\Size_Mode)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Size_Custom", NBT::#Tag_Quad) : NBT::Tag_Set_Number(*NBT_Tag, *Object_Binary_Operation\Size_Custom)
   
   ProcedureReturn #True
 EndProcedure
 
-Procedure Object_Binary_Operation_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
-  Protected *NBT_Tag.NBT_Tag
+Procedure Object_Binary_Operation_Configuration_Set(*Object.Object, *Parent_Tag.NBT::Tag)
+  Protected *NBT_Tag.NBT::Tag
   
   If Not *Object
     ProcedureReturn #False
@@ -226,18 +226,18 @@ Procedure Object_Binary_Operation_Configuration_Set(*Object.Object, *Parent_Tag.
     ProcedureReturn #False
   EndIf
   
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "A_Negate")     : *Object_Binary_Operation\A_Negate     = NBT_Tag_Get_Number(*NBT_Tag)
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "A_Repeat")     : *Object_Binary_Operation\A_Repeat     = NBT_Tag_Get_Number(*NBT_Tag)
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "A_Offset")     : *Object_Binary_Operation\A_Offset     = NBT_Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "A_Negate")     : *Object_Binary_Operation\A_Negate     = NBT::Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "A_Repeat")     : *Object_Binary_Operation\A_Repeat     = NBT::Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "A_Offset")     : *Object_Binary_Operation\A_Offset     = NBT::Tag_Get_Number(*NBT_Tag)
   
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "B_Negate")     : *Object_Binary_Operation\B_Negate     = NBT_Tag_Get_Number(*NBT_Tag)
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "B_Repeat")     : *Object_Binary_Operation\B_Repeat     = NBT_Tag_Get_Number(*NBT_Tag)
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "B_Offset")     : *Object_Binary_Operation\B_Offset     = NBT_Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "B_Negate")     : *Object_Binary_Operation\B_Negate     = NBT::Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "B_Repeat")     : *Object_Binary_Operation\B_Repeat     = NBT::Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "B_Offset")     : *Object_Binary_Operation\B_Offset     = NBT::Tag_Get_Number(*NBT_Tag)
   
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Operation")    : *Object_Binary_Operation\Operation    = NBT_Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Operation")    : *Object_Binary_Operation\Operation    = NBT::Tag_Get_Number(*NBT_Tag)
   
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Size_Mode")    : *Object_Binary_Operation\Size_Mode    = NBT_Tag_Get_Number(*NBT_Tag)
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Size_Custom")  : *Object_Binary_Operation\Size_Custom  = NBT_Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Size_Mode")    : *Object_Binary_Operation\Size_Mode    = NBT::Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Size_Custom")  : *Object_Binary_Operation\Size_Custom  = NBT::Tag_Get_Number(*NBT_Tag)
   
   ProcedureReturn #True
 EndProcedure
@@ -405,7 +405,7 @@ Procedure Object_Binary_Operation_Output_Get_Descriptor(*Object_Output.Object_Ou
     ProcedureReturn #Null
   EndIf
   
-  NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Name", #NBT_Tag_String), "Binary Operation")
+  NBT::Tag_Set_String(NBT::Tag_Add(*Object_Output\Descriptor\Tag, "Name", NBT::#Tag_String), "Binary Operation")
   
   ProcedureReturn *Object_Output\Descriptor
 EndProcedure
@@ -1070,8 +1070,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 921
-; FirstLine = 905
+; CursorPosition = 407
+; FirstLine = 391
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

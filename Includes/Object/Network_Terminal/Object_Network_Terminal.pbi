@@ -106,8 +106,8 @@ Declare   Object_Network_Terminal_Main(*Object.Object)
 Declare   _Object_Network_Terminal_Delete(*Object.Object)
 Declare   Object_Network_Terminal_Window_Open(*Object.Object)
 
-Declare   Object_Network_Terminal_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
-Declare   Object_Network_Terminal_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
+Declare   Object_Network_Terminal_Configuration_Get(*Object.Object, *Parent_Tag.NBT::Tag)
+Declare   Object_Network_Terminal_Configuration_Set(*Object.Object, *Parent_Tag.NBT::Tag)
 
 Declare   Object_Network_Terminal_Output_Event(*Object_Output.Object_Output, *Object_Event.Object_Event)
 
@@ -321,8 +321,8 @@ Procedure _Object_Network_Terminal_Delete(*Object.Object)
   ProcedureReturn #True
 EndProcedure
 
-Procedure Object_Network_Terminal_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
-  Protected *NBT_Tag.NBT_Tag
+Procedure Object_Network_Terminal_Configuration_Get(*Object.Object, *Parent_Tag.NBT::Tag)
+  Protected *NBT_Tag.NBT::Tag
   
   If Not *Object
     ProcedureReturn #False
@@ -336,24 +336,24 @@ Procedure Object_Network_Terminal_Configuration_Get(*Object.Object, *Parent_Tag.
   EndIf
   
   If *Object_Network_Terminal\Connection_ID
-    *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Opened", #NBT_Tag_Byte)            : NBT_Tag_Set_Number(*NBT_Tag, #True)
+    *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Opened", NBT::#Tag_Byte)            : NBT::Tag_Set_Number(*NBT_Tag, #True)
   Else
-    *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Opened", #NBT_Tag_Byte)            : NBT_Tag_Set_Number(*NBT_Tag, #False)
+    *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Opened", NBT::#Tag_Byte)            : NBT::Tag_Set_Number(*NBT_Tag, #False)
   EndIf
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Adress", #NBT_Tag_String)            : NBT_Tag_Set_String(*NBT_Tag, *Object_Network_Terminal\Adress)
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Port", #NBT_Tag_Long)                : NBT_Tag_Set_Number(*NBT_Tag, *Object_Network_Terminal\Port)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Adress", NBT::#Tag_String)            : NBT::Tag_Set_String(*NBT_Tag, *Object_Network_Terminal\Adress)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Port", NBT::#Tag_Long)                : NBT::Tag_Set_Number(*NBT_Tag, *Object_Network_Terminal\Port)
   
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Internet_Protocol", #NBT_Tag_Long)   : NBT_Tag_Set_Number(*NBT_Tag, *Object_Network_Terminal\Internet_Protocol)
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Transport_Protocol", #NBT_Tag_Long)  : NBT_Tag_Set_Number(*NBT_Tag, *Object_Network_Terminal\Transport_Protocol)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Internet_Protocol", NBT::#Tag_Long)   : NBT::Tag_Set_Number(*NBT_Tag, *Object_Network_Terminal\Internet_Protocol)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Transport_Protocol", NBT::#Tag_Long)  : NBT::Tag_Set_Number(*NBT_Tag, *Object_Network_Terminal\Transport_Protocol)
   
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Segment_Output", #NBT_Tag_Long)      : NBT_Tag_Set_Number(*NBT_Tag, *Object_Network_Terminal\Segment_Output)
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Segment_Input", #NBT_Tag_Long)       : NBT_Tag_Set_Number(*NBT_Tag, *Object_Network_Terminal\Segment_Input)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Segment_Output", NBT::#Tag_Long)      : NBT::Tag_Set_Number(*NBT_Tag, *Object_Network_Terminal\Segment_Output)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Segment_Input", NBT::#Tag_Long)       : NBT::Tag_Set_Number(*NBT_Tag, *Object_Network_Terminal\Segment_Input)
   
   ProcedureReturn #True
 EndProcedure
 
-Procedure Object_Network_Terminal_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
-  Protected *NBT_Tag.NBT_Tag
+Procedure Object_Network_Terminal_Configuration_Set(*Object.Object, *Parent_Tag.NBT::Tag)
+  Protected *NBT_Tag.NBT::Tag
   Protected New_Size.i, *Temp
   
   If Not *Object
@@ -367,17 +367,17 @@ Procedure Object_Network_Terminal_Configuration_Set(*Object.Object, *Parent_Tag.
     ProcedureReturn #False
   EndIf
   
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Adress")             : *Object_Network_Terminal\Adress = NBT_Tag_Get_String(*NBT_Tag)
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Port")               : *Object_Network_Terminal\Port = NBT_Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Adress")             : *Object_Network_Terminal\Adress = NBT::Tag_Get_String(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Port")               : *Object_Network_Terminal\Port = NBT::Tag_Get_Number(*NBT_Tag)
   
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Internet_Protocol")  : *Object_Network_Terminal\Internet_Protocol = NBT_Tag_Get_Number(*NBT_Tag)
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Transport_Protocol") : *Object_Network_Terminal\Transport_Protocol = NBT_Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Internet_Protocol")  : *Object_Network_Terminal\Internet_Protocol = NBT::Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Transport_Protocol") : *Object_Network_Terminal\Transport_Protocol = NBT::Tag_Get_Number(*NBT_Tag)
   
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Segment_Output")     : *Object_Network_Terminal\Segment_Output = NBT_Tag_Get_Number(*NBT_Tag)
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Segment_Input")      : *Object_Network_Terminal\Segment_Input = NBT_Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Segment_Output")     : *Object_Network_Terminal\Segment_Output = NBT::Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Segment_Input")      : *Object_Network_Terminal\Segment_Input = NBT::Tag_Get_Number(*NBT_Tag)
   
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Opened")
-  If NBT_Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Opened")
+  If NBT::Tag_Get_Number(*NBT_Tag)
     Object_Network_Terminal_Connection_Open(*Object)
   EndIf
   
@@ -464,18 +464,18 @@ Procedure Object_Network_Terminal_Get_Descriptor(*Object_Output.Object_Output)
   If *Object_Network_Terminal\Connection_ID
     Select *Object_Output\i
       Case 0 ; The "Output"
-        NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Name", #NBT_Tag_String), "Send: "+*Object_Network_Terminal\Adress+":"+Str(*Object_Network_Terminal\Port))
+        NBT::Tag_Set_String(NBT::Tag_Add(*Object_Output\Descriptor\Tag, "Name", NBT::#Tag_String), "Send: "+*Object_Network_Terminal\Adress+":"+Str(*Object_Network_Terminal\Port))
         
       Case 1 ; The "Input"
-        NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Name", #NBT_Tag_String), "Receive: "+*Object_Network_Terminal\Adress+":"+Str(*Object_Network_Terminal\Port))
+        NBT::Tag_Set_String(NBT::Tag_Add(*Object_Output\Descriptor\Tag, "Name", NBT::#Tag_String), "Receive: "+*Object_Network_Terminal\Adress+":"+Str(*Object_Network_Terminal\Port))
         
     EndSelect
     ProcedureReturn *Object_Output\Descriptor
   Else
     ; #### Delete all tags
-    While NBT_Tag_Delete(NBT_Tag_Index(*Object_Output\Descriptor\NBT_Tag, 0))
+    While NBT::Tag_Delete(NBT::Tag_Index(*Object_Output\Descriptor\Tag, 0))
     Wend
-    NBT_Error_Get()
+    NBT::Error_Get()
   EndIf
   
   ProcedureReturn #Null
@@ -1240,8 +1240,8 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 547
-; FirstLine = 543
+; CursorPosition = 475
+; FirstLine = 459
 ; Folding = ------
 ; EnableUnicode
 ; EnableXP

@@ -168,8 +168,8 @@ Declare   Object_Editor_Main(*Object.Object)
 Declare   _Object_Editor_Delete(*Object.Object)
 Declare   Object_Editor_Window_Open(*Object.Object)
 
-Declare   Object_Editor_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
-Declare   Object_Editor_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
+Declare   Object_Editor_Configuration_Get(*Object.Object, *Parent_Tag.NBT::Tag)
+Declare   Object_Editor_Configuration_Set(*Object.Object, *Parent_Tag.NBT::Tag)
 
 Declare   Object_Editor_Event(*Object.Object, *Object_Event.Object_Event)
 Declare   Object_Editor_Input_Event(*Object_Input.Object_Input, *Object_Event.Object_Event)
@@ -286,8 +286,8 @@ Procedure _Object_Editor_Delete(*Object.Object)
   ProcedureReturn #True
 EndProcedure
 
-Procedure Object_Editor_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
-  Protected *NBT_Tag.NBT_Tag
+Procedure Object_Editor_Configuration_Get(*Object.Object, *Parent_Tag.NBT::Tag)
+  Protected *NBT_Tag.NBT::Tag
   
   If Not *Object
     ProcedureReturn #False
@@ -300,17 +300,17 @@ Procedure Object_Editor_Configuration_Get(*Object.Object, *Parent_Tag.NBT_Tag)
     ProcedureReturn #False
   EndIf
   
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Scroll_Line", #NBT_Tag_Quad)   : NBT_Tag_Set_Number(*NBT_Tag, *Object_Editor\Scroll_Line)
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Select_Start", #NBT_Tag_Quad)  : NBT_Tag_Set_Number(*NBT_Tag, *Object_Editor\Select_Start)
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Select_End", #NBT_Tag_Quad)    : NBT_Tag_Set_Number(*NBT_Tag, *Object_Editor\Select_End)
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Select_Nibble", #NBT_Tag_Quad) : NBT_Tag_Set_Number(*NBT_Tag, *Object_Editor\Select_Nibble)
-  *NBT_Tag = NBT_Tag_Add(*Parent_Tag, "Write_Mode", #NBT_Tag_Quad)    : NBT_Tag_Set_Number(*NBT_Tag, *Object_Editor\Write_Mode)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Scroll_Line", NBT::#Tag_Quad)   : NBT::Tag_Set_Number(*NBT_Tag, *Object_Editor\Scroll_Line)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Select_Start", NBT::#Tag_Quad)  : NBT::Tag_Set_Number(*NBT_Tag, *Object_Editor\Select_Start)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Select_End", NBT::#Tag_Quad)    : NBT::Tag_Set_Number(*NBT_Tag, *Object_Editor\Select_End)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Select_Nibble", NBT::#Tag_Quad) : NBT::Tag_Set_Number(*NBT_Tag, *Object_Editor\Select_Nibble)
+  *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Write_Mode", NBT::#Tag_Quad)    : NBT::Tag_Set_Number(*NBT_Tag, *Object_Editor\Write_Mode)
   
   ProcedureReturn #True
 EndProcedure
 
-Procedure Object_Editor_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
-  Protected *NBT_Tag.NBT_Tag
+Procedure Object_Editor_Configuration_Set(*Object.Object, *Parent_Tag.NBT::Tag)
+  Protected *NBT_Tag.NBT::Tag
   Protected New_Size.i, *Temp
   
   If Not *Object
@@ -324,11 +324,11 @@ Procedure Object_Editor_Configuration_Set(*Object.Object, *Parent_Tag.NBT_Tag)
     ProcedureReturn #False
   EndIf
   
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Scroll_Line")    : *Object_Editor\Scroll_Line = NBT_Tag_Get_Number(*NBT_Tag)
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Select_Start")   : *Object_Editor\Select_Start = NBT_Tag_Get_Number(*NBT_Tag)
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Select_End")     : *Object_Editor\Select_End = NBT_Tag_Get_Number(*NBT_Tag)
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Select_Nibble")  : *Object_Editor\Select_Nibble = NBT_Tag_Get_Number(*NBT_Tag)
-  *NBT_Tag = NBT_Tag(*Parent_Tag, "Write_Mode")     : *Object_Editor\Write_Mode = NBT_Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Scroll_Line")    : *Object_Editor\Scroll_Line = NBT::Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Select_Start")   : *Object_Editor\Select_Start = NBT::Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Select_End")     : *Object_Editor\Select_End = NBT::Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Select_Nibble")  : *Object_Editor\Select_Nibble = NBT::Tag_Get_Number(*NBT_Tag)
+  *NBT_Tag = NBT::Tag(*Parent_Tag, "Write_Mode")     : *Object_Editor\Write_Mode = NBT::Tag_Get_Number(*NBT_Tag)
   
   ProcedureReturn #True
 EndProcedure
@@ -405,7 +405,7 @@ Procedure Object_Editor_Input_Event(*Object_Input.Object_Input, *Object_Event.Ob
     ProcedureReturn #False
   EndIf
   
-  Protected *Descriptor.NBT_Element
+  Protected *Descriptor.NBT::Element
   Protected Start.q, Length.q
   Protected Object_Event.Object_Event
   
@@ -421,8 +421,8 @@ Procedure Object_Editor_Input_Event(*Object_Input.Object_Input, *Object_Event.Ob
     Case #Object_Link_Event_Update_Descriptor
       *Descriptor = Object_Input_Get_Descriptor(*Object_Input)
       If *Descriptor
-        *Object\Name_Inherited = *Object\Name + ": " + NBT_Tag_Get_String(NBT_Tag(*Descriptor\NBT_Tag, "Name"))
-        NBT_Error_Get()
+        *Object\Name_Inherited = *Object\Name + ": " + NBT::Tag_Get_String(NBT::Tag(*Descriptor\Tag, "Name"))
+        NBT::Error_Get()
       Else
         *Object\Name_Inherited = *Object\Name
       EndIf
@@ -522,7 +522,7 @@ Procedure Object_Editor_Output_Get_Descriptor(*Object_Output.Object_Output)
     ProcedureReturn #Null
   EndIf
   
-  NBT_Tag_Set_String(NBT_Tag_Add(*Object_Output\Descriptor\NBT_Tag, "Name", #NBT_Tag_String), "Selection of "+*Object\Name_Inherited)
+  NBT::Tag_Set_String(NBT::Tag_Add(*Object_Output\Descriptor\Tag, "Name", NBT::#Tag_String), "Selection of "+*Object\Name_Inherited)
   
   ProcedureReturn *Object_Output\Descriptor
 EndProcedure
@@ -2447,8 +2447,8 @@ MenuItem(#Object_Editor_PopupMenu_Select_All, "Select All", ImageID(Icon_Select_
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1220
-; FirstLine = 1206
+; CursorPosition = 524
+; FirstLine = 514
 ; Folding = -------
 ; EnableUnicode
 ; EnableXP
