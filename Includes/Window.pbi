@@ -25,297 +25,321 @@
 ; 
 ; 
 ; 
-
 ; ##################################################### Includes ####################################################
 
-; ##################################################### Prototypes ##################################################
+; ###################################################################################################################
+; ##################################################### Public ######################################################
+; ###################################################################################################################
 
-; ##################################################### Structures ##################################################
-
-; ##################################################### Constants ###################################################
-
-Enumeration
-  #Window_Type_Normal
-  #Window_Type_MDI
-EndEnumeration
-
-; ##################################################### Structures ##################################################
-
-Structure Window
-  ID.i
-  Name.s
-  Name_Short.s
-  
-  Tab_ID.s          ; Windows with the same Tab_ID will be grouped into tabs if possible
-  
-  *Object.Object
-EndStructure
-Global NewList Window.Window()
-
-; ##################################################### Variables ###################################################
-
-; ##################################################### Icons ... ###################################################
-
-; ##################################################### Procedures ##################################################
-
-Procedure Window_Get(ID.i)
-  Protected *Result.Window = #Null
-  
-  PushListPosition(Window())
-  
-  ForEach Window()
-    If Window()\ID = ID
-      *Result = Window()
-      Break
-    EndIf
-  Next
-  
-  PopListPosition(Window())
-  
-  ProcedureReturn *Result
-EndProcedure
-
-Procedure Window_Get_hWnd(hWnd.i)
-  Protected *Result.Window = #Null
-  
-  PushListPosition(Window())
-  
-  ForEach Window()
-    If Window()\ID And WindowID(Window()\ID) = hWnd
-      *Result = Window()
-      Break
-    EndIf
-  Next
-  
-  PopListPosition(Window())
-  
-  ProcedureReturn *Result
-EndProcedure
-
-Procedure Window_Get_Active()
-  Protected *Result.Window = #Null
-  Protected Active_Window_ID = D3docker::Window_Get_Active(Main_Window\D3docker)
-  
-  PushListPosition(Window())
-  
-  ForEach Window()
-    If Window()\ID = Active_Window_ID
-      *Result = Window()
-      Break
-    EndIf
-  Next
-  
-  PopListPosition(Window())
-  
-  ProcedureReturn *Result
-EndProcedure
-
-Procedure Window_Set_Active(*Window.Window)
-  If Not *Window
-    ProcedureReturn #False
-  EndIf
-  
-  D3docker::Window_Set_Active(*Window\ID)
-  
-  StatusBarText(Main_Window\StatusBar_ID, 0, "")
-  StatusBarText(Main_Window\StatusBar_ID, 1, "")
-  StatusBarText(Main_Window\StatusBar_ID, 2, "")
-  
-  ;PostEvent(#PB_Event_SizeWindow, *Window\ID, 0)
-  
-  ProcedureReturn #True
-EndProcedure
-
-Procedure Window_Bounds(*Window.Window, Min_Width.l, Min_Height.l, Max_Width.l, Max_Height.l)
-  If Not *Window
-    ProcedureReturn #False
-  EndIf
-  
-  D3docker::Window_Bounds(*Window\ID, Min_Width, Min_Height, Max_Width, Max_Height)
-  
-  ProcedureReturn #True
-EndProcedure
-
-Procedure Window_Event_ActivateWindow()
-  Protected Window_ID = EventWindow()
-  Protected i
-  
-  Protected *Window.Window = Window_Get(Window_ID)
-  If Not *Window
-    ProcedureReturn
-  EndIf
-  
-  StatusBarText(Main_Window\StatusBar_ID, 0, "")
-  StatusBarText(Main_Window\StatusBar_ID, 1, "")
-  StatusBarText(Main_Window\StatusBar_ID, 2, "")
-  
-EndProcedure
-
-Procedure Window_Event_MaximizeWindow()
-  Protected Window_ID = EventWindow()
-  Protected i
-  
-  Protected *Window.Window = Window_Get(Window_ID)
-  If Not *Window
-    ProcedureReturn
-  EndIf
+DeclareModule Window
+  EnableExplicit
+  ; ################################################### Constants ###################################################
   ; TODO: Still needed?
-  ;ForEach Window()
-  ;  PostEvent(#PB_Event_SizeWindow, Window()\ID, 0)
-  ;Next
+  ;Enumeration
+  ;  #Type_Normal
+  ;  #Type_MDI
+  ;EndEnumeration
   
-EndProcedure
+  ; ################################################### Structures ##################################################
+  Structure Object
+    ID.i
+    Name.s
+    Name_Short.s
+    
+    Tab_ID.s          ; Windows with the same Tab_ID will be grouped into tabs if possible
+    
+    *Object
+  EndStructure
+  Global NewList Object.Object()
+  
+  ; ################################################### Functions ###################################################
+  Declare   Get(ID.i)
+  Declare   Get_hWnd(hWnd.i)
+  Declare   Get_Active()
+  Declare   Set_Active(*Window.Object)
+  Declare   Bounds(*Window.Object, Min_Width.l, Min_Height.l, Max_Width.l, Max_Height.l)
+  
+  Declare   Create(*Object, Name.s, Name_Short.s, Docked, X=#PB_Ignore, Y=#PB_Ignore, Width=#PB_Ignore, Height=#PB_Ignore, Resizable=#False, Resize_Priority.l=0, Tab_ID.s="")
+  Declare   Delete(*Window.Object)
+  
+  Declare   Init(Parent_Window, Docker, StatusBar)
+  
+EndDeclareModule
 
-Procedure Window_Event_MinimizeWindow()
-  Protected Window_ID = EventWindow()
-  Protected i
-  
-  Protected *Window.Window = Window_Get(Window_ID)
-  If Not *Window
-    ProcedureReturn
-  EndIf
-  ; TODO: Still needed?
-  ;ForEach Window()
-  ;  PostEvent(#PB_Event_SizeWindow, Window()\ID, 0)
-  ;Next
-  
-EndProcedure
+; ###################################################################################################################
+; ##################################################### Private #####################################################
+; ###################################################################################################################
 
-Procedure Window_Event_RestoreWindow()
-  Protected Window_ID = EventWindow()
-  Protected i
+Module Window
+  ; ################################################### Structures ##################################################
+  Structure Main
+    Parent_Window.i
+    
+    Docker.i
+    StatusBar.i
+  EndStructure
+  Global Main.Main
   
-  Protected *Window.Window = Window_Get(Window_ID)
-  If Not *Window
-    ProcedureReturn
-  EndIf
-  ; TODO: Still needed?
-  ;ForEach Window()
-    ;PostEvent(#PB_Event_SizeWindow, Window()\ID, 0)
-  ;Next
+  ; ################################################### Procedures ##################################################
+  Procedure Get(ID.i)
+    Protected *Result.Object = #Null
+    
+    PushListPosition(Object())
+    
+    ForEach Object()
+      If Object()\ID = ID
+        *Result = Object()
+        Break
+      EndIf
+    Next
+    
+    PopListPosition(Object())
+    
+    ProcedureReturn *Result
+  EndProcedure
   
-EndProcedure
-
-Procedure Window_Create(*Object.Object, Name.s, Name_Short.s, Docked, X=#PB_Ignore, Y=#PB_Ignore, Width=#PB_Ignore, Height=#PB_Ignore, Resizable=#False, Resize_Priority.l=0, Tab_ID.s="")
-  Protected *Window.Window
+  Procedure Get_hWnd(hWnd.i)
+    Protected *Result.Object = #Null
+    
+    PushListPosition(Object())
+    
+    ForEach Object()
+      If Object()\ID And WindowID(Object()\ID) = hWnd
+        *Result = Object()
+        Break
+      EndIf
+    Next
+    
+    PopListPosition(Object())
+    
+    ProcedureReturn *Result
+  EndProcedure
   
-  If Not AddElement(Window())
-    ProcedureReturn #Null
-  EndIf
+  Procedure Get_Active()
+    Protected *Result.Object = #Null
+    Protected Active_ID = D3docker::Window_Get_Active(Main\Docker)
+    
+    PushListPosition(Object())
+    
+    ForEach Object()
+      If Object()\ID = Active_ID
+        *Result = Object()
+        Break
+      EndIf
+    Next
+    
+    PopListPosition(Object())
+    
+    ProcedureReturn *Result
+  EndProcedure
   
-  *Window = Window()
+  Procedure Set_Active(*Window.Object)
+    If Not *Window
+      ProcedureReturn #False
+    EndIf
+    
+    D3docker::Window_Set_Active(*Window\ID)
+    
+    StatusBarText(Main\StatusBar, 0, "")
+    StatusBarText(Main\StatusBar, 1, "")
+    StatusBarText(Main\StatusBar, 2, "")
+    
+    ;PostEvent(#PB_Event_SizeWindow, *Window\ID, 0)
+    
+    ProcedureReturn #True
+  EndProcedure
   
-  Protected Flags = #PB_Window_WindowCentered
-  Protected *Container
-  Protected *Window_Temp.Window
+  Procedure Bounds(*Window.Object, Min_Width.l, Min_Height.l, Max_Width.l, Max_Height.l)
+    If Not *Window
+      ProcedureReturn #False
+    EndIf
+    
+    D3docker::Window_Bounds(*Window\ID, Min_Width, Min_Height, Max_Width, Max_Height)
+    
+    ProcedureReturn #True
+  EndProcedure
   
-  If Resizable
-    Flags | #PB_Window_SizeGadget
-  EndIf
+  Procedure Event_ActivateWindow()
+    Protected ID = EventWindow()
+    Protected i
+    
+    Protected *Window.Object = Get(ID)
+    If Not *Window
+      ProcedureReturn
+    EndIf
+    
+    StatusBarText(Main\StatusBar, 0, "")
+    StatusBarText(Main\StatusBar, 1, "")
+    StatusBarText(Main\StatusBar, 2, "")
+    
+  EndProcedure
   
-  ;*Window\MDI_Window = MDI
-  *Window\Name = Name
-  *Window\Name_Short = Name_Short
-  ;If *Window\MDI_Window
-  *Window\ID = D3docker::Window_Add(Main_Window\D3docker, X, Y, Width, Height, Name, Flags, Resize_Priority)
-  ;EndIf
-  *Window\Object = *Object
-  *Window\Tab_ID = Tab_ID
+  Procedure Event_MaximizeWindow()
+    Protected ID = EventWindow()
+    Protected i
+    
+    Protected *Window.Object = Get(ID)
+    If Not *Window
+      ProcedureReturn
+    EndIf
+    ; TODO: Still needed?
+    ;ForEach Object()
+    ;  PostEvent(#PB_Event_SizeWindow, Object()\ID, 0)
+    ;Next
+    
+  EndProcedure
   
-  ;SmartWindowRefresh(*Window\ID, 1)
+  Procedure Event_MinimizeWindow()
+    Protected ID = EventWindow()
+    Protected i
+    
+    Protected *Window.Object = Get(ID)
+    If Not *Window
+      ProcedureReturn
+    EndIf
+    ; TODO: Still needed?
+    ;ForEach Object()
+    ;  PostEvent(#PB_Event_SizeWindow, Object()\ID, 0)
+    ;Next
+    
+  EndProcedure
   
-  BindEvent(#PB_Event_ActivateWindow, @Window_Event_ActivateWindow(), *Window\ID)
-  BindEvent(#PB_Event_MaximizeWindow, @Window_Event_MaximizeWindow(), *Window\ID)
-  BindEvent(#PB_Event_MinimizeWindow, @Window_Event_MinimizeWindow(), *Window\ID)
-  BindEvent(#PB_Event_RestoreWindow, @Window_Event_RestoreWindow(), *Window\ID)
+  Procedure Event_RestoreWindow()
+    Protected ID = EventWindow()
+    Protected i
+    
+    Protected *Window.Object = Get(ID)
+    If Not *Window
+      ProcedureReturn
+    EndIf
+    ; TODO: Still needed?
+    ;ForEach Object()
+      ;PostEvent(#PB_Event_SizeWindow, Object()\ID, 0)
+    ;Next
+    
+  EndProcedure
   
-  If Docked
-    ;*Window_Temp = Window_Get_Active()
-    ;If *Window_Temp
-    ;  *Container = D3docker::Window_Get_Container(*Window_Temp\ID)
+  Procedure Create(*Object, Name.s, Name_Short.s, Docked, X=#PB_Ignore, Y=#PB_Ignore, Width=#PB_Ignore, Height=#PB_Ignore, Resizable=#False, Resize_Priority.l=0, Tab_ID.s="")
+    Protected *Window.Object
+    
+    If Not AddElement(Object())
+      ProcedureReturn #Null
+    EndIf
+    
+    *Window = Object()
+    
+    Protected Flags = #PB_Window_WindowCentered
+    Protected *Container
+    Protected *Temp.Object
+    
+    If Resizable
+      Flags | #PB_Window_SizeGadget
+    EndIf
+    
+    ;*Window\MDI_Window = MDI
+    *Window\Name = Name
+    *Window\Name_Short = Name_Short
+    ;If *Window\MDI_Window
+    *Window\ID = D3docker::Window_Add(Main\Docker, X, Y, Width, Height, Name, Flags, Resize_Priority)
+    ;EndIf
+    *Window\Object = *Object
+    *Window\Tab_ID = Tab_ID
+    
+    ;SmartWindowRefresh(*Window\ID, 1)
+    
+    BindEvent(#PB_Event_ActivateWindow, @Event_ActivateWindow(), *Window\ID)
+    BindEvent(#PB_Event_MaximizeWindow, @Event_MaximizeWindow(), *Window\ID)
+    BindEvent(#PB_Event_MinimizeWindow, @Event_MinimizeWindow(), *Window\ID)
+    BindEvent(#PB_Event_RestoreWindow, @Event_RestoreWindow(), *Window\ID)
+    
+    If Docked
+      ;*Temp = Get_Active()
+      ;If *Temp
+      ;  *Container = D3docker::Get_Container(*Temp\ID)
+      ;EndIf
+      
+      If Tab_ID
+        ForEach Object()
+          If Object()\Tab_ID = Tab_ID
+            *Container = D3docker::Window_Get_Container(Object()\ID)
+            If *Container
+              Break
+            EndIf
+          EndIf
+        Next
+      EndIf
+      
+      If *Container
+        D3docker::Docker_Add(Main\Docker, *Container, D3docker::#Direction_Inside, *Window\ID)
+      Else
+        *Container = D3docker::Root_Get(Main\Docker)
+        If WindowWidth(*Window\ID) > WindowHeight(*Window\ID)
+          D3docker::Docker_Add(Main\Docker, *Container, D3docker::#Direction_Bottom, *Window\ID)
+        Else
+          D3docker::Docker_Add(Main\Docker, *Container, D3docker::#Direction_Right, *Window\ID)
+        EndIf
+      EndIf
+      
+    EndIf
+    
+    ;If *Window\MDI_Window
+    ;  AddTabBarGadgetItem(Main_Window\Panel, #PB_Default, Name_Short, #Null, *Window\ID)
+    ;  SetWindowState(*Window\ID, #PB_Maximize)
+    ;  Main_Refresh_Active()
+    ;Else
+      ; #### Test
+    ;  SetParent_(WindowID(*Window\ID ), WindowID(Main_Window\ID))
     ;EndIf
     
-    If Tab_ID
-      ForEach Window()
-        If Window()\Tab_ID = Tab_ID
-          *Container = D3docker::Window_Get_Container(Window()\ID)
-          If *Container
-            Break
-          EndIf
-        EndIf
-      Next
+    ;PostEvent(#PB_Event_SizeWindow, *Window\ID, 0)
+    
+    ProcedureReturn *Window
+  EndProcedure
+  
+  Procedure Delete(*Window.Object)
+    Protected i
+    Protected Window.i
+    
+    If Not *Window
+      ProcedureReturn #False
     EndIf
     
-    If *Container
-      D3docker::Docker_Add(Main_Window\D3docker, *Container, D3docker::#Direction_Inside, *Window\ID)
-    Else
-      *Container = D3docker::Root_Get(Main_Window\D3docker)
-      If WindowWidth(*Window\ID) > WindowHeight(*Window\ID)
-        D3docker::Docker_Add(Main_Window\D3docker, *Container, D3docker::#Direction_Bottom, *Window\ID)
-      Else
-        D3docker::Docker_Add(Main_Window\D3docker, *Container, D3docker::#Direction_Right, *Window\ID)
-      EndIf
+    UnbindEvent(#PB_Event_ActivateWindow, @Event_ActivateWindow(), *Window\ID)
+    UnbindEvent(#PB_Event_MaximizeWindow, @Event_MaximizeWindow(), *Window\ID)
+    UnbindEvent(#PB_Event_MinimizeWindow, @Event_MinimizeWindow(), *Window\ID)
+    UnbindEvent(#PB_Event_RestoreWindow, @Event_RestoreWindow(), *Window\ID)
+    
+    ;If *Window\MDI_Window
+    ;  For i = 0 To CountTabBarGadgetItems(Main_Window\Panel) - 1
+    ;    If GetTabBarGadgetItemData(Main_Window\Panel, i) = *Window\ID
+    ;      RemoveTabBarGadgetItem(Main_Window\Panel, i)
+    ;      Break
+    ;    EndIf
+    ;  Next
+    ;EndIf
+    
+    Window = *Window\ID
+    
+    If ChangeCurrentElement(Object(), *Window)
+      DeleteElement(Object())
     EndIf
     
-  EndIf
+    D3docker::Window_Close(Window)
+    
+    ProcedureReturn #True
+  EndProcedure
   
-  ;If *Window\MDI_Window
-  ;  AddTabBarGadgetItem(Main_Window\Panel, #PB_Default, Name_Short, #Null, *Window\ID)
-  ;  SetWindowState(*Window\ID, #PB_Window_Maximize)
-  ;  Main_Window_Refresh_Active()
-  ;Else
-    ; #### Test
-  ;  SetParent_(WindowID(*Window\ID ), WindowID(Main_Window\ID))
-  ;EndIf
+  Procedure Init(Parent_Window, Docker, StatusBar)
+    Main\Parent_Window = Parent_Window
+    Main\Docker = Docker
+    Main\StatusBar = StatusBar
+  EndProcedure
   
-  ;PostEvent(#PB_Event_SizeWindow, *Window\ID, 0)
-  
-  ProcedureReturn *Window
-EndProcedure
-
-Procedure Window_Delete(*Window.Window)
-  Protected i
-  Protected Window.i
-  
-  If Not *Window
-    ProcedureReturn #False
-  EndIf
-  
-  UnbindEvent(#PB_Event_ActivateWindow, @Window_Event_ActivateWindow(), *Window\ID)
-  UnbindEvent(#PB_Event_MaximizeWindow, @Window_Event_MaximizeWindow(), *Window\ID)
-  UnbindEvent(#PB_Event_MinimizeWindow, @Window_Event_MinimizeWindow(), *Window\ID)
-  UnbindEvent(#PB_Event_RestoreWindow, @Window_Event_RestoreWindow(), *Window\ID)
-  
-  ;If *Window\MDI_Window
-  ;  For i = 0 To CountTabBarGadgetItems(Main_Window\Panel) - 1
-  ;    If GetTabBarGadgetItemData(Main_Window\Panel, i) = *Window\ID
-  ;      RemoveTabBarGadgetItem(Main_Window\Panel, i)
-  ;      Break
-  ;    EndIf
-  ;  Next
-  ;EndIf
-  
-  Window = *Window\ID
-  
-  If ChangeCurrentElement(Window(), *Window)
-    DeleteElement(Window())
-  EndIf
-  
-  D3docker::Window_Close(Window)
-  
-  ProcedureReturn #True
-EndProcedure
-
-; ##################################################### Initialisation ##############################################
-
-; ##################################################### Main ########################################################
-
-; ##################################################### End #########################################################
-
+EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 253
-; FirstLine = 221
-; Folding = --
+; CursorPosition = 307
+; FirstLine = 289
+; Folding = ---
 ; EnableUnicode
 ; EnableXP

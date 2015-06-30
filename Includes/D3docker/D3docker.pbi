@@ -469,7 +469,7 @@ Module D3docker
               _Window_Set_Active(*Window\Gadget, *Window, #False)
             Case #WA_INACTIVE
               If \Active_Window = *Window
-                _Window_Set_Active(*Window\Gadget, #Null, #False)
+                ;_Window_Set_Active(*Window\Gadget, #Null, #False)
               EndIf
           EndSelect
         EndWith
@@ -2183,8 +2183,7 @@ Module D3docker
   
 EndModule
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 482
-; FirstLine = 442
+; CursorPosition = 465
 ; Folding = --------
 ; EnableUnicode
 ; EnableXP
