@@ -971,7 +971,7 @@ Module _Node_Data_Inspector
     Main\Node_Type\Date_Creation = Date(2014,08,08,19,56,00)
     Main\Node_Type\Date_Modification = Date(2014,08,09,19,24,00)
     Main\Node_Type\Date_Compilation = #PB_Compiler_Date
-    Main\Node_Type\Description = "Displays data interpretated as different datatypes"
+    Main\Node_Type\Description = "Displays data interpreted as different datatypes"
     Main\Node_Type\Function_Create = @Create()
     Main\Node_Type\Version = 900
   EndIf
@@ -983,7 +983,8 @@ Module _Node_Data_Inspector
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 33
+; CursorPosition = 973
+; FirstLine = 938
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP
