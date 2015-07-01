@@ -577,7 +577,7 @@ Module _Node_Copy
             
             Select *Object\Mode
               Case #Mode_Insert
-                If Node::Input_Convolute(*Input_Out, *Object\Position_Write, Buffer_Size)
+                If Node::Input_Shift(*Input_Out, *Object\Position_Write, Buffer_Size)
                   If Not Node::Input_Set_Data(*Input_Out, *Object\Position_Write, Buffer_Size, *Buffer)
                     Set_State(*Node.Node::Object, #State_Off)
                   EndIf
@@ -601,7 +601,7 @@ Module _Node_Copy
         Else
           If *Object\Truncate
             If *Object\Position_Write < Size_Output
-              Node::Input_Convolute(*Input_Out, *Object\Position_Write, *Object\Position_Write - Size_Output)
+              Node::Input_Shift(*Input_Out, *Object\Position_Write, *Object\Position_Write - Size_Output)
             EndIf
           EndIf
           
@@ -686,8 +686,8 @@ Module _Node_Copy
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 639
-; FirstLine = 613
+; CursorPosition = 603
+; FirstLine = 579
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP

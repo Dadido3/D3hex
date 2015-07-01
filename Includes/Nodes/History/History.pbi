@@ -56,7 +56,7 @@ Module _Node_History
   
   Enumeration
     #Operation_Type_Write
-    #Operation_Type_Convolute
+    #Operation_Type_Shift
   EndEnumeration
   
   ; ################################################### Structures ##################################################
@@ -73,7 +73,7 @@ Module _Node_History
     *Data               ; For write operations
     Data_Size.i         ; For write operations
     
-    Offset.q            ; For convolution operations
+    Offset.q            ; For shift operations
     
     Temp_Size_Before.q  ; Temporary object-size before the operation
     Temp_Size.q         ; Temporary object-size after the operation
@@ -132,9 +132,9 @@ Module _Node_History
   Declare.q Get_Size(*Output.Node::Conn_Output)
   Declare   Get_Data(*Output.Node::Conn_Output, Position.q, Size.i, *Data, *Metadata)
   Declare   Set_Data(*Output.Node::Conn_Output, Position.q, Size.i, *Data)
-  Declare   Convolute(*Output.Node::Conn_Output, Position.q, Offset.q)
+  Declare   Shift(*Output.Node::Conn_Output, Position.q, Offset.q)
   Declare   Set_Data_Check(*Output.Node::Conn_Output, Position.q, Size.i)
-  Declare   Convolute_Check(*Output.Node::Conn_Output, Position.q, Offset.q)
+  Declare   Shift_Check(*Output.Node::Conn_Output, Position.q, Offset.q)
   
   Declare   Window_Close(*Node.Node::Object)
   
@@ -171,7 +171,7 @@ Module _Node_History
             Event\Size = *Object\Operation_Future()\Data_Size
             Node::Output_Event(FirstElement(*Node\Output()), Event)
             Combine_End = #True
-          Case #Operation_Type_Convolute
+          Case #Operation_Type_Shift
             Event\Type = Node::#Link_Event_Update
             Event\Position = *Object\Operation_Future()\Position
             Event\Size = Recalculate_Past_Size(*Node) - *Object\Operation_Future()\Position
@@ -188,7 +188,7 @@ Module _Node_History
         If Combine_End 
           If *Object\Operation_Past()\Type = #Operation_Type_Write
             Break
-          ElseIf *Object\Operation_Past()\Type = #Operation_Type_Convolute And *Object\Operation_Past()\Offset < 0
+          ElseIf *Object\Operation_Past()\Type = #Operation_Type_Shift And *Object\Operation_Past()\Offset < 0
             Break
           EndIf
         EndIf
@@ -233,7 +233,7 @@ Module _Node_History
             Event\Size = *Object\Operation_Past()\Data_Size
             Node::Output_Event(FirstElement(*Node\Output()), Event)
             Break
-          Case #Operation_Type_Convolute
+          Case #Operation_Type_Shift
             Event\Type = Node::#Link_Event_Update
             Event\Position = *Object\Operation_Past()\Position
             Event\Size = Recalculate_Past_Size(*Node) - *Object\Operation_Past()\Position
@@ -294,7 +294,7 @@ Module _Node_History
               Temp_Size = *Object\Operation_Past()\Position + *Object\Operation_Past()\Data_Size
             EndIf
             
-          Case #Operation_Type_Convolute
+          Case #Operation_Type_Shift
             Temp_Size + *Object\Operation_Past()\Offset
             If Temp_Size < *Object\Operation_Past()\Position
               Temp_Size = *Object\Operation_Past()\Position
@@ -329,9 +329,9 @@ Module _Node_History
             ProcedureReturn #False
           EndIf
           
-        Case #Operation_Type_Convolute
-          If Not Node::Input_Convolute(FirstElement(*Node\Input()), *Object\Operation_Past()\Position, *Object\Operation_Past()\Offset)
-            Logger::Entry_Add_Error("Convolute failed", "Couldn't convolute the destination. Aborting write process.")
+        Case #Operation_Type_Shift
+          If Not Node::Input_Shift(FirstElement(*Node\Input()), *Object\Operation_Past()\Position, *Object\Operation_Past()\Offset)
+            Logger::Entry_Add_Error("Shifting failed", "Couldn't shift the destination. Aborting write process.")
             ProcedureReturn #False
           EndIf
           
@@ -386,9 +386,9 @@ Module _Node_History
     *Output\Function_Get_Size = @Get_Size()
     *Output\Function_Get_Data = @Get_Data()
     *Output\Function_Set_Data = @Set_Data()
-    *Output\Function_Convolute = @Convolute()
+    *Output\Function_Shift = @Shift()
     *Output\Function_Set_Data_Check = @Set_Data_Check()
-    *Output\Function_Convolute_Check = @Convolute_Check()
+    *Output\Function_Shift_Check = @Shift_Check()
     
     ProcedureReturn *Node
   EndProcedure
@@ -684,7 +684,7 @@ Module _Node_History
                   EndIf
                 EndIf
                 
-              Case #Operation_Type_Convolute
+              Case #Operation_Type_Shift
                 ; #### Check if Operation is inside the window
                 If *Current_Operation\Position < Window()\Source_Position+Window()\Size
                   ; #### Prepare everything
@@ -836,7 +836,7 @@ Module _Node_History
           ; #### Check if Operation is valid
           If *Current_Operation\Position >= 0 And *Current_Operation\Position <= *Current_Operation\Temp_Size_Before
             Select *Current_Operation\Type
-              Case #Operation_Type_Convolute
+              Case #Operation_Type_Shift
                 ; #### Check if Operation is inside the window
                 If *Current_Operation\Position < Window()\Source_Position+Window()\Size
                   ; #### Prepare everything
@@ -966,7 +966,7 @@ Module _Node_History
     ProcedureReturn #True
   EndProcedure
   
-  Procedure Convolute_Check_Recursively(*Node.Node::Object, Position.q, Offset.q)
+  Procedure Shift_Check_Recursively(*Node.Node::Object, Position.q, Offset.q)
     If Not *Node
       ProcedureReturn #False
     EndIf
@@ -980,7 +980,7 @@ Module _Node_History
         ; #### Check if Operation is valid
         If *Object\Operation_Past()\Position >= 0 And *Object\Operation_Past()\Position <= *Object\Operation_Past()\Temp_Size_Before
           Select *Object\Operation_Past()\Type
-            Case #Operation_Type_Convolute
+            Case #Operation_Type_Shift
               ; #### Check if Operation is inside the window
               If *Object\Operation_Past()\Position <= Position
                 Position - *Object\Operation_Past()\Offset
@@ -994,10 +994,10 @@ Module _Node_History
       Until Not PreviousElement(*Object\Operation_Past())
     EndIf
     
-    ProcedureReturn Node::Input_Convolute_Check(FirstElement(*Node\Input()), Position, Offset)
+    ProcedureReturn Node::Input_Shift_Check(FirstElement(*Node\Input()), Position, Offset)
   EndProcedure
   
-  Procedure Convolute(*Output.Node::Conn_Output, Position.q, Offset.q)
+  Procedure Shift(*Output.Node::Conn_Output, Position.q, Offset.q)
     If Not *Output
       ProcedureReturn #False
     EndIf
@@ -1015,13 +1015,13 @@ Module _Node_History
     
     Recalculate_Past_Size(*Node)
     
-    If Not *Object\Always_Writable And Not Convolute_Check_Recursively(*Node, Position, Offset)
+    If Not *Object\Always_Writable And Not Shift_Check_Recursively(*Node, Position, Offset)
       ProcedureReturn #False
     EndIf
     
     LastElement(*Object\Operation_Past())
     AddElement(*Object\Operation_Past())
-    *Object\Operation_Past()\Type = #Operation_Type_Convolute
+    *Object\Operation_Past()\Type = #Operation_Type_Shift
     *Object\Operation_Past()\Position = Position
     *Object\Operation_Past()\Offset = Offset
     
@@ -1059,7 +1059,7 @@ Module _Node_History
     EndIf
   EndProcedure
   
-  Procedure Convolute_Check(*Output.Node::Conn_Output, Position.q, Offset.q)
+  Procedure Shift_Check(*Output.Node::Conn_Output, Position.q, Offset.q)
     If Not *Output
       ProcedureReturn #False
     EndIf
@@ -1078,7 +1078,7 @@ Module _Node_History
     If *Object\Always_Writable
       ProcedureReturn #True
     Else
-      ProcedureReturn Convolute_Check_Recursively(*Node, Position, Offset)
+      ProcedureReturn Shift_Check_Recursively(*Node, Position, Offset)
     EndIf
   EndProcedure
   
@@ -1303,7 +1303,7 @@ Module _Node_History
   
 EndModule
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1301
-; FirstLine = 1256
+; CursorPosition = 333
+; FirstLine = 329
 ; Folding = ------
 ; EnableXP

@@ -101,7 +101,7 @@ Structure Search
   Direction.i
   From_Cursor.i
   
-  No_Convolution.i
+  No_Shifting.i
   
   Type.i
   Case_Sensitive.i
@@ -311,7 +311,7 @@ Procedure Search_Window_Update_Input(*Node.Node::Object)
   If *Object_Search\Zero_Byte      : SetGadgetState(*Object_Search\CheckBox[1], #PB_Checkbox_Checked) : Else : SetGadgetState(*Object_Search\CheckBox[1], #PB_Checkbox_Unchecked) : EndIf
   If *Object_Search\Big_Endian     : SetGadgetState(*Object_Search\CheckBox[2], #PB_Checkbox_Checked) : Else : SetGadgetState(*Object_Search\CheckBox[2], #PB_Checkbox_Unchecked) : EndIf
   
-  If *Object_Search\No_Convolution : SetGadgetState(*Object_Search\CheckBox[4], #PB_Checkbox_Checked) : Else : SetGadgetState(*Object_Search\CheckBox[4], #PB_Checkbox_Unchecked) : EndIf
+  If *Object_Search\No_Shifting    : SetGadgetState(*Object_Search\CheckBox[4], #PB_Checkbox_Checked) : Else : SetGadgetState(*Object_Search\CheckBox[4], #PB_Checkbox_Unchecked) : EndIf
   
 EndProcedure
 
@@ -941,7 +941,7 @@ Procedure Search_Window_Event_CheckBox_4()
   
   Select *Object_Search\State
     Case #Search_State_None, #Search_State_Search_Wait
-      *Object_Search\No_Convolution = GetGadgetState(Event_Gadget)
+      *Object_Search\No_Shifting = GetGadgetState(Event_Gadget)
       
   EndSelect
   
@@ -1119,29 +1119,29 @@ Procedure Search_Window_Event_Button_Replace()
     ProcedureReturn
   EndIf
   
-  Protected Convolute_Difference.q
+  Protected Shift_Difference.q
   
   Select *Object_Search\State
     Case #Search_State_Search_Wait
       
       If *Object_Search\Found
-        Convolute_Difference = *Object_Search\Raw_Replacement_Size - *Object_Search\Raw_Keyword_Size
-        If *Object_Search\No_Convolution Or Convolute_Difference = 0
+        Shift_Difference = *Object_Search\Raw_Replacement_Size - *Object_Search\Raw_Keyword_Size
+        If *Object_Search\No_Shifting Or Shift_Difference = 0
           If Not Node::Input_Set_Data(FirstElement(*Node\Input()), *Object_Search\Found_Position, *Object_Search\Raw_Replacement_Size, *Object_Search\Raw_Replacement)
             Logger::Entry_Add_Error("Couldn't replace keyword", "The destination is probably in read only mode. Replace-Operation not successful.")
             *Object_Search\State = #Search_State_None
             *Object_Search\Update_Input = #True
           EndIf
         Else
-          If Node::Input_Convolute(FirstElement(*Node\Input()), *Object_Search\Found_Position, Convolute_Difference)
-            *Object_Search\Position + Convolute_Difference
+          If Node::Input_Shift(FirstElement(*Node\Input()), *Object_Search\Found_Position, Shift_Difference)
+            *Object_Search\Position + Shift_Difference
             If Not Node::Input_Set_Data(FirstElement(*Node\Input()), *Object_Search\Found_Position, *Object_Search\Raw_Replacement_Size, *Object_Search\Raw_Replacement)
               Logger::Entry_Add_Error("Couldn't replace keyword", "The destination is probably in read only mode. Replace-Operation not successful.")
               *Object_Search\State = #Search_State_None
               *Object_Search\Update_Input = #True
             EndIf
           Else
-            Logger::Entry_Add_Error("Couldn't convolute", "The destination can't be convoluted. Replace-Operation not successful.")
+            Logger::Entry_Add_Error("Shifting failed", "The destination can't be shifted. Replace-Operation not successful.")
             *Object_Search\State = #Search_State_None
             *Object_Search\Update_Input = #True
           EndIf
@@ -1288,7 +1288,7 @@ Procedure Search_Window_Open(*Node.Node::Object)
     *Object_Search\Option[0] = OptionGadget(#PB_Any, Width-100, 120, 80, 20, "Forward")
     *Object_Search\Option[1] = OptionGadget(#PB_Any, Width-100, 140, 80, 20, "Backward")
     
-    *Object_Search\CheckBox[4] = CheckBoxGadget(#PB_Any, Width-110, 180, 100, 20, "No Convolution")
+    *Object_Search\CheckBox[4] = CheckBoxGadget(#PB_Any, Width-110, 180, 100, 20, "No shifting")
     
     *Object_Search\Button_Search = ButtonGadget(#PB_Any, 10, 220, 90, 30, "Search")
     *Object_Search\Button_Continue = ButtonGadget(#PB_Any, 110, 220, 90, 30, "Continue")
@@ -1474,7 +1474,7 @@ Procedure Search_Do(*Node.Node::Object)
   Protected *Fast_Memory, Fast_Memory_Size.i
   Protected *Current_Segment.Node::Output_Segment
   Protected NewList Object_Output_Segment.Node::Output_Segment()
-  Protected Convolute_Difference.q
+  Protected Shift_Difference.q
   
   If Not *Node
     ProcedureReturn #False
@@ -1752,22 +1752,22 @@ Procedure Search_Do(*Node.Node::Object)
                     Temp_Pos - 1
                   EndIf
                   
-                  Convolute_Difference = *Object_Search\Raw_Replacement_Size - *Object_Search\Raw_Keyword_Size
-                  If *Object_Search\No_Convolution Or Convolute_Difference = 0
+                  Shift_Difference = *Object_Search\Raw_Replacement_Size - *Object_Search\Raw_Keyword_Size
+                  If *Object_Search\No_Shifting Or Shift_Difference = 0
                     If Not Node::Input_Set_Data(FirstElement(*Node\Input()), *Object_Search\Found_Position, *Object_Search\Raw_Replacement_Size, *Object_Search\Raw_Replacement)
                       Logger::Entry_Add_Error("Couldn't replace keyword", "The destination is probably in read only mode. Replace-Operation not successful.")
                       *Object_Search\State = #Search_State_None
                       *Object_Search\Update_Input = #True
                     EndIf
                   Else
-                    If Node::Input_Convolute(FirstElement(*Node\Input()), *Object_Search\Found_Position, Convolute_Difference)
+                    If Node::Input_Shift(FirstElement(*Node\Input()), *Object_Search\Found_Position, Shift_Difference)
                       If Not Node::Input_Set_Data(FirstElement(*Node\Input()), *Object_Search\Found_Position, *Object_Search\Raw_Replacement_Size, *Object_Search\Raw_Replacement)
                         Logger::Entry_Add_Error("Couldn't replace keyword", "The destination is probably in read only mode. Replace-Operation not successful.")
                         *Object_Search\State = #Search_State_None
                         *Object_Search\Update_Input = #True
                       EndIf
                     Else
-                      Logger::Entry_Add_Error("Couldn't convolute", "The destination can't be convoluted. Replace-Operation not successful.")
+                      Logger::Entry_Add_Error("Shifting failed", "The destination can't be shifted. Replace-Operation not successful.")
                       *Object_Search\State = #Search_State_None
                       *Object_Search\Update_Input = #True
                     EndIf
@@ -1797,22 +1797,22 @@ Procedure Search_Do(*Node.Node::Object)
                       Temp_Pos - 1
                     EndIf
                     
-                    Convolute_Difference = *Object_Search\Raw_Replacement_Size - *Object_Search\Raw_Keyword_Size
-                    If *Object_Search\No_Convolution Or Convolute_Difference = 0
+                    Shift_Difference = *Object_Search\Raw_Replacement_Size - *Object_Search\Raw_Keyword_Size
+                    If *Object_Search\No_Shifting Or Shift_Difference = 0
                       If Not Node::Input_Set_Data(FirstElement(*Node\Input()), *Object_Search\Found_Position, *Object_Search\Raw_Replacement_Size, *Object_Search\Raw_Replacement)
                         Logger::Entry_Add_Error("Couldn't replace keyword", "The destination is probably in read only mode. Replace-Operation not successful.")
                         *Object_Search\State = #Search_State_None
                         *Object_Search\Update_Input = #True
                       EndIf
                     Else
-                      If Node::Input_Convolute(FirstElement(*Node\Input()), *Object_Search\Found_Position, Convolute_Difference)
+                      If Node::Input_Shift(FirstElement(*Node\Input()), *Object_Search\Found_Position, Shift_Difference)
                         If Not Node::Input_Set_Data(FirstElement(*Node\Input()), *Object_Search\Found_Position, *Object_Search\Raw_Replacement_Size, *Object_Search\Raw_Replacement)
                           Logger::Entry_Add_Error("Couldn't replace keyword", "The destination is probably in read only mode. Replace-Operation not successful.")
                           *Object_Search\State = #Search_State_None
                           *Object_Search\Update_Input = #True
                         EndIf
                       Else
-                        Logger::Entry_Add_Error("Couldn't convolute", "The destination can't be convoluted. Replace-Operation not successful.")
+                        Logger::Entry_Add_Error("Shifting failed", "The destination can't be shifted. Replace-Operation not successful.")
                         *Object_Search\State = #Search_State_None
                         *Object_Search\Update_Input = #True
                       EndIf
@@ -1902,8 +1902,8 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 942
-; FirstLine = 928
+; CursorPosition = 1814
+; FirstLine = 1810
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

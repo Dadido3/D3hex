@@ -124,9 +124,9 @@ Module _Node_Binary_Operation
   Declare.q Output_Get_Size(*Output.Node::Conn_Output)
   Declare   Output_Get_Data(*Output.Node::Conn_Output, Position.q, Size.i, *Data, *Metadata)
   Declare   Output_Set_Data(*Output.Node::Conn_Output, Position.q, Size.i, *Data)
-  Declare   Output_Convolute(*Output.Node::Conn_Output, Position.q, Offset.q)
+  Declare   Output_Shift(*Output.Node::Conn_Output, Position.q, Offset.q)
   Declare   Output_Set_Data_Check(*Output.Node::Conn_Output, Position.q, Size.i)
-  Declare   Output_Convolute_Check(*Output.Node::Conn_Output, Position.q, Offset.q)
+  Declare   Output_Shift_Check(*Output.Node::Conn_Output, Position.q, Offset.q)
   
   Declare   Window_Close(*Node.Node::Object)
   
@@ -175,9 +175,9 @@ Module _Node_Binary_Operation
     *Output\Function_Get_Size = @Output_Get_Size()
     *Output\Function_Get_Data = @Output_Get_Data()
     *Output\Function_Set_Data = @Output_Set_Data()
-    *Output\Function_Convolute = @Output_Convolute()
+    *Output\Function_Shift = @Output_Shift()
     *Output\Function_Set_Data_Check = @Output_Set_Data_Check()
-    *Output\Function_Convolute_Check = @Output_Convolute_Check()
+    *Output\Function_Shift_Check = @Output_Shift_Check()
     
     ProcedureReturn *Node
   EndProcedure
@@ -666,7 +666,7 @@ Module _Node_Binary_Operation
     ProcedureReturn #False
   EndProcedure
   
-  Procedure Output_Convolute(*Output.Node::Conn_Output, Position.q, Offset.q)
+  Procedure Output_Shift(*Output.Node::Conn_Output, Position.q, Offset.q)
     If Not *Output
       ProcedureReturn #False
     EndIf
@@ -690,7 +690,7 @@ Module _Node_Binary_Operation
     ProcedureReturn #False
   EndProcedure
   
-  Procedure Output_Convolute_Check(*Output.Node::Conn_Output, Position.q, Offset.q)
+  Procedure Output_Shift_Check(*Output.Node::Conn_Output, Position.q, Offset.q)
     If Not *Output
       ProcedureReturn #False
     EndIf
@@ -1089,8 +1089,8 @@ Module _Node_Binary_Operation
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 234
-; FirstLine = 216
+; CursorPosition = 692
+; FirstLine = 647
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

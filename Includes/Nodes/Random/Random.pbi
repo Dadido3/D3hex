@@ -93,9 +93,9 @@ Module _Node_Random
   Declare.q Get_Size(*Output.Node::Conn_Output)
   Declare   Get_Data(*Output.Node::Conn_Output, Position.q, Size.i, *Data, *Metadata)
   Declare   Set_Data(*Output.Node::Conn_Output, Position.q, Size.i, *Data)
-  Declare   Convolute(*Output.Node::Conn_Output, Position.q, Offset.q)
+  Declare   Shift(*Output.Node::Conn_Output, Position.q, Offset.q)
   Declare   Set_Data_Check(*Output.Node::Conn_Output, Position.q, Size.i)
-  Declare   Convolute_Check(*Output.Node::Conn_Output, Position.q, Offset.q)
+  Declare   Shift_Check(*Output.Node::Conn_Output, Position.q, Offset.q)
   
   Declare   Window_Close(*Node.Node::Object)
   
@@ -134,9 +134,9 @@ Module _Node_Random
     *Output\Function_Get_Size = @Get_Size()
     *Output\Function_Get_Data = @Get_Data()
     *Output\Function_Set_Data = @Set_Data()
-    *Output\Function_Convolute = @Convolute()
+    *Output\Function_Shift = @Shift()
     *Output\Function_Set_Data_Check = @Set_Data_Check()
-    *Output\Function_Convolute_Check = @Convolute_Check()
+    *Output\Function_Shift_Check = @Shift_Check()
     
     If Requester
       Window_Open(*Node)
@@ -311,7 +311,7 @@ Module _Node_Random
     ProcedureReturn #False
   EndProcedure
   
-  Procedure Convolute(*Output.Node::Conn_Output, Position.q, Offset.q)
+  Procedure Shift(*Output.Node::Conn_Output, Position.q, Offset.q)
     If Not *Output
       ProcedureReturn #False
     EndIf
@@ -335,7 +335,7 @@ Module _Node_Random
     ProcedureReturn #False
   EndProcedure
   
-  Procedure Convolute_Check(*Output.Node::Conn_Output, Position.q, Offset.q)
+  Procedure Shift_Check(*Output.Node::Conn_Output, Position.q, Offset.q)
     If Not *Output
       ProcedureReturn #False
     EndIf
@@ -594,7 +594,7 @@ Module _Node_Random
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 591
-; FirstLine = 546
+; CursorPosition = 337
+; FirstLine = 292
 ; Folding = ----
 ; EnableXP

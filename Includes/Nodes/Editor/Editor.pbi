@@ -199,9 +199,9 @@ Module _Node_Editor
   Declare.q Output_Get_Size(*Output.Node::Conn_Output)
   Declare   Output_Get_Data(*Output.Node::Conn_Output, Position.q, Size.i, *Data, *Metadata)
   Declare   Output_Set_Data(*Output.Node::Conn_Output, Position.q, Size.i, *Data)
-  Declare   Output_Convolute(*Output.Node::Conn_Output, Position.q, Offset.q)
+  Declare   Output_Shift(*Output.Node::Conn_Output, Position.q, Offset.q)
   Declare   Output_Set_Data_Check(*Output.Node::Conn_Output, Position.q, Size.i)
-  Declare   Output_Convolute_Check(*Output.Node::Conn_Output, Position.q, Offset.q)
+  Declare   Output_Shift_Check(*Output.Node::Conn_Output, Position.q, Offset.q)
   
   Declare   Cut(*Node.Node::Object)
   Declare   Copy(*Node.Node::Object)
@@ -266,9 +266,9 @@ Module _Node_Editor
     *Output\Function_Get_Size = @Output_Get_Size()
     *Output\Function_Get_Data = @Output_Get_Data()
     *Output\Function_Set_Data = @Output_Set_Data()
-    *Output\Function_Convolute = @Output_Convolute()
+    *Output\Function_Shift = @Output_Shift()
     *Output\Function_Set_Data_Check = @Output_Set_Data_Check()
-    *Output\Function_Convolute_Check = @Output_Convolute_Check()
+    *Output\Function_Shift_Check = @Output_Shift_Check()
     
     ProcedureReturn *Node
   EndProcedure
@@ -376,12 +376,12 @@ Module _Node_Editor
         
       Case Node::#Event_Undo
         Event\Type = Node::#Event_Undo
-        Event\Value[0] = #True ; Combine Convolution and Write
+        Event\Value[0] = #True ; Undo a shift and write operation at once
         Node::Input_Event(FirstElement(*Node\Input()), Event)
         
       Case Node::#Event_Redo
         Event\Type = Node::#Event_Redo
-        Event\Value[0] = #True ; Combine Convolution and Write
+        Event\Value[0] = #True ; Redo a shift and write operation at once
         Node::Input_Event(FirstElement(*Node\Input()), Event)
         
       Case Node::#Event_Cut
@@ -665,7 +665,7 @@ Module _Node_Editor
     ProcedureReturn #False
   EndProcedure
   
-  Procedure Output_Convolute(*Output.Node::Conn_Output, Position.q, Offset.q)
+  Procedure Output_Shift(*Output.Node::Conn_Output, Position.q, Offset.q)
     If Not *Output
       ProcedureReturn #False
     EndIf
@@ -700,7 +700,7 @@ Module _Node_Editor
     EndIf
     
     If Start + Position <= Node::Input_Get_Size(FirstElement(*Node\Input()))
-      If Node::Input_Convolute(FirstElement(*Node\Input()), Start + Position, Offset)
+      If Node::Input_Shift(FirstElement(*Node\Input()), Start + Position, Offset)
         If *Object\Select_End >= *Object\Select_Start
           Range_Set(*Node, -1, *Object\Select_End + Offset, #False, #True)
         Else
@@ -729,7 +729,7 @@ Module _Node_Editor
     ProcedureReturn Node::Input_Set_Data_Check(FirstElement(*Node\Input()), Position.q, Size.i)
   EndProcedure
   
-  Procedure Output_Convolute_Check(*Output.Node::Conn_Output, Position.q, Offset.q)
+  Procedure Output_Shift_Check(*Output.Node::Conn_Output, Position.q, Offset.q)
     If Not *Output
       ProcedureReturn #False
     EndIf
@@ -742,7 +742,7 @@ Module _Node_Editor
       ProcedureReturn #False
     EndIf
     
-    ProcedureReturn Node::Input_Convolute_Check(FirstElement(*Node\Input()), Position.q, Offset.q)
+    ProcedureReturn Node::Input_Shift_Check(FirstElement(*Node\Input()), Position.q, Offset.q)
   EndProcedure
   
   Procedure Organize(*Node.Node::Object)
@@ -1391,8 +1391,8 @@ Module _Node_Editor
     EndIf
     
     If Select_Length > 0
-      ; #### Remove-Convolute the selected range
-      Node::Input_Convolute(FirstElement(*Node\Input()), Select_Start, -Select_Length)
+      ; #### Remove the selected range (throught negative shifting)
+      Node::Input_Shift(FirstElement(*Node\Input()), Select_Start, -Select_Length)
       ; #### Change the selection from range to a single position
       Range_Set(*Node, Select_Start, Select_Start, #False, #True)
     ElseIf Bytes > 0
@@ -1404,11 +1404,11 @@ Module _Node_Editor
         If Bytes > Select_Start
           Bytes = Select_Start
         EndIf
-        If Node::Input_Convolute(FirstElement(*Node\Input()), Select_Start-Bytes, -Bytes)
+        If Node::Input_Shift(FirstElement(*Node\Input()), Select_Start-Bytes, -Bytes)
           Range_Set(*Node, Select_Start-Bytes, Select_Start-Bytes, #False, #True)
         EndIf
       Else
-        Node::Input_Convolute(FirstElement(*Node\Input()), Select_Start, -Bytes)
+        Node::Input_Shift(FirstElement(*Node\Input()), Select_Start, -Bytes)
         Range_Set(*Node, Select_Start, Select_Start, #False, #True)
       EndIf
       *Object\Redraw = #True
@@ -1443,7 +1443,7 @@ Module _Node_Editor
       Select_Length = *Object\Select_Start-*Object\Select_End
     EndIf
     
-    ; #### Remove-Convolute the selected range (If insert-mode is enabled)
+    ; #### Remove the selected range (throught negative shifting) (If insert-mode is enabled)
     If *Object\Write_Mode = #WriteMode_Insert
       Remove_Data(*Node, 0)
     Else
@@ -1458,7 +1458,7 @@ Module _Node_Editor
           Result = Node::Input_Set_Data(FirstElement(*Node\Input()), Select_Start, Size, *Data)
           
         Case #WriteMode_Insert
-          If Node::Input_Convolute(FirstElement(*Node\Input()), Select_Start, Size)
+          If Node::Input_Shift(FirstElement(*Node\Input()), Select_Start, Size)
             Result = Node::Input_Set_Data(FirstElement(*Node\Input()), Select_Start, Size, *Data)
           EndIf
           
@@ -1513,7 +1513,7 @@ Module _Node_Editor
       
     Else
       
-      ; #### Remove-Convolute the selected range (If insert-mode is enabled)
+      ; #### Remove the selected range (throught negative shifting) (If insert-mode is enabled)
       If *Object\Write_Mode = #WriteMode_Insert
         Remove_Data(*Node, 0)
       Else
@@ -1546,7 +1546,7 @@ Module _Node_Editor
             *Object\Temp_Nibble_Value = Char
             Result = #True
           Case #WriteMode_Insert
-            If Node::Input_Convolute(FirstElement(*Node\Input()), Select_Start, 1)
+            If Node::Input_Shift(FirstElement(*Node\Input()), Select_Start, 1)
               Temp_Char = Char << 4
               Result = Node::Input_Set_Data(FirstElement(*Node\Input()), Select_Start, 1, @Temp_Char)
             EndIf
@@ -2271,12 +2271,12 @@ Module _Node_Editor
         
       Case #Menu_Undo
         Event\Type = Node::#Event_Undo
-        Event\Value[0] = #True ; Combine Convolution and Write
+        Event\Value[0] = #True ; Undo a shift and write operation at once
         Node::Input_Event(FirstElement(*Node\Input()), Event)
         
       Case #Menu_Redo
         Event\Type = Node::#Event_Redo
-        Event\Value[0] = #True ; Combine Convolution and Write
+        Event\Value[0] = #True ; Redo a shift and write operation at once
         Node::Input_Event(FirstElement(*Node\Input()), Event)
         
       Case #Menu_Cut, #PopupMenu_Cut
@@ -2465,8 +2465,8 @@ Module _Node_Editor
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1257
-; FirstLine = 1230
+; CursorPosition = 1515
+; FirstLine = 1511
 ; Folding = -------
 ; EnableUnicode
 ; EnableXP

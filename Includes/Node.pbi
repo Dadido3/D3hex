@@ -82,9 +82,9 @@ DeclareModule Node
   Prototype.q Function_Get_Size(*Output)
   Prototype   Function_Get_Data(*Output, Position.q, Size.i, *Data, *Metadata)
   Prototype   Function_Set_Data(*Output, Position.q, Size.i, *Data)
-  Prototype   Function_Convolute(*Output, Position.q, Offset.q)
+  Prototype   Function_Shift(*Output, Position.q, Offset.q)
   Prototype   Function_Set_Data_Check(*Output, Position.q, Size.i)
-  Prototype   Function_Convolute_Check(*Output, Position.q, Offset.q)
+  Prototype   Function_Shift_Check(*Output, Position.q, Offset.q)
   
   ; ################################################### Structures B ################################################
   Structure Main
@@ -142,9 +142,9 @@ DeclareModule Node
     Function_Get_Size.Function_Get_Size
     Function_Get_Data.Function_Get_Data
     Function_Set_Data.Function_Set_Data
-    Function_Convolute.Function_Convolute
+    Function_Shift.Function_Shift
     Function_Set_Data_Check.Function_Set_Data_Check
-    Function_Convolute_Check.Function_Convolute_Check
+    Function_Shift_Check.Function_Shift_Check
   EndStructure
   
   Structure Object
@@ -206,9 +206,9 @@ DeclareModule Node
   Declare.q Input_Get_Size(*Input.Conn_Input)
   Declare   Input_Get_Data(*Input.Conn_Input, Position.q, Size.i, *Data, *Metadata)
   Declare   Input_Set_Data(*Input.Conn_Input, Position.q, Size.i, *Data)
-  Declare   Input_Convolute(*Input.Conn_Input, Position.q, Offset.q)
+  Declare   Input_Shift(*Input.Conn_Input, Position.q, Offset.q)
   Declare   Input_Set_Data_Check(*Input.Conn_Input, Position.q, Size.i)
-  Declare   Input_Convolute_Check(*Input.Conn_Input, Position.q, Offset.q)
+  Declare   Input_Shift_Check(*Input.Conn_Input, Position.q, Offset.q)
   
 EndDeclareModule
 
@@ -609,7 +609,7 @@ Module Node
   EndProcedure
   
   ; #### This function calls the corresponding function in the others object output.
-  Procedure Input_Convolute(*Input.Conn_Input, Position.q, Offset.q)
+  Procedure Input_Shift(*Input.Conn_Input, Position.q, Offset.q)
     If Not *Input
       ProcedureReturn #False
     EndIf
@@ -620,8 +620,8 @@ Module Node
       ProcedureReturn #False
     EndIf
     
-    If *Output\Function_Convolute
-      ProcedureReturn *Output\Function_Convolute(*Output, Position.q, Offset)
+    If *Output\Function_Shift
+      ProcedureReturn *Output\Function_Shift(*Output, Position.q, Offset)
     EndIf
     
     ProcedureReturn #False
@@ -647,7 +647,7 @@ Module Node
   EndProcedure
   
   ; #### This function calls the corresponding function in the others object output.
-  Procedure Input_Convolute_Check(*Input.Conn_Input, Position.q, Offset.q)
+  Procedure Input_Shift_Check(*Input.Conn_Input, Position.q, Offset.q)
     If Not *Input
       ProcedureReturn #False
     EndIf
@@ -658,8 +658,8 @@ Module Node
       ProcedureReturn #False
     EndIf
     
-    If *Output\Function_Convolute_Check
-      ProcedureReturn *Output\Function_Convolute_Check(*Output, Position.q, Offset.q)
+    If *Output\Function_Shift_Check
+      ProcedureReturn *Output\Function_Shift_Check(*Output, Position.q, Offset.q)
     EndIf
     
     ProcedureReturn #True
@@ -684,7 +684,7 @@ Module Node
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 668
-; FirstLine = 639
+; CursorPosition = 661
+; FirstLine = 616
 ; Folding = ----
 ; EnableXP

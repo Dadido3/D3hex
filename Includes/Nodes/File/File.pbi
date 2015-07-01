@@ -104,9 +104,9 @@ Module _Node_File
   Declare.q Get_Size(*Output.Node::Conn_Output)
   Declare   Get_Data(*Output.Node::Conn_Output, Position.q, Size.i, *Data, *Metadata)
   Declare   Set_Data(*Output.Node::Conn_Output, Position.q, Size.i, *Data)
-  Declare   Convolute(*Output.Node::Conn_Output, Position.q, Offset.q)
+  Declare   Shift(*Output.Node::Conn_Output, Position.q, Offset.q)
   Declare   Set_Data_Check(*Output.Node::Conn_Output, Position.q, Size.i)
-  Declare   Convolute_Check(*Output.Node::Conn_Output, Position.q, Offset.q)
+  Declare   Shift_Check(*Output.Node::Conn_Output, Position.q, Offset.q)
   
   Declare   Window_Open(*Node.Node::Object)
   Declare   Window_Close(*Node.Node::Object)
@@ -306,9 +306,9 @@ Module _Node_File
     *Output\Function_Get_Size = @Get_Size()
     *Output\Function_Get_Data = @Get_Data()
     *Output\Function_Set_Data = @Set_Data()
-    *Output\Function_Convolute = @Convolute()
+    *Output\Function_Shift = @Shift()
     *Output\Function_Set_Data_Check = @Set_Data_Check()
-    *Output\Function_Convolute_Check = @Convolute_Check()
+    *Output\Function_Shift_Check = @Shift_Check()
     
     ; #### Open file
     If Requester
@@ -586,7 +586,7 @@ Module _Node_File
       ProcedureReturn #False
     EndIf
     
-    ; #### Don't write over the end of the file (REMOVED, ALL OBJECTS SHOULD ALLOW TO BE WRITTEN AT THE END WITHOUT CONVOLUTION)
+    ; #### Don't write over the end of the file (REMOVED, ALL OBJECTS SHOULD ALLOW TO BE WRITTEN AT THE END WITHOUT SHIFTING)
     ;File_Size = Get_Size(*Node_Output)
     ;If Size + Position > File_Size
     ;  Size = File_Size - Position
@@ -636,7 +636,7 @@ Module _Node_File
     ProcedureReturn #False
   EndProcedure
   
-  Procedure Convolute(*Node_Output.Node::Conn_Output, Position.q, Offset.q)
+  Procedure Shift(*Node_Output.Node::Conn_Output, Position.q, Offset.q)
     Protected i
     Protected Temp_Position.q, Temp_Read_Position.q, Temp_Offset.q
     Protected File_Size.q
@@ -677,7 +677,7 @@ Module _Node_File
     EndIf
     
     If Not *Object\Mode = #Mode_Write
-      Logger::Entry_Add_Error("Couldn't convolute the file", "The file is in read only mode.")
+      Logger::Entry_Add_Error("Couldn't shift the file", "The file is in read only mode.")
       ProcedureReturn #False
     EndIf
     
@@ -735,7 +735,7 @@ Module _Node_File
       Object_Event\Size = File_Size - Position + Temp_Offset
       Node::Output_Event(FirstElement(*Node\Output()), Object_Event)
     Else
-      Logger::Entry_Add_Error("Couldn't convolute the file", "The file is probably in read only mode.")
+      Logger::Entry_Add_Error("Couldn't shift the file", "The file is probably in read only mode.")
     EndIf
     
     ProcedureReturn Successful
@@ -762,7 +762,7 @@ Module _Node_File
     ProcedureReturn #True
   EndProcedure
   
-  Procedure Convolute_Check(*Node_Output.Node::Conn_Output, Position.q, Offset.q)
+  Procedure Shift_Check(*Node_Output.Node::Conn_Output, Position.q, Offset.q)
     If Not *Node_Output
       ProcedureReturn #False
     EndIf
@@ -776,7 +776,7 @@ Module _Node_File
     EndIf
     
     If Not *Object\Mode = #Mode_Write And *Object\File_ID
-      Logger::Entry_Add_Error("Couldn't convolute the file", "The file is in read only mode.")
+      Logger::Entry_Add_Error("Couldn't shift the file", "The file is in read only mode.")
       ProcedureReturn #False
     EndIf
     
@@ -1194,7 +1194,8 @@ Module _Node_File
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 41
+; CursorPosition = 778
+; FirstLine = 774
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

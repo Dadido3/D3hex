@@ -118,9 +118,9 @@ Declare   Object_Math_Get_Descriptor(*Object_Output.Object_Output)
 Declare.q Object_Math_Get_Size(*Object_Output.Object_Output)
 Declare   Object_Math_Get_Data(*Object_Output.Object_Output, Position.q, Size.i, *Data, *Metadata)
 Declare   Object_Math_Set_Data(*Object_Output.Object_Output, Position.q, Size.i, *Data)
-Declare   Object_Math_Convolute(*Object_Output.Object_Output, Position.q, Offset.q)
+Declare   Object_Math_Shift(*Object_Output.Object_Output, Position.q, Offset.q)
 Declare   Object_Math_Set_Data_Check(*Object_Output.Object_Output, Position.q, Size.i)
-Declare   Object_Math_Convolute_Check(*Object_Output.Object_Output, Position.q, Offset.q)
+Declare   Object_Math_Shift_Check(*Object_Output.Object_Output, Position.q, Offset.q)
 
 Declare   Object_Math_Window_Close(*Object.Object)
 
@@ -163,9 +163,9 @@ Procedure Object_Math_Create(Requester)
   *Object_Output\Function_Get_Size = @Object_Math_Get_Size()
   *Object_Output\Function_Get_Data = @Object_Math_Get_Data()
   *Object_Output\Function_Set_Data = @Object_Math_Set_Data()
-  *Object_Output\Function_Convolute = @Object_Math_Convolute()
+  *Object_Output\Function_Shift = @Object_Math_Shift()
   *Object_Output\Function_Set_Data_Check = @Object_Math_Set_Data_Check()
-  *Object_Output\Function_Convolute_Check = @Object_Math_Convolute_Check()
+  *Object_Output\Function_Shift_Check = @Object_Math_Shift_Check()
   
   ProcedureReturn *Object
 EndProcedure
@@ -354,7 +354,7 @@ Procedure Object_Math_Set_Data(*Object_Output.Object_Output, Position.q, Size.i,
   ProcedureReturn #False
 EndProcedure
 
-Procedure Object_Math_Convolute(*Object_Output.Object_Output, Position.q, Offset.q)
+Procedure Object_Math_Shift(*Object_Output.Object_Output, Position.q, Offset.q)
   If Not *Object_Output
     ProcedureReturn #False
   EndIf
@@ -387,7 +387,7 @@ Procedure Object_Math_Set_Data_Check(*Object_Output.Object_Output, Position.q, S
   ProcedureReturn #False
 EndProcedure
 
-Procedure Object_Math_Convolute_Check(*Object_Output.Object_Output, Position.q, Offset.q)
+Procedure Object_Math_Shift_Check(*Object_Output.Object_Output, Position.q, Offset.q)
   If Not *Object_Output
     ProcedureReturn #False
   EndIf
@@ -646,7 +646,7 @@ EndIf
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 297
-; FirstLine = 278
+; CursorPosition = 389
+; FirstLine = 344
 ; Folding = ----
 ; EnableXP

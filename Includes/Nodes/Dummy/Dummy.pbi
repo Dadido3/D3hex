@@ -79,7 +79,7 @@ Module _Node_Dummy
   Declare.q Get_Size(*Output.Node::Conn_Output)
   Declare   Get_Data(*Output.Node::Conn_Output, Position.q, Size.i, *Data, *Metadata)
   Declare   Set_Data(*Output.Node::Conn_Output, Position.q, Size.i, *Data)
-  Declare   Convolute(*Output.Node::Conn_Output, Position.q, Offset.q)
+  Declare   Shift(*Output.Node::Conn_Output, Position.q, Offset.q)
   
   ; ################################################### Procedures ##################################################
   
@@ -114,7 +114,7 @@ Module _Node_Dummy
     *Output\Function_Get_Size = @Get_Size()
     *Output\Function_Get_Data = @Get_Data()
     *Output\Function_Set_Data = @Set_Data()
-    *Output\Function_Convolute = @Convolute()
+    *Output\Function_Shift = @Shift()
     
     
     ; #### Debugdata
@@ -332,7 +332,7 @@ Module _Node_Dummy
     ProcedureReturn Result
   EndProcedure
   
-  Procedure Convolute(*Output.Node::Conn_Output, Position.q, Offset.q)
+  Procedure Shift(*Output.Node::Conn_Output, Position.q, Offset.q)
     Protected New_Size.i, *Temp
     Protected Raw_Data_Size_Old.q
     Protected Event.Node::Event
@@ -416,8 +416,8 @@ Module _Node_Dummy
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 413
-; FirstLine = 368
+; CursorPosition = 334
+; FirstLine = 289
 ; Folding = --
 ; EnableUnicode
 ; EnableXP
