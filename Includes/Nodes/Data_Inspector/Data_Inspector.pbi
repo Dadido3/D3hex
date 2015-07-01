@@ -685,7 +685,7 @@ Module _Node_Data_Inspector
       Case Node::#Link_Event_Update_Descriptor
         *Descriptor = Node::Input_Get_Descriptor(*Input)
         If *Descriptor
-          *Node\Name_Inherited = *Node\Name + ": " + NBT::Tag_Get_String(NBT::Tag(*Descriptor\Tag, "Name"))
+          *Node\Name_Inherited = *Node\Name + " ← " + NBT::Tag_Get_String(NBT::Tag(*Descriptor\Tag, "Name"))
           NBT::Error_Get()
         Else
           *Node\Name_Inherited = *Node\Name
@@ -983,8 +983,8 @@ Module _Node_Data_Inspector
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 973
-; FirstLine = 938
+; CursorPosition = 687
+; FirstLine = 683
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP

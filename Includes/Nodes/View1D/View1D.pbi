@@ -393,7 +393,7 @@ Module _Node_View1D
       Case Node::#Link_Event_Update_Descriptor
         *Descriptor = Node::Input_Get_Descriptor(*Input)
         If *Descriptor
-          *Node\Name_Inherited = *Node\Name + ": " + NBT::Tag_Get_String(NBT::Tag(*Descriptor\Tag, "Name"))
+          *Node\Name_Inherited = *Node\Name + " ← " + NBT::Tag_Get_String(NBT::Tag(*Descriptor\Tag, "Name"))
           NBT::Error_Get()
         Else
           *Node\Name_Inherited = *Node\Name
@@ -1292,7 +1292,7 @@ Module _Node_View1D
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 164
-; FirstLine = 160
+; CursorPosition = 395
+; FirstLine = 391
 ; Folding = ----
 ; EnableXP

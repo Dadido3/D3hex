@@ -459,6 +459,9 @@ Module D3docker
             EndIf
         EndSelect
         
+      Case #WM_LBUTTONDOWN, #WM_RBUTTONDOWN, #WM_XBUTTONDOWN
+        _Window_Set_Active(*Window\Gadget, *Window, #True)
+        
       Case #WM_ACTIVATE
         *params = GetParams(*Window\Gadget)
         With *params
@@ -2183,7 +2186,8 @@ Module D3docker
   
 EndModule
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 465
+; CursorPosition = 711
+; FirstLine = 51
 ; Folding = --------
 ; EnableUnicode
 ; EnableXP
