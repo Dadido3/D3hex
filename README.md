@@ -20,7 +20,7 @@ This allows undo and redo operations, until you finally press "save".
 Without the "History" node, you would write directly into the "File".
 
 ## Language
-The software is completely written in [PureBasic](http://www.purebasic.com), which produces lightweigtht and native 32-bit and 64-bit applications.
+The software is completely written in [PureBasic](http://www.purebasic.com), which produces lightweight and native 32-bit and 64-bit applications.
 It is planned to implement a plugin system, which allows to extend the available nodes.
 In this case it would be possible to contribute in any language, which can compile c like shared libraries (.dll files).
 
