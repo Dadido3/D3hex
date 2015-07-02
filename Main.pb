@@ -20,13 +20,14 @@
 ; ##################################################### Dokumentation / Kommentare ##################################
 ; 
 ; Todo:
-; - Each object HAS to return an segment-list via ...Get_Segments(...)
+; - Each node HAS to return an segment-list via ...Get_Segments(...)
 ; - Store/Restore Window states/positions into/from the configurations.
 ;   
 ; - Editor:
 ;   - Autoscroll
+;   - Implement Boyer-Moore as search algorithm
 ;   
-; - History-Object:
+; - History node:
 ;   - Correct the event-range for event- forwarding
 ;   - Correct the range for segments
 ;   - Verbesserte Speicherroutine (Intelligentes speichern der Änderungsliste). Voraussetzung: Offsetliste
@@ -56,7 +57,7 @@
 ;   - Diskrete Fourier Transformation (bzw. FFT)
 ;   - Disassembler (x86/64, 6809, ...)
 ;   - Audiowiedergabe
-;   - Cheat-Engine like object
+;   - Cheat-Engine like node
 ;   - Text-Viewer (Shows the data as text in a editor gadget)
 ;   
 ; - Data_Source elemente
@@ -81,9 +82,9 @@
 ;   - Everything rewritten, base system is working.
 ;   
 ; - V0.910 (24.02.2014)
-;   - Editor-Object:
+;   - Node "Editor":
 ;     - added Scrollbar (can handle more than 2^32 lines)
-;     - Convolute the marked range when adding or deleting data.
+;     - Shift the marked range when adding or deleting data.
 ;     - Update Scrollbar when needed
 ;     - Scroll screen to cursor
 ;     - Added hex input and nibble selection per keyboard and mouse
@@ -95,9 +96,9 @@
 ;   - 1-Dimensional viewer
 ;   - Node-Editor can now save and load node configurations (via Named Binary Tags)
 ;   - Random Data Generator
-;   - Added a GUI to the File-Object
+;   - Added a GUI to the "File" node
 ;   - Added events to all kind of stuff: Save, SaveAs, Goto, Search, Continue, Load/Save-Config, Undo, Redo, Cut, Copy, Paste
-;   - Added History Object
+;   - Added History Node
 ;   - Logging And Error messages
 ;   
 ; - V0.912 (25.02.2014)
@@ -105,69 +106,70 @@
 ;   - Tab-Bar fires now a close-event to the window
 ;   
 ; - V0.920 (02.03.2014)
-;   - Editor:
+;   - Node "Editor":
 ;     - Search:
-;       - Corrected the Raw_Keyword_Size when including the zero byte with ucs-2 (Object_Editor_Search_Prepare_Keyword_Helper(Type))
+;       - Corrected the Raw_Keyword_Size when including the zero byte with ucs-2 (Search_Prepare_Keyword_Helper(Type))
 ;       - Corrected the single replace mode...  (Store the found position in the search element, and use that for replacement! Not the selected range!)
 ;       - Made search much faster
 ;       - Search now only searches in readable segments
 ;     - Added statusbar-text
 ;     - Nibble-writing is now cached
 ;     - Provide the selected range as output
-;   - Added prcess data-source
-;   - Using a flag instead of several object-types for opening and reopening
+;   - Added process data-source
+;   - Using a flag instead of several node-types for opening and reopening
 ;   - Network terminal
 ;   
 ; - V0.925 (10.08.2014)
 ;   - Fixed loading of the default D3hex file
-;   - Added names to object-inputs and outputs
-;   - Editor:
+;   - Added names to node-inputs and outputs
+;   - Node: Editor:
 ;     - Fixed the goto stuff
-;   - All Windows of the objects are now managed by Window.pbi
-;   - Added Set_Data_Check and Convolute_Check functions
-;   - Added Object_Datatypes
+;   - All Windows of the nodes are now managed by Window.pbi
+;   - Added Set_Data_Check and Shift_Check functions
+;   - Added node "Datatypes"
 ;   - Fixed crash because of wrong pointer returned from Window_Create(...)
 ;   
 ; - V0.930 (15.08.2014)
-;   - Added Object_Binary_Operation
-;   - Added Object_Copy
+;   - Added node "Binary_Operation"
+;   - Added node "Copy"
 ;   - Update every structure allocation to AllocateStructure(...) and FreeStructure(...)
 ;   
 ; - V0.940 (05.01.2015)
-;   - Fixed possible crash with Object_Editor (String generation in search wrote Null-Bytes outside of the memory)
+;   - Fixed possible crash with node "Editor" (String generation in search wrote Null-Bytes outside of the memory)
 ;   - NBT loading And saving is a bit faster
-;   - Object_Copy: Display progress
+;   - Node "Copy": Display progress
 ;   - Added a unit engine To format numbers With SI-prefixes...
-;   - Object_View1D: Fixed "Jumping out of the screen" when normalizing the x-axis
-;   - Renamed And moved all object-includes
-;   - Renamed the object "Datatypes" To "Data Inspector"
+;   - Node "View1D": Fixed "Jumping out of the screen" when normalizing the x-axis
+;   - Renamed And moved all node-includes
+;   - Renamed the node "Datatypes" To "Data Inspector"
 ;   - Added View2D, viewer For raster graphics
-;   - Object descriptor changed To NBT
-;   - Object_Editor: limited marked output To selection
-;   - Object_Random: limited output To size
+;   - Data descriptor changed To NBT
+;   - Node "Editor": limited marked output To selection
+;   - Node "Random": limited output To size
 ;   
 ; - V0.941 (06.01.2015)
-;   - Object_Editor: Fixed writing at the end of data
-;   - Object_View2D: Added standard configuration
+;   - Node "Editor": Fixed writing at the end of data
+;   - Node "View2D": Added standard configuration
 ;   
-; - V0.958 (INDEV)
-;   - Object_File: Ignore result of File-requesters if it is ""
+; - V0.959 (INDEV)
+;   - Node "File": Ignore result of File-requesters if it is ""
 ;   - Network_Terminal:
 ;     - Data_Set is not triggering an update event
-;     - Object_History is now working with Network_Terminal
+;     - "History" node is now working with Network_Terminal
 ;     - Renamed output and input to sent and received
-;   - Object_History:
+;   - Node "History":
 ;     - Added the option to allow write operations in any case
 ;   - Use D3docker.pbi instead of the mdi gadget
 ;   - Shortcuts now work in undocked windows
 ;   - Continued implementation of "Data descriptors"
-;   - Names of the object-windows now depend on the parent objects
-;   - Object_Data_Inspector:
+;   - Names of the node-windows now depend on the parent nodes
+;   - Node "Data_Inspector":
 ;     - Resized the gadget a bit
 ;   - Fixed crash
-;   - Statusbar works again for Object_Editor
+;   - Statusbar works again for node "Editor"
 ;   - Many other small changes and refactoring
 ;   - Splitted the code in modules
+;   - Added node for hash-generation
 ;   
 ; ##################################################### Begin #######################################################
 
@@ -195,7 +197,7 @@ XIncludeFile "Includes/Icons.pbi"
 DeclareModule Main
   EnableExplicit
   ; ################################################### Constants ###################################################
-  #Version = 0958
+  #Version = 0959
   
   Enumeration 1
     #Menu_Dummy
@@ -283,6 +285,7 @@ XIncludeFile "Includes/Nodes/Data_Inspector/Data_Inspector.pbi"
 XIncludeFile "Includes/Nodes/Dummy/Dummy.pbi"
 XIncludeFile "Includes/Nodes/Editor/Editor.pbi"
 XIncludeFile "Includes/Nodes/File/File.pbi"
+XIncludeFile "Includes/Nodes/Hash_Generator/Hash_Generator.pbi"
 XIncludeFile "Includes/Nodes/History/History.pbi"
 ;XIncludeFile "Includes/Nodes/Math/Math.pbi"
 ;XIncludeFile "Includes/Nodes/MathFormula/MathFormula.pbi"
@@ -447,17 +450,6 @@ Module Main
   Logger::Init(Window\ID)
   Window::Init(Window\ID, Window\D3docker, Window\StatusBar_ID)
   
-  ;Define *A.Node::Object = Object_Dummy_Create()
-  ;Define *B.Node::Object = Object_Editor_Create()
-  ;Object_Editor_Window_Open(*B)
-  ;Define *C.Node::Object = Object_Editor_Create()
-  ;Object_Editor_Window_Open(*C)
-  
-  ;Object_Link_Connect(FirstElement(*A\Output()), FirstElement(*B\Input()))
-  ;Object_Link_Connect(FirstElement(*A\Output()), FirstElement(*C\Input()))
-  
-  ;Node_Editor_Align_Object(*A)
-  
   Node_Editor::Open()
   
   If FileSize(Helper::SHGetFolderPath(#CSIDL_APPDATA)+"\D3\Hexeditor\Node_Configuration.D3hex") < 0
@@ -502,24 +494,24 @@ Module Main
                 Case #Menu_Save
                   Define *Active_Window.Window::Object = Window::Get_Active()
                   Define Node_Event.Node::Event
-                  Define *Object.Node::Object
+                  Define *Node.Node::Object
                   Node_Event\Type = Node::#Event_Save
                   If *Active_Window
-                    *Object = *Active_Window\Object
-                    If *Object And *Object\Function_Event
-                      *Object\Function_Event(*Object, Node_Event)
+                    *Node = *Active_Window\Object
+                    If *Node And *Node\Function_Event
+                      *Node\Function_Event(*Node, Node_Event)
                     EndIf
                   EndIf
                   
                 Case #Menu_SaveAs
                   Define *Active_Window.Window::Object = Window::Get_Active()
                   Define Node_Event.Node::Event
-                  Define *Object.Node::Object
+                  Define *Node.Node::Object
                   Node_Event\Type = Node::#Event_SaveAs
                   If *Active_Window
-                    *Object = *Active_Window\Object
-                    If *Object And *Object\Function_Event
-                      *Object\Function_Event(*Object, Node_Event)
+                    *Node = *Active_Window\Object
+                    If *Node And *Node\Function_Event
+                      *Node\Function_Event(*Node, Node_Event)
                     EndIf
                   EndIf
                   
@@ -602,7 +594,6 @@ Module Main
                 Case #Menu_Cut
                   Define *Active_Window.Window::Object = Window::Get_Active()
                   Define Node_Event.Node::Event
-                  Define *Object.Node::Object
                   Node_Event\Type = Node::#Event_Cut
                   If *Active_Window
                     Node::Event(*Active_Window\Object, Node_Event)
@@ -715,8 +706,8 @@ Module Main
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 169
-; FirstLine = 145
+; CursorPosition = 595
+; FirstLine = 574
 ; Folding = -
 ; EnableUnicode
 ; EnableXP
