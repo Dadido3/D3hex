@@ -497,7 +497,7 @@ Module Main
                   Define *Node.Node::Object
                   Node_Event\Type = Node::#Event_Save
                   If *Active_Window
-                    *Node = *Active_Window\Object
+                    *Node = *Active_Window\Node
                     If *Node And *Node\Function_Event
                       *Node\Function_Event(*Node, Node_Event)
                     EndIf
@@ -509,7 +509,7 @@ Module Main
                   Define *Node.Node::Object
                   Node_Event\Type = Node::#Event_SaveAs
                   If *Active_Window
-                    *Node = *Active_Window\Object
+                    *Node = *Active_Window\Node
                     If *Node And *Node\Function_Event
                       *Node\Function_Event(*Node, Node_Event)
                     EndIf
@@ -596,56 +596,56 @@ Module Main
                   Define Node_Event.Node::Event
                   Node_Event\Type = Node::#Event_Cut
                   If *Active_Window
-                    Node::Event(*Active_Window\Object, Node_Event)
+                    Node::Event(*Active_Window\Node, Node_Event)
                   EndIf
                   
                 Case #Menu_Copy
                   *Active_Window.Window::Object = Window::Get_Active()
                   Node_Event\Type = Node::#Event_Copy
                   If *Active_Window
-                    Node::Event(*Active_Window\Object, Node_Event)
+                    Node::Event(*Active_Window\Node, Node_Event)
                   EndIf
                   
                 Case #Menu_Paste
                   *Active_Window.Window::Object = Window::Get_Active()
                   Node_Event\Type = Node::#Event_Paste
                   If *Active_Window
-                    Node::Event(*Active_Window\Object, Node_Event)
+                    Node::Event(*Active_Window\Node, Node_Event)
                   EndIf
                   
                 Case #Menu_Undo
                   *Active_Window.Window::Object = Window::Get_Active()
                   Node_Event\Type = Node::#Event_Undo
                   If *Active_Window
-                    Node::Event(*Active_Window\Object, Node_Event)
+                    Node::Event(*Active_Window\Node, Node_Event)
                   EndIf
                   
                 Case #Menu_Redo
                   *Active_Window.Window::Object = Window::Get_Active()
                   Node_Event\Type = Node::#Event_Redo
                   If *Active_Window
-                    Node::Event(*Active_Window\Object, Node_Event)
+                    Node::Event(*Active_Window\Node, Node_Event)
                   EndIf
                   
                 Case #Menu_Search
                   *Active_Window.Window::Object = Window::Get_Active()
                   Node_Event\Type = Node::#Event_Search
                   If *Active_Window
-                    Node::Event(*Active_Window\Object, Node_Event)
+                    Node::Event(*Active_Window\Node, Node_Event)
                   EndIf
                   
                 Case #Menu_Search_Continue
                   *Active_Window.Window::Object = Window::Get_Active()
                   Node_Event\Type = Node::#Event_Search_Continue
                   If *Active_Window
-                    Node::Event(*Active_Window\Object, Node_Event)
+                    Node::Event(*Active_Window\Node, Node_Event)
                   EndIf
                   
                 Case #Menu_Goto
                   *Active_Window.Window::Object = Window::Get_Active()
                   Node_Event\Type = Node::#Event_Goto
                   If *Active_Window
-                    Node::Event(*Active_Window\Object, Node_Event)
+                    Node::Event(*Active_Window\Node, Node_Event)
                   EndIf
                   
                 Case #Menu_About
@@ -706,8 +706,8 @@ Module Main
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 595
-; FirstLine = 574
+; CursorPosition = 647
+; FirstLine = 615
 ; Folding = -
 ; EnableUnicode
 ; EnableXP

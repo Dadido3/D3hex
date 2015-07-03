@@ -65,7 +65,7 @@ Procedure Goto_Window_Event_Button_Goto()
   If Not *Window
     ProcedureReturn 
   EndIf
-  Protected *Node.Node::Object = *Window\Object
+  Protected *Node.Node::Object = *Window\Node
   If Not *Node
     ProcedureReturn
   EndIf
@@ -123,7 +123,7 @@ Procedure Goto_Window_Event_CloseWindow()
   If Not *Window
     ProcedureReturn 
   EndIf
-  Protected *Node.Node::Object = *Window\Object
+  Protected *Node.Node::Object = *Window\Node
   If Not *Node
     ProcedureReturn
   EndIf
@@ -238,8 +238,8 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 197
-; FirstLine = 171
+; CursorPosition = 112
+; FirstLine = 80
 ; Folding = -
 ; EnableUnicode
 ; EnableXP

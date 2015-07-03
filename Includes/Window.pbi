@@ -48,7 +48,7 @@ DeclareModule Window
     
     Tab_ID.s          ; Windows with the same Tab_ID will be grouped into tabs if possible
     
-    *Object
+    *Node
   EndStructure
   Global NewList Object.Object()
   
@@ -242,7 +242,7 @@ Module Window
     ;If *Window\MDI_Window
     *Window\ID = D3docker::Window_Add(Main\Docker, X, Y, Width, Height, Name, Flags, Resize_Priority)
     ;EndIf
-    *Window\Object = *Object
+    *Window\Node = *Object
     *Window\Tab_ID = Tab_ID
     
     ;SmartWindowRefresh(*Window\ID, 1)
@@ -338,8 +338,8 @@ Module Window
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 307
-; FirstLine = 289
+; CursorPosition = 254
+; FirstLine = 231
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP

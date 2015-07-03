@@ -792,7 +792,7 @@ Module _Node_File
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -822,7 +822,7 @@ Module _Node_File
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -854,7 +854,7 @@ Module _Node_File
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -876,7 +876,7 @@ Module _Node_File
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -902,7 +902,7 @@ Module _Node_File
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -932,7 +932,7 @@ Module _Node_File
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -963,7 +963,7 @@ Module _Node_File
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -987,7 +987,7 @@ Module _Node_File
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -1020,7 +1020,7 @@ Module _Node_File
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -1194,7 +1194,8 @@ Module _Node_File
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; FirstLine = 21
+; CursorPosition = 1004
+; FirstLine = 977
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

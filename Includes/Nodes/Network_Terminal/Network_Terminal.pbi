@@ -708,7 +708,7 @@ Module _Node_Network_Terminal
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -737,7 +737,7 @@ Module _Node_Network_Terminal
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -766,7 +766,7 @@ Module _Node_Network_Terminal
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -807,7 +807,7 @@ Module _Node_Network_Terminal
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -843,7 +843,7 @@ Module _Node_Network_Terminal
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -869,7 +869,7 @@ Module _Node_Network_Terminal
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -902,7 +902,7 @@ Module _Node_Network_Terminal
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -943,7 +943,7 @@ Module _Node_Network_Terminal
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -963,7 +963,7 @@ Module _Node_Network_Terminal
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -995,7 +995,7 @@ Module _Node_Network_Terminal
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -1261,8 +1261,8 @@ Module _Node_Network_Terminal
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 41
-; FirstLine = 15
+; CursorPosition = 977
+; FirstLine = 952
 ; Folding = ------
 ; EnableUnicode
 ; EnableXP

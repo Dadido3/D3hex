@@ -697,7 +697,7 @@ Procedure Search_Window_Event_String_0()
   If Not *Window
     ProcedureReturn 
   EndIf
-  Protected *Node.Node::Object = *Window\Object
+  Protected *Node.Node::Object = *Window\Node
   If Not *Node
     ProcedureReturn
   EndIf
@@ -729,7 +729,7 @@ Procedure Search_Window_Event_String_1()
   If Not *Window
     ProcedureReturn 
   EndIf
-  Protected *Node.Node::Object = *Window\Object
+  Protected *Node.Node::Object = *Window\Node
   If Not *Node
     ProcedureReturn
   EndIf
@@ -761,7 +761,7 @@ Procedure Search_Window_Event_ComboBox()
   If Not *Window
     ProcedureReturn 
   EndIf
-  Protected *Node.Node::Object = *Window\Object
+  Protected *Node.Node::Object = *Window\Node
   If Not *Node
     ProcedureReturn
   EndIf
@@ -798,7 +798,7 @@ Procedure Search_Window_Event_CheckBox_0()
   If Not *Window
     ProcedureReturn 
   EndIf
-  Protected *Node.Node::Object = *Window\Object
+  Protected *Node.Node::Object = *Window\Node
   If Not *Node
     ProcedureReturn
   EndIf
@@ -830,7 +830,7 @@ Procedure Search_Window_Event_CheckBox_1()
   If Not *Window
     ProcedureReturn 
   EndIf
-  Protected *Node.Node::Object = *Window\Object
+  Protected *Node.Node::Object = *Window\Node
   If Not *Node
     ProcedureReturn
   EndIf
@@ -863,7 +863,7 @@ Procedure Search_Window_Event_CheckBox_2()
   If Not *Window
     ProcedureReturn 
   EndIf
-  Protected *Node.Node::Object = *Window\Object
+  Protected *Node.Node::Object = *Window\Node
   If Not *Node
     ProcedureReturn
   EndIf
@@ -896,7 +896,7 @@ Procedure Search_Window_Event_CheckBox_3()
   If Not *Window
     ProcedureReturn 
   EndIf
-  Protected *Node.Node::Object = *Window\Object
+  Protected *Node.Node::Object = *Window\Node
   If Not *Node
     ProcedureReturn
   EndIf
@@ -926,7 +926,7 @@ Procedure Search_Window_Event_CheckBox_4()
   If Not *Window
     ProcedureReturn 
   EndIf
-  Protected *Node.Node::Object = *Window\Object
+  Protected *Node.Node::Object = *Window\Node
   If Not *Node
     ProcedureReturn
   EndIf
@@ -956,7 +956,7 @@ Procedure Search_Window_Event_Option_0()
   If Not *Window
     ProcedureReturn 
   EndIf
-  Protected *Node.Node::Object = *Window\Object
+  Protected *Node.Node::Object = *Window\Node
   If Not *Node
     ProcedureReturn
   EndIf
@@ -988,7 +988,7 @@ Procedure Search_Window_Event_Option_1()
   If Not *Window
     ProcedureReturn 
   EndIf
-  Protected *Node.Node::Object = *Window\Object
+  Protected *Node.Node::Object = *Window\Node
   If Not *Node
     ProcedureReturn
   EndIf
@@ -1020,7 +1020,7 @@ Procedure Search_Window_Event_Button_Search()
   If Not *Window
     ProcedureReturn 
   EndIf
-  Protected *Node.Node::Object = *Window\Object
+  Protected *Node.Node::Object = *Window\Node
   If Not *Node
     ProcedureReturn
   EndIf
@@ -1072,7 +1072,7 @@ Procedure Search_Window_Event_Button_Continue()
   If Not *Window
     ProcedureReturn 
   EndIf
-  Protected *Node.Node::Object = *Window\Object
+  Protected *Node.Node::Object = *Window\Node
   If Not *Node
     ProcedureReturn
   EndIf
@@ -1106,7 +1106,7 @@ Procedure Search_Window_Event_Button_Replace()
   If Not *Window
     ProcedureReturn 
   EndIf
-  Protected *Node.Node::Object = *Window\Object
+  Protected *Node.Node::Object = *Window\Node
   If Not *Node
     ProcedureReturn
   EndIf
@@ -1167,7 +1167,7 @@ Procedure Search_Window_Event_Button_ReplaceAll()
   If Not *Window
     ProcedureReturn 
   EndIf
-  Protected *Node.Node::Object = *Window\Object
+  Protected *Node.Node::Object = *Window\Node
   If Not *Node
     ProcedureReturn
   EndIf
@@ -1219,7 +1219,7 @@ Procedure Search_Window_Event_CloseWindow()
   If Not *Window
     ProcedureReturn 
   EndIf
-  Protected *Node.Node::Object = *Window\Object
+  Protected *Node.Node::Object = *Window\Node
   If Not *Node
     ProcedureReturn
   EndIf
@@ -1902,8 +1902,8 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1814
-; FirstLine = 1810
+; CursorPosition = 1212
+; FirstLine = 1176
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

@@ -701,7 +701,7 @@ Module _Node_View1D
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -818,7 +818,7 @@ Module _Node_View1D
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -883,7 +883,7 @@ Module _Node_View1D
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -939,7 +939,7 @@ Module _Node_View1D
     If Not *Window
       ProcedureReturn #PB_ProcessPureBasicEvents
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn #PB_ProcessPureBasicEvents
     EndIf
@@ -992,7 +992,7 @@ Module _Node_View1D
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -1035,7 +1035,7 @@ Module _Node_View1D
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -1060,7 +1060,7 @@ Module _Node_View1D
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -1120,7 +1120,7 @@ Module _Node_View1D
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -1292,7 +1292,7 @@ Module _Node_View1D
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 41
-; FirstLine = 18
+; CursorPosition = 1107
+; FirstLine = 1077
 ; Folding = ----
 ; EnableXP

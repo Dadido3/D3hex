@@ -930,7 +930,7 @@ Module _Node_View2D
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -1051,7 +1051,7 @@ Module _Node_View2D
     If Not *Window
       ProcedureReturn #PB_ProcessPureBasicEvents
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn #PB_ProcessPureBasicEvents
     EndIf
@@ -1132,7 +1132,7 @@ Module _Node_View2D
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -1171,7 +1171,7 @@ Module _Node_View2D
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -1196,7 +1196,7 @@ Module _Node_View2D
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -1227,7 +1227,7 @@ Module _Node_View2D
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -1382,7 +1382,7 @@ Module _Node_View2D
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 41
-; FirstLine = 3
+; CursorPosition = 1211
+; FirstLine = 1184
 ; Folding = ----
 ; EnableXP

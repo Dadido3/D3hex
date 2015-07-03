@@ -753,7 +753,7 @@ Module _Node_Process
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -782,7 +782,7 @@ Module _Node_Process
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -810,7 +810,7 @@ Module _Node_Process
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -832,7 +832,7 @@ Module _Node_Process
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -867,7 +867,7 @@ Module _Node_Process
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -1006,7 +1006,8 @@ Module _Node_Process
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 41
+; CursorPosition = 853
+; FirstLine = 824
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

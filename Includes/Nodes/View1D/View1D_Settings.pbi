@@ -190,7 +190,7 @@ Procedure Settings_Window_Event_ListIcon_In()
   If Not *Window
     ProcedureReturn 
   EndIf
-  Protected *Node.Node::Object = *Window\Object
+  Protected *Node.Node::Object = *Window\Node
   If Not *Node
     ProcedureReturn
   EndIf
@@ -216,7 +216,7 @@ Procedure Settings_Window_Event_CheckBox_In()
   If Not *Window
     ProcedureReturn 
   EndIf
-  Protected *Node.Node::Object = *Window\Object
+  Protected *Node.Node::Object = *Window\Node
   If Not *Node
     ProcedureReturn
   EndIf
@@ -253,7 +253,7 @@ Procedure Settings_Window_Event_Canvas_In()
   If Not *Window
     ProcedureReturn 
   EndIf
-  Protected *Node.Node::Object = *Window\Object
+  Protected *Node.Node::Object = *Window\Node
   If Not *Node
     ProcedureReturn
   EndIf
@@ -290,7 +290,7 @@ Procedure Settings_Window_Event_Button_In_Set()
   If Not *Window
     ProcedureReturn 
   EndIf
-  Protected *Node.Node::Object = *Window\Object
+  Protected *Node.Node::Object = *Window\Node
   If Not *Node
     ProcedureReturn
   EndIf
@@ -352,7 +352,7 @@ Procedure Settings_Window_Event_Button_In_Add()
   If Not *Window
     ProcedureReturn 
   EndIf
-  Protected *Node.Node::Object = *Window\Object
+  Protected *Node.Node::Object = *Window\Node
   If Not *Node
     ProcedureReturn
   EndIf
@@ -384,7 +384,7 @@ Procedure Settings_Window_Event_Button_In_Delete()
   If Not *Window
     ProcedureReturn 
   EndIf
-  Protected *Node.Node::Object = *Window\Object
+  Protected *Node.Node::Object = *Window\Node
   If Not *Node
     ProcedureReturn
   EndIf
@@ -423,7 +423,7 @@ Procedure Settings_Window_Event_CloseWindow()
   If Not *Window
     ProcedureReturn 
   EndIf
-  Protected *Node.Node::Object = *Window\Object
+  Protected *Node.Node::Object = *Window\Node
   If Not *Node
     ProcedureReturn
   EndIf
@@ -575,7 +575,7 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 564
-; FirstLine = 530
+; CursorPosition = 408
+; FirstLine = 380
 ; Folding = ---
 ; EnableXP

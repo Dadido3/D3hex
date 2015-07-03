@@ -1800,7 +1800,7 @@ Module _Node_Editor
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -2133,7 +2133,7 @@ Module _Node_Editor
     If Not *Window
       ProcedureReturn #PB_ProcessPureBasicEvents
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn #PB_ProcessPureBasicEvents
     EndIf
@@ -2197,7 +2197,7 @@ Module _Node_Editor
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -2226,7 +2226,7 @@ Module _Node_Editor
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -2248,7 +2248,7 @@ Module _Node_Editor
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -2307,7 +2307,7 @@ Module _Node_Editor
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -2465,6 +2465,8 @@ Module _Node_Editor
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
+; CursorPosition = 2294
+; FirstLine = 2264
 ; Folding = -------
 ; EnableUnicode
 ; EnableXP
