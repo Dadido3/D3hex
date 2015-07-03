@@ -59,6 +59,8 @@ DeclareModule Icons
   Global Icon_Search = CatchImage(#PB_Any, ?Icon_Search)
   Global Icon_Search_Continue = CatchImage(#PB_Any, ?Icon_Search_Continue)
   Global Icon_Goto = CatchImage(#PB_Any, ?Icon_Goto)
+  Global Icon_Refresh = CatchImage(#PB_Any, ?Icon_Refresh)
+  Global Icon_Automatic = CatchImage(#PB_Any, ?Icon_Automatic)
   
   ; ################################################### Data Sections ###############################################
   DataSection
@@ -88,6 +90,8 @@ DeclareModule Icons
     Icon_Search: : IncludeBinary "../Data/Icons/Search.png"
     Icon_Search_Continue: : IncludeBinary "../Data/Icons/Search_Continue.png"
     Icon_Goto: : IncludeBinary "../Data/Icons/Goto.png"
+    Icon_Refresh: : IncludeBinary "../Data/Icons/Refresh.png"
+    Icon_Automatic: : IncludeBinary "../Data/Icons/Automatic.png"
   EndDataSection
   
 EndDeclareModule
@@ -101,7 +105,7 @@ Module Icons
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 88
+; CursorPosition = 92
 ; FirstLine = 56
 ; EnableUnicode
 ; EnableXP

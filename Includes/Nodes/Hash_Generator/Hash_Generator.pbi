@@ -54,11 +54,16 @@ Module _Node_Hash_Generator
   ; ################################################### Constants ###################################################
   
   Enumeration
+    #Menu_Automatic
+    #Menu_Refresh
+  EndEnumeration
+  
+  Enumeration
     #Hash_State_Calculate
     #Hash_State_Done
   EndEnumeration
   
-  #Chunk_Size = 1024*1000
+  #Chunk_Size = 1024*100
   
   ; ################################################### Structures ##################################################
   
@@ -96,6 +101,8 @@ Module _Node_Hash_Generator
     Update_ListIcon.i
     
     ; #### Hash state
+    Automatic.i
+    
     Calculate.i
     Size.q
     
@@ -187,6 +194,8 @@ Module _Node_Hash_Generator
       ProcedureReturn #False
     EndIf
     
+    *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Automatic", NBT::#Tag_Byte) : NBT::Tag_Set_Number(*NBT_Tag, *Object\Automatic)
+    
     *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "CRC32_Activated", NBT::#Tag_Byte) : NBT::Tag_Set_Number(*NBT_Tag, *Object\Hash_CRC32\Item_State)
     *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "MD5_Activated", NBT::#Tag_Byte)   : NBT::Tag_Set_Number(*NBT_Tag, *Object\Hash_MD5\Item_State)
     *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "SHA1_Activated", NBT::#Tag_Byte)  : NBT::Tag_Set_Number(*NBT_Tag, *Object\Hash_SHA1\Item_State)
@@ -209,11 +218,15 @@ Module _Node_Hash_Generator
       ProcedureReturn #False
     EndIf
     
+    *NBT_Tag = NBT::Tag(*Parent_Tag, "Automatic") : *Object\Automatic = NBT::Tag_Get_Number(*NBT_Tag)
+    
     *NBT_Tag = NBT::Tag(*Parent_Tag, "CRC32_Activated") : *Object\Hash_CRC32\Item_State = NBT::Tag_Get_Number(*NBT_Tag)
     *NBT_Tag = NBT::Tag(*Parent_Tag, "MD5_Activated")   : *Object\Hash_MD5\Item_State   = NBT::Tag_Get_Number(*NBT_Tag)
     *NBT_Tag = NBT::Tag(*Parent_Tag, "SHA1_Activated")  : *Object\Hash_SHA1\Item_State  = NBT::Tag_Get_Number(*NBT_Tag)
     
-    *Object\Calculate = #True
+    If *Object\Automatic
+      *Object\Calculate = #True
+    EndIf
     
     ProcedureReturn #True
   EndProcedure
@@ -295,7 +308,13 @@ Module _Node_Hash_Generator
         EndIf
         
       Case Node::#Link_Event_Update
-        *Object\Calculate = #True
+        If *Object\Automatic
+          *Object\Calculate = #True
+        Else
+          *Object\Calculate = #False
+        EndIf
+        *Object\Update_ListIcon = #True
+      
         ; #### Delete precalculated values
         *Object\Hash_CRC32\State = #Hash_State_Calculate
         ForEach *Object\Hash_CRC32\Temp_Value()
@@ -322,7 +341,7 @@ Module _Node_Hash_Generator
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -348,7 +367,7 @@ Module _Node_Hash_Generator
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -367,8 +386,31 @@ Module _Node_Hash_Generator
     Protected Event_Type = EventType()
     Protected Event_Menu = EventMenu()
     
+    Protected *Window.Window::Object = Window::Get(Event_Window)
+    If Not *Window
+      ProcedureReturn 
+    EndIf
+    Protected *Node.Node::Object = *Window\Node
+    If Not *Node
+      ProcedureReturn 
+    EndIf
+    Protected *Object.Object = *Node\Custom_Data
+    If Not *Object
+      ProcedureReturn 
+    EndIf
+    
     Select Event_Menu
-      
+      Case #Menu_Automatic
+        *Object\Automatic = GetToolBarButtonState(*Object\ToolBar, #Menu_Automatic)
+        *Object\Calculate = #True
+        
+      Case #Menu_Refresh
+        *Object\Calculate = #True
+        ; #### Delete precalculated values
+        ClearList(*Object\Hash_CRC32\Temp_Value())
+        ClearList(*Object\Hash_MD5\Temp_Value())
+        ClearList(*Object\Hash_SHA1\Temp_Value())
+        
     EndSelect
   EndProcedure
   
@@ -381,7 +423,7 @@ Module _Node_Hash_Generator
     If Not *Window
       ProcedureReturn 
     EndIf
-    Protected *Node.Node::Object = *Window\Object
+    Protected *Node.Node::Object = *Window\Node
     If Not *Node
       ProcedureReturn 
     EndIf
@@ -414,6 +456,8 @@ Module _Node_Hash_Generator
       
       ; #### Toolbar
       *Object\ToolBar = CreateToolBar(#PB_Any, WindowID(*Object\Window\ID))
+      ToolBarImageButton(#Menu_Automatic, ImageID(Icons::Icon_Automatic), #PB_ToolBar_Toggle) : SetToolBarButtonState(*Object\ToolBar, #Menu_Automatic, *Object\Automatic)
+      ToolBarImageButton(#Menu_Refresh, ImageID(Icons::Icon_Refresh))
       
       ToolBarHeight = ToolBarHeight(*Object\ToolBar)
       
@@ -477,6 +521,10 @@ Module _Node_Hash_Generator
     
     *Object\Size = Node::Input_Get_Size(FirstElement(*Node\Input()))
     
+    If *Object\Size < 0
+      ProcedureReturn #False
+    EndIf
+    
     ; #### Initialize the hash function if it doesn't have precalculated values
     If Not LastElement(*Object\Hash_CRC32\Temp_Value()) And *Object\Hash_CRC32\Item_State & #PB_ListIcon_Checked
       *Object\Hash_CRC32\State = #Hash_State_Calculate
@@ -489,7 +537,7 @@ Module _Node_Hash_Generator
       AddElement(*Object\Hash_MD5\Temp_Value())
     EndIf
     If Not LastElement(*Object\Hash_SHA1\Temp_Value()) And *Object\Hash_SHA1\Item_State & #PB_ListIcon_Checked
-      If *Object\Hash_SHA1\Fingerprint_ID : FinishFingerprint(*Object\Hash_MD5\Fingerprint_ID) : EndIf
+      If *Object\Hash_SHA1\Fingerprint_ID : FinishFingerprint(*Object\Hash_SHA1\Fingerprint_ID) : EndIf
       *Object\Hash_SHA1\Fingerprint_ID = ExamineSHA1Fingerprint(#PB_Any)
       *Object\Hash_SHA1\State = #Hash_State_Calculate
       AddElement(*Object\Hash_SHA1\Temp_Value())
@@ -529,12 +577,12 @@ Module _Node_Hash_Generator
             *Object\Hash_CRC32\Temp_Value()\Position + Data_Size
             *Object\Calculate = #True
           EndIf
-          If *Object\Hash_MD5\Item_State & #PB_ListIcon_Checked And *Object\Hash_MD5\Temp_Value()\Position = Position
+          If *Object\Hash_MD5\Item_State & #PB_ListIcon_Checked And *Object\Hash_MD5\Temp_Value()\Position = Position And *Object\Hash_MD5\Fingerprint_ID
             NextFingerprint(*Object\Hash_MD5\Fingerprint_ID, *Data, Data_Size)
             *Object\Hash_MD5\Temp_Value()\Position + Data_Size
             *Object\Calculate = #True
           EndIf
-          If *Object\Hash_SHA1\Item_State & #PB_ListIcon_Checked And *Object\Hash_SHA1\Temp_Value()\Position = Position
+          If *Object\Hash_SHA1\Item_State & #PB_ListIcon_Checked And *Object\Hash_SHA1\Temp_Value()\Position = Position And *Object\Hash_SHA1\Fingerprint_ID
             NextFingerprint(*Object\Hash_SHA1\Fingerprint_ID, *Data, Data_Size)
             *Object\Hash_SHA1\Temp_Value()\Position + Data_Size
             *Object\Calculate = #True
@@ -550,11 +598,11 @@ Module _Node_Hash_Generator
           *Object\Hash_CRC32\State = #Hash_State_Done
           *Object\Hash_CRC32\Result = RSet(Hex(*Object\Hash_CRC32\Temp_Value()\CRC32, #PB_Long), 8, "0")
         EndIf
-        If *Object\Hash_MD5\Item_State & #PB_ListIcon_Checked And *Object\Hash_MD5\State = #Hash_State_Calculate
+        If *Object\Hash_MD5\Item_State & #PB_ListIcon_Checked And *Object\Hash_MD5\State = #Hash_State_Calculate And *Object\Hash_MD5\Fingerprint_ID
           *Object\Hash_MD5\State = #Hash_State_Done
           *Object\Hash_MD5\Result = UCase(FinishFingerprint(*Object\Hash_MD5\Fingerprint_ID)) : *Object\Hash_MD5\Fingerprint_ID = 0
         EndIf
-        If *Object\Hash_SHA1\Item_State & #PB_ListIcon_Checked And *Object\Hash_SHA1\State = #Hash_State_Calculate
+        If *Object\Hash_SHA1\Item_State & #PB_ListIcon_Checked And *Object\Hash_SHA1\State = #Hash_State_Calculate And *Object\Hash_SHA1\Fingerprint_ID
           *Object\Hash_SHA1\State = #Hash_State_Done
           *Object\Hash_SHA1\Result = UCase(FinishFingerprint(*Object\Hash_SHA1\Fingerprint_ID)) : *Object\Hash_SHA1\Fingerprint_ID = 0
         EndIf
@@ -603,11 +651,11 @@ Module _Node_Hash_Generator
     Main\Node_Type\UID = "D3__HASH"
     Main\Node_Type\Author = "David Vogel (Dadido3)"
     Main\Node_Type\Date_Creation = Date(2015,06,30,22,52,00)
-    Main\Node_Type\Date_Modification = Date(2015,06,30,22,52,00)
+    Main\Node_Type\Date_Modification = Date(2015,07,03,23,39,00)
     Main\Node_Type\Date_Compilation = #PB_Compiler_Date
     Main\Node_Type\Description = "Calculates and displays hashes of the given data"
     Main\Node_Type\Function_Create = @Create()
-    Main\Node_Type\Version = 500
+    Main\Node_Type\Version = 510
   EndIf
   
   ; ################################################### Main ########################################################
@@ -617,8 +665,7 @@ Module _Node_Hash_Generator
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 551
-; FirstLine = 512
+; CursorPosition = 657
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP
