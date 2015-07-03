@@ -30,14 +30,20 @@
 ; - 0.000 07.06.2015
 ; 
 ; - 0.800 22.06.2015
-;     - Implemented mostly everything necessary
+;   - Implemented mostly everything necessary
+;   
+; - 0.810 (INDEV)
+;   - Docker containers can now be dragged
+;   - A lot of bugfixes and little changes
+; 
+; 
 ; 
 ; TODO: Loading and Saving layouts from/to json or xml...
 ; TODO: Container_Resize_Between has some problems with *Container\Max_Width or *Container\Max_Height
 ; TODO: Merge the Container_Docker bar with the tab bar of the tabbed container
 ; TODO: Allow the docking to undocked windows
 ; TODO: Add static containers (not movable and/or not removable)
-;
+; 
 ; #################################################### Includes #################################################
 
 XIncludeFile "CustomGadget.pbi"
@@ -50,7 +56,7 @@ DeclareModule D3docker
   EnableExplicit
   ; ################################################## Constants ################################################
   #PB_GadgetType_D3docker=20150607
-  #Version = 800
+  #Version = 810
   
   ; #### Directions for placing a docker
   Enumeration
@@ -109,6 +115,8 @@ Module D3docker
   
   #Container_Docker_Bar_Height = 16
   #Container_Tabbed_Bar_Height = 20
+  
+  #Container_Docker_Drag_Start_Min = 5        ; Amount of pixels the mouse has to move before dragging starts
   
   Enumeration
     #Container_Type_Root
@@ -915,7 +923,12 @@ Module D3docker
     Protected *Container.Container = GetGadgetData(EventGadget())
     Protected Event_Type = EventType()
     Protected *params.GADGET_PARAMS
+    Protected *Window.Window
+    Protected rect.RECT, pt.Point, pts.POINTS
+    Protected X, Y
     
+    ; #### Buttons
+    ; TODO: Put the buttons into their own canvas
     If Container_Docker_Button_Handler(*Container\Gadget, *Container, *Container\Docker_Button_Close)
       If *Container\Window
         PostEvent(#PB_Event_CloseWindow, *Container\Window\Window, 0)
@@ -926,6 +939,35 @@ Module D3docker
         _Container_Delete(*Container\Gadget, *Container)
       EndIf
     EndIf
+    
+    ; #### Drag window stuff
+    Select Event_Type
+      Case #PB_EventType_LeftButtonDown
+        *Container\Drag = #True
+        *Container\Drag_X = GetGadgetAttribute(EventGadget(), #PB_Canvas_MouseX)
+        *Container\Drag_Y = GetGadgetAttribute(EventGadget(), #PB_Canvas_MouseY)
+        _Window_Set_Active(*Container\Gadget, *Container\Window, #True, #False)
+        
+      Case #PB_EventType_MouseMove
+        If *Container\Drag
+          X = GetGadgetAttribute(EventGadget(), #PB_Canvas_MouseX)
+          Y = GetGadgetAttribute(EventGadget(), #PB_Canvas_MouseY)
+          If Abs(X - *Container\Drag_X) > #Container_Docker_Drag_Start_Min Or Abs(Y - *Container\Drag_Y) > #Container_Docker_Drag_Start_Min
+            *Container\Drag = #False
+            *Window = *Container\Window
+            GetCursorPos_(pt)
+            pts\x = pt\x
+            pts\y = pt\y
+            _Container_Delete(*Container\Gadget, *Container)
+            ResizeWindow(*Window\Window, WindowX(*Window\Window) + X - *Container\Drag_X, WindowY(*Window\Window) + Y - *Container\Drag_Y, #PB_Ignore, #PB_Ignore)
+            SendMessage_(*Window\hWnd, #WM_NCLBUTTONDOWN, #HTCAPTION, PeekL(pts))
+          EndIf
+        EndIf
+        
+      Case #PB_EventType_LeftButtonUp
+        *Container\Drag = #False
+        
+    EndSelect
     
   EndProcedure
   
@@ -2186,8 +2228,8 @@ Module D3docker
   
 EndModule
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 711
-; FirstLine = 51
+; CursorPosition = 118
+; FirstLine = 83
 ; Folding = --------
 ; EnableUnicode
 ; EnableXP
