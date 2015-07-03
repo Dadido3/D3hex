@@ -151,7 +151,7 @@
 ;   - Node "Editor": Fixed writing at the end of data
 ;   - Node "View2D": Added standard configuration
 ;   
-; - V0.959 (INDEV)
+; - V0.960 (INDEV)
 ;   - Node "File": Ignore result of File-requesters if it is ""
 ;   - Network_Terminal:
 ;     - Data_Set is not triggering an update event
@@ -170,6 +170,7 @@
 ;   - Many other small changes and refactoring
 ;   - Splitted the code in modules
 ;   - Added node for hash-generation
+;   - Scrollbars and window dragging doesn't block the program anymore
 ;   
 ; ##################################################### Begin #######################################################
 
@@ -197,7 +198,7 @@ XIncludeFile "Includes/Icons.pbi"
 DeclareModule Main
   EnableExplicit
   ; ################################################### Constants ###################################################
-  #Version = 0959
+  #Version = 0960
   
   Enumeration 1
     #Menu_Dummy
@@ -299,12 +300,218 @@ Module Main
   ; ################################################### Includes ####################################################
   UseModule Icons
   
+  ; ################################################### Declares ####################################################
+  Declare   Main()
+  
   ; ################################################### Procedures ##################################################
   Procedure Window_Event_SizeWindow()
     Protected Event_Window = EventWindow()
     Window\D3docker_Width = WindowWidth(Event_Window)
     Window\D3docker_Height = WindowHeight(Event_Window) - Window\Menu_Height - Window\ToolBar_Height - Window\StatusBar_Height
     ResizeGadget(Window\D3docker, #PB_Ignore, #PB_Ignore, Window\D3docker_Width, Window\D3docker_Height)
+  EndProcedure
+  
+  Procedure Window_Event_Menu()
+    Protected Event_Menu = EventMenu()
+    
+    Protected *Node.Node::Object
+    Protected *A.Node::Object, *B.Node::Object, *C.Node::Object
+    Protected *Active_Window.Window::Object
+    Protected Node_Event.Node::Event
+    
+    Protected Filename.s
+    
+    Select Event_Menu
+      Case #Menu_New
+        *A.Node::Object = _Node_File::Create(#False)
+        If *A
+          *B.Node::Object = _Node_History::Create(#False)
+          If *B
+            *C.Node::Object = _Node_Editor::Create(#False)
+            Node::Link_Connect(Node::Output_Get(*A, 0), Node::Input_Get(*B, 0))
+            Node::Link_Connect(Node::Output_Get(*B, 0), Node::Input_Get(*C, 0))
+            If *C And *C\Function_Window
+              *C\Function_Window(*C)
+            EndIf
+            Node_Editor::Align_Object(*A)
+          EndIf
+        EndIf
+        
+      Case #Menu_Close
+        
+        
+      Case #Menu_Save
+        *Active_Window.Window::Object = Window::Get_Active()
+        Node_Event.Node::Event
+        *Node.Node::Object
+        Node_Event\Type = Node::#Event_Save
+        If *Active_Window
+          *Node = *Active_Window\Node
+          If *Node And *Node\Function_Event
+            *Node\Function_Event(*Node, Node_Event)
+          EndIf
+        EndIf
+        
+      Case #Menu_SaveAs
+        *Active_Window.Window::Object = Window::Get_Active()
+        Node_Event.Node::Event
+        *Node.Node::Object
+        Node_Event\Type = Node::#Event_SaveAs
+        If *Active_Window
+          *Node = *Active_Window\Node
+          If *Node And *Node\Function_Event
+            *Node\Function_Event(*Node, Node_Event)
+          EndIf
+        EndIf
+        
+      Case #Menu_Open_File
+        *A.Node::Object = _Node_File::Create(#True)
+        If *A
+          *B.Node::Object = _Node_History::Create(#False)
+          If *B
+            *C.Node::Object = _Node_Editor::Create(#False)
+            Node::Link_Connect(Node::Output_Get(*A, 0), Node::Input_Get(*B, 0))
+            Node::Link_Connect(Node::Output_Get(*B, 0), Node::Input_Get(*C, 0))
+            If *C And *C\Function_Window
+              *C\Function_Window(*C)
+            EndIf
+            Node_Editor::Align_Object(*A)
+          EndIf
+        EndIf
+        
+      Case #Menu_Open_Process
+        *A.Node::Object = _Node_Process::Create(#True)
+        If *A
+          *B.Node::Object = _Node_History::Create(#False)
+          If *B
+            *C.Node::Object = _Node_Editor::Create(#False)
+            Node::Link_Connect(Node::Output_Get(*A, 0), Node::Input_Get(*B, 0))
+            Node::Link_Connect(Node::Output_Get(*B, 0), Node::Input_Get(*C, 0))
+            If *C And *C\Function_Window
+              *C\Function_Window(*C)
+            EndIf
+            Node_Editor::Align_Object(*A)
+          EndIf
+        EndIf
+        
+      Case #Menu_Open_Clipboard
+        ;Object_Add("Clipboard", "CLP", Data_Source_Clipboard_Create())
+        
+      Case #Menu_Open_Random
+        *A.Node::Object = _Node_Random::Create(#True)
+        If *A
+          *B.Node::Object = _Node_History::Create(#False)
+          If *B
+            *C.Node::Object = _Node_Editor::Create(#False)
+            Node::Link_Connect(Node::Output_Get(*A, 0), Node::Input_Get(*B, 0))
+            Node::Link_Connect(Node::Output_Get(*B, 0), Node::Input_Get(*C, 0))
+            If *C And *C\Function_Window
+              *C\Function_Window(*C)
+            EndIf
+            Node_Editor::Align_Object(*A)
+          EndIf
+        EndIf
+        
+      Case #Menu_Open_Network_Terminal
+        *A.Node::Object = _Node_Network_Terminal::Create(#True)
+        If *A
+          *B.Node::Object = _Node_Editor::Create(#False)
+          *C.Node::Object = _Node_Editor::Create(#False)
+          Node::Link_Connect(Node::Output_Get(*A, 0), Node::Input_Get(*B, 0))
+          Node::Link_Connect(Node::Output_Get(*A, 1), Node::Input_Get(*C, 0))
+          Node_Editor::Align_Object(*A)
+        EndIf
+        
+      Case #Menu_Node_Editor
+        Node_Editor::Open()
+        
+      Case #Menu_Node_Clear_Config
+        Node_Editor::Configuration_Clear()
+        
+      Case #Menu_Node_Load_Config
+        Filename.s = OpenFileRequester("Load Configuration", "", "D3hex Configuration|*.D3hex", 0)
+        If Filename
+          Node_Editor::Configuration_Load(Filename)
+        EndIf
+        
+      Case #Menu_Node_Save_Config
+        Filename.s = SaveFileRequester("Load Configuration", "", "D3hex Configuration|*.D3hex", 0)
+        If Filename
+          Node_Editor::Configuration_Save(Filename)
+        EndIf
+        
+      Case #Menu_Cut
+        *Active_Window.Window::Object = Window::Get_Active()
+        Node_Event.Node::Event
+        Node_Event\Type = Node::#Event_Cut
+        If *Active_Window
+          Node::Event(*Active_Window\Node, Node_Event)
+        EndIf
+        
+      Case #Menu_Copy
+        *Active_Window.Window::Object = Window::Get_Active()
+        Node_Event\Type = Node::#Event_Copy
+        If *Active_Window
+          Node::Event(*Active_Window\Node, Node_Event)
+        EndIf
+        
+      Case #Menu_Paste
+        *Active_Window.Window::Object = Window::Get_Active()
+        Node_Event\Type = Node::#Event_Paste
+        If *Active_Window
+          Node::Event(*Active_Window\Node, Node_Event)
+        EndIf
+        
+      Case #Menu_Undo
+        *Active_Window.Window::Object = Window::Get_Active()
+        Node_Event\Type = Node::#Event_Undo
+        If *Active_Window
+          Node::Event(*Active_Window\Node, Node_Event)
+        EndIf
+        
+      Case #Menu_Redo
+        *Active_Window.Window::Object = Window::Get_Active()
+        Node_Event\Type = Node::#Event_Redo
+        If *Active_Window
+          Node::Event(*Active_Window\Node, Node_Event)
+        EndIf
+        
+      Case #Menu_Search
+        *Active_Window.Window::Object = Window::Get_Active()
+        Node_Event\Type = Node::#Event_Search
+        If *Active_Window
+          Node::Event(*Active_Window\Node, Node_Event)
+        EndIf
+        
+      Case #Menu_Search_Continue
+        *Active_Window.Window::Object = Window::Get_Active()
+        Node_Event\Type = Node::#Event_Search_Continue
+        If *Active_Window
+          Node::Event(*Active_Window\Node, Node_Event)
+        EndIf
+        
+      Case #Menu_Goto
+        *Active_Window.Window::Object = Window::Get_Active()
+        Node_Event\Type = Node::#Event_Goto
+        If *Active_Window
+          Node::Event(*Active_Window\Node, Node_Event)
+        EndIf
+        
+      Case #Menu_About
+        About::Open()
+        
+      Case #Menu_Exit
+        Main\Quit = 1
+        
+    EndSelect
+  EndProcedure
+  
+  Procedure Window_Event_Timer()
+    Main()
+  EndProcedure
+  
+  Procedure Window_Event_CloseWindow()
+    Main\Quit = 1
   EndProcedure
   
   Procedure Window_Open(Width, Height)
@@ -421,9 +628,16 @@ Module Main
     AddStatusBarField(250)
     AddStatusBarField(150)
     
+    ; ######################### Timer
+    
+    AddWindowTimer(Window\ID, 0, 100)
+    
     ; ######################### Events
     
     BindEvent(#PB_Event_SizeWindow, @Window_Event_SizeWindow(), Window\ID)
+    BindEvent(#PB_Event_Menu, @Window_Event_Menu(), Window\ID)
+    BindEvent(#PB_Event_Timer, @Window_Event_Timer(), Window\ID)
+    BindEvent(#PB_Event_CloseWindow, @Window_Event_CloseWindow(), Window\ID)
     
     ; ######################### Größe
     
@@ -439,6 +653,20 @@ Module Main
     If UseGadgetList(WindowID(Window\ID))
       Window\D3docker = D3docker::Create(#PB_Any, 0, Window\ToolBar_Height, Window\D3docker_Width, Window\D3docker_Height, Window\ID)
     EndIf
+  EndProcedure
+  
+  Procedure Main()
+    
+    Node_Editor::Main()
+    About::Main()
+    Logger::Main()
+    
+    ForEach Node::Object()
+      If Node::Object()\Function_Main
+        Node::Object()\Function_Main(Node::Object())
+      EndIf
+    Next
+    
   EndProcedure
   
   ; ################################################### Initialisation ##############################################
@@ -462,235 +690,14 @@ Module Main
   
   Repeat
     
-    Define Event = WaitWindowEvent(10)
-    Repeat
-      Define Event_Window = EventWindow()
-      Define Event_Type = EventType()
-      
-      Select Event_Window
-        Case Window\ID
-          Select Event
-            
-            Case #PB_Event_Menu ; ####################
-              Select EventMenu()
-                Case #Menu_New
-                  Define *A.Node::Object = _Node_File::Create(#False)
-                  If *A
-                    Define *B.Node::Object = _Node_History::Create(#False)
-                    If *B
-                      Define *C.Node::Object = _Node_Editor::Create(#False)
-                      Node::Link_Connect(Node::Output_Get(*A, 0), Node::Input_Get(*B, 0))
-                      Node::Link_Connect(Node::Output_Get(*B, 0), Node::Input_Get(*C, 0))
-                      If *C And *C\Function_Window
-                        *C\Function_Window(*C)
-                      EndIf
-                      Node_Editor::Align_Object(*A)
-                    EndIf
-                  EndIf
-                  
-                Case #Menu_Close
-                  
-                  
-                Case #Menu_Save
-                  Define *Active_Window.Window::Object = Window::Get_Active()
-                  Define Node_Event.Node::Event
-                  Define *Node.Node::Object
-                  Node_Event\Type = Node::#Event_Save
-                  If *Active_Window
-                    *Node = *Active_Window\Node
-                    If *Node And *Node\Function_Event
-                      *Node\Function_Event(*Node, Node_Event)
-                    EndIf
-                  EndIf
-                  
-                Case #Menu_SaveAs
-                  Define *Active_Window.Window::Object = Window::Get_Active()
-                  Define Node_Event.Node::Event
-                  Define *Node.Node::Object
-                  Node_Event\Type = Node::#Event_SaveAs
-                  If *Active_Window
-                    *Node = *Active_Window\Node
-                    If *Node And *Node\Function_Event
-                      *Node\Function_Event(*Node, Node_Event)
-                    EndIf
-                  EndIf
-                  
-                Case #Menu_Open_File
-                  Define *A.Node::Object = _Node_File::Create(#True)
-                  If *A
-                    Define *B.Node::Object = _Node_History::Create(#False)
-                    If *B
-                      Define *C.Node::Object = _Node_Editor::Create(#False)
-                      Node::Link_Connect(Node::Output_Get(*A, 0), Node::Input_Get(*B, 0))
-                      Node::Link_Connect(Node::Output_Get(*B, 0), Node::Input_Get(*C, 0))
-                      If *C And *C\Function_Window
-                        *C\Function_Window(*C)
-                      EndIf
-                      Node_Editor::Align_Object(*A)
-                    EndIf
-                  EndIf
-                  
-                Case #Menu_Open_Process
-                  Define *A.Node::Object = _Node_Process::Create(#True)
-                  If *A
-                    Define *B.Node::Object = _Node_History::Create(#False)
-                    If *B
-                      Define *C.Node::Object = _Node_Editor::Create(#False)
-                      Node::Link_Connect(Node::Output_Get(*A, 0), Node::Input_Get(*B, 0))
-                      Node::Link_Connect(Node::Output_Get(*B, 0), Node::Input_Get(*C, 0))
-                      If *C And *C\Function_Window
-                        *C\Function_Window(*C)
-                      EndIf
-                      Node_Editor::Align_Object(*A)
-                    EndIf
-                  EndIf
-                  
-                Case #Menu_Open_Clipboard
-                  ;Object_Add("Clipboard", "CLP", Data_Source_Clipboard_Create())
-                  
-                Case #Menu_Open_Random
-                  Define *A.Node::Object = _Node_Random::Create(#True)
-                  If *A
-                    Define *B.Node::Object = _Node_History::Create(#False)
-                    If *B
-                      Define *C.Node::Object = _Node_Editor::Create(#False)
-                      Node::Link_Connect(Node::Output_Get(*A, 0), Node::Input_Get(*B, 0))
-                      Node::Link_Connect(Node::Output_Get(*B, 0), Node::Input_Get(*C, 0))
-                      If *C And *C\Function_Window
-                        *C\Function_Window(*C)
-                      EndIf
-                      Node_Editor::Align_Object(*A)
-                    EndIf
-                  EndIf
-                  
-                Case #Menu_Open_Network_Terminal
-                  Define *A.Node::Object = _Node_Network_Terminal::Create(#True)
-                  If *A
-                    Define *B.Node::Object = _Node_Editor::Create(#False)
-                    Define *C.Node::Object = _Node_Editor::Create(#False)
-                    Node::Link_Connect(Node::Output_Get(*A, 0), Node::Input_Get(*B, 0))
-                    Node::Link_Connect(Node::Output_Get(*A, 1), Node::Input_Get(*C, 0))
-                    Node_Editor::Align_Object(*A)
-                  EndIf
-                  
-                Case #Menu_Node_Editor
-                  Node_Editor::Open()
-                  
-                Case #Menu_Node_Clear_Config
-                  Node_Editor::Configuration_Clear()
-                  
-                Case #Menu_Node_Load_Config
-                  Define Filename.s = OpenFileRequester("Load Configuration", "", "D3hex Configuration|*.D3hex", 0)
-                  If Filename
-                    Node_Editor::Configuration_Load(Filename)
-                  EndIf
-                  
-                Case #Menu_Node_Save_Config
-                  Define Filename.s = SaveFileRequester("Load Configuration", "", "D3hex Configuration|*.D3hex", 0)
-                  If Filename
-                    Node_Editor::Configuration_Save(Filename)
-                  EndIf
-                  
-                Case #Menu_Cut
-                  Define *Active_Window.Window::Object = Window::Get_Active()
-                  Define Node_Event.Node::Event
-                  Node_Event\Type = Node::#Event_Cut
-                  If *Active_Window
-                    Node::Event(*Active_Window\Node, Node_Event)
-                  EndIf
-                  
-                Case #Menu_Copy
-                  *Active_Window.Window::Object = Window::Get_Active()
-                  Node_Event\Type = Node::#Event_Copy
-                  If *Active_Window
-                    Node::Event(*Active_Window\Node, Node_Event)
-                  EndIf
-                  
-                Case #Menu_Paste
-                  *Active_Window.Window::Object = Window::Get_Active()
-                  Node_Event\Type = Node::#Event_Paste
-                  If *Active_Window
-                    Node::Event(*Active_Window\Node, Node_Event)
-                  EndIf
-                  
-                Case #Menu_Undo
-                  *Active_Window.Window::Object = Window::Get_Active()
-                  Node_Event\Type = Node::#Event_Undo
-                  If *Active_Window
-                    Node::Event(*Active_Window\Node, Node_Event)
-                  EndIf
-                  
-                Case #Menu_Redo
-                  *Active_Window.Window::Object = Window::Get_Active()
-                  Node_Event\Type = Node::#Event_Redo
-                  If *Active_Window
-                    Node::Event(*Active_Window\Node, Node_Event)
-                  EndIf
-                  
-                Case #Menu_Search
-                  *Active_Window.Window::Object = Window::Get_Active()
-                  Node_Event\Type = Node::#Event_Search
-                  If *Active_Window
-                    Node::Event(*Active_Window\Node, Node_Event)
-                  EndIf
-                  
-                Case #Menu_Search_Continue
-                  *Active_Window.Window::Object = Window::Get_Active()
-                  Node_Event\Type = Node::#Event_Search_Continue
-                  If *Active_Window
-                    Node::Event(*Active_Window\Node, Node_Event)
-                  EndIf
-                  
-                Case #Menu_Goto
-                  *Active_Window.Window::Object = Window::Get_Active()
-                  Node_Event\Type = Node::#Event_Goto
-                  If *Active_Window
-                    Node::Event(*Active_Window\Node, Node_Event)
-                  EndIf
-                  
-                Case #Menu_About
-                  About::Open()
-                  
-                Case #Menu_Exit
-                  Main\Quit = 1
-                  
-              EndSelect
-            
-            Case #PB_Event_Gadget
-              
-            Case #PB_Event_CloseWindow
-              Main\Quit = 1
-              
-            Case 0
-              Break
-              
-          EndSelect
-          
-        Default
-          If Not Event
-            Break
-          EndIf
-          
-      EndSelect
-      
-      Event = WindowEvent()
-    ForEver
+    If WaitWindowEvent(10)
+      While WindowEvent()
+      Wend
+    EndIf
     
-    ; ################## Main Function Calls
+    ; ################### Main functions of all modules
     
-    Node_Editor::Main()
-    About::Main()
-    Logger::Main()
-    
-    ForEach Node::Object()
-      If Node::Object()\Function_Main
-        Node::Object()\Function_Main(Node::Object())
-      EndIf
-    Next
-    
-    ; ###################
-    
-    Delay(10)
+    Main()
     
   Until Main\Quit
   
@@ -706,8 +713,8 @@ Module Main
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 647
-; FirstLine = 615
-; Folding = -
+; CursorPosition = 693
+; FirstLine = 660
+; Folding = --
 ; EnableUnicode
 ; EnableXP

@@ -354,7 +354,9 @@ Module _Node_Hash_Generator
     *Object\Hash_MD5\Item_State = GetGadgetItemState(Event_Gadget, 1)
     *Object\Hash_SHA1\Item_State = GetGadgetItemState(Event_Gadget, 2)
     
-    *Object\Calculate = #True
+    If *Object\Automatic
+      *Object\Calculate = #True
+    EndIf
     
   EndProcedure
   
@@ -665,7 +667,8 @@ Module _Node_Hash_Generator
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 657
+; CursorPosition = 357
+; FirstLine = 334
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP

@@ -7,7 +7,7 @@
   <section name="data">
     <explorer view="Includes\Nodes\View2D\" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2015-07-03 00:10" user="David Vogel" host="DAVIDS"/>
+    <lastopen date="2015-07-03 09:49" user="David Vogel" host="DAVIDS"/>
   </section>
   <section name="files">
     <file name="Includes\About.pbi">
@@ -175,7 +175,7 @@
       <options unicode="1" xpskin="1" user="1" onerror="1"/>
       <purifier enable="0" granularity="1,1,1,1"/>
       <icon enable="1">Data\Images\Icon.ico</icon>
-      <compilecount enable="1" value="3248"/>
+      <compilecount enable="1" value="3250"/>
       <buildcount enable="1" value="55"/>
       <versioninfo enable="1">
         <field3 value="D3hex"/>
