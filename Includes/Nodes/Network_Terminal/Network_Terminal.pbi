@@ -1023,7 +1023,7 @@ Module _Node_Network_Terminal
       Width = 430
       Height = 150
       
-      *Object\Window = Window::Create(*Node, *Node\Name_Inherited, *Node\Name, #False, 0, 0, Width, Height, #False)
+      *Object\Window = Window::Create(*Node, *Node\Name_Inherited, *Node\Name, 0, 0, Width, Height)
       
       ; #### Toolbar
       
@@ -1261,8 +1261,8 @@ Module _Node_Network_Terminal
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 977
-; FirstLine = 952
+; CursorPosition = 1025
+; FirstLine = 1015
 ; Folding = ------
 ; EnableUnicode
 ; EnableXP

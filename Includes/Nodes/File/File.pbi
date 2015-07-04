@@ -34,6 +34,7 @@ DeclareModule _Node_File
   
   ; ################################################### Functions ###################################################
   Declare   Create(Requester)
+  Declare   Create_And_Open(Filename.s)
   
 EndDeclareModule
 
@@ -322,6 +323,26 @@ Module _Node_File
         File_Open(*Node)
       EndIf
     EndIf
+    
+    ProcedureReturn *Node
+  EndProcedure
+  
+  Procedure Create_And_Open(Filename.s)
+    Protected *Node.Node::Object = Create(#False)
+    If Not *Node
+      ProcedureReturn #Null
+    EndIf
+    Protected *Object.Object = *Node\Custom_Data
+    If Not *Object
+      ProcedureReturn #False
+    EndIf
+    
+    *Object\Mode = #Mode_Write
+    *Object\Cached = #True
+    *Object\Shared_Read = #True
+    *Object\Shared_Write = #True
+    *Object\Filename = Filename
+    File_Open(*Node)
     
     ProcedureReturn *Node
   EndProcedure
@@ -1049,7 +1070,7 @@ Module _Node_File
       Width = 500
       Height = 130
       
-      *Object\Window = Window::Create(*Node, *Node\Name_Inherited, *Node\Name, #False, 0, 0, Width, Height, #False)
+      *Object\Window = Window::Create(*Node, *Node\Name_Inherited, *Node\Name, 0, 0, Width, Height)
       
       ; #### Toolbar
       
@@ -1194,8 +1215,8 @@ Module _Node_File
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1004
-; FirstLine = 977
+; CursorPosition = 1072
+; FirstLine = 1068
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

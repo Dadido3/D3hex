@@ -79,8 +79,10 @@ DeclareModule Constants
   #Metadata_Changed    = %01000000
   #Metadata_NoError    = %10000000
   
-  Enumeration 1
-    #DragDrop_Private_Objects
+  Enumeration
+    ; #### Add custom global drag and drop constants here
+    
+    #DragDrop_Private_Node_New      ; A new node is being dragged
   EndEnumeration
   
 EndDeclareModule
@@ -94,6 +96,7 @@ Module Constants
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 91
+; CursorPosition = 84
+; FirstLine = 51
 ; EnableUnicode
 ; EnableXP

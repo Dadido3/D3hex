@@ -937,7 +937,7 @@ Module _Node_Binary_Operation
       Width = 350
       Height = 250
       
-      *Object\Window = Window::Create(*Node, *Node\Name_Inherited, *Node\Name, #False, 0, 0, Width, Height, #False)
+      *Object\Window = Window::Create(*Node, *Node\Name_Inherited, *Node\Name, 0, 0, Width, Height)
       
       ; #### Gadgets
       
@@ -1089,8 +1089,8 @@ Module _Node_Binary_Operation
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 895
-; FirstLine = 866
+; CursorPosition = 939
+; FirstLine = 923
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

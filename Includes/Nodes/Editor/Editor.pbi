@@ -2332,7 +2332,7 @@ Module _Node_Editor
     EndIf
     
     If *Object\Window = #Null
-      *Object\Window = Window::Create(*Node, *Node\Name_Inherited, *Node\Name, #True, #PB_Ignore, #PB_Ignore, 630, 650, #True, -10, Main\Node_Type\UID)
+      *Object\Window = Window::Create(*Node, *Node\Name_Inherited, *Node\Name, #PB_Ignore, #PB_Ignore, 630, 650, Window::#Flag_Resizeable | Window::#Flag_Docked | Window::#Flag_MaximizeGadget, -10, Main\Node_Type\UID)
       
       ; #### Toolbar
       *Object\ToolBar = CreateToolBar(#PB_Any, WindowID(*Object\Window\ID))
@@ -2465,8 +2465,8 @@ Module _Node_Editor
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 2294
-; FirstLine = 2264
+; CursorPosition = 2334
+; FirstLine = 2318
 ; Folding = -------
 ; EnableUnicode
 ; EnableXP

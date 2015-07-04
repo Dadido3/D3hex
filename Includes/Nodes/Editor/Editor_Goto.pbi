@@ -160,7 +160,7 @@ Procedure Goto_Window_Open(*Node.Node::Object)
     Width = 270
     Height = 130
     
-    *Goto_Window\Window = Window::Create(*Node, "Editor_Goto", "Editor_Goto", #False, 0, 0, Width, Height, #False)
+    *Goto_Window\Window = Window::Create(*Node, "Editor_Goto", "Editor_Goto", 0, 0, Width, Height)
     
     ; #### Gadgets
     *Goto_Window\Frame = FrameGadget(#PB_Any, 10, 10, Width-20, 70, "Position")
@@ -238,8 +238,8 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 112
-; FirstLine = 80
+; CursorPosition = 162
+; FirstLine = 152
 ; Folding = -
 ; EnableUnicode
 ; EnableXP

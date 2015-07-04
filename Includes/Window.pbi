@@ -34,11 +34,11 @@
 DeclareModule Window
   EnableExplicit
   ; ################################################### Constants ###################################################
-  ; TODO: Still needed?
-  ;Enumeration
-  ;  #Type_Normal
-  ;  #Type_MDI
-  ;EndEnumeration
+  Enumeration
+    #Flag_Resizeable      = %001
+    #Flag_MaximizeGadget  = %010
+    #Flag_Docked          = %100
+  EndEnumeration
   
   ; ################################################### Structures ##################################################
   Structure Object
@@ -59,7 +59,7 @@ DeclareModule Window
   Declare   Set_Active(*Window.Object)
   Declare   Bounds(*Window.Object, Min_Width.l, Min_Height.l, Max_Width.l, Max_Height.l)
   
-  Declare   Create(*Object, Name.s, Name_Short.s, Docked, X=#PB_Ignore, Y=#PB_Ignore, Width=#PB_Ignore, Height=#PB_Ignore, Resizable=#False, Resize_Priority.l=0, Tab_ID.s="")
+  Declare   Create(*Object, Name.s, Name_Short.s, X=#PB_Ignore, Y=#PB_Ignore, Width=#PB_Ignore, Height=#PB_Ignore, Flags=0, Resize_Priority.l=0, Tab_ID.s="")
   Declare   Delete(*Window.Object)
   
   Declare   Init(Parent_Window, Docker, StatusBar)
@@ -219,7 +219,7 @@ Module Window
     
   EndProcedure
   
-  Procedure Create(*Object, Name.s, Name_Short.s, Docked, X=#PB_Ignore, Y=#PB_Ignore, Width=#PB_Ignore, Height=#PB_Ignore, Resizable=#False, Resize_Priority.l=0, Tab_ID.s="")
+  Procedure Create(*Object, Name.s, Name_Short.s, X=#PB_Ignore, Y=#PB_Ignore, Width=#PB_Ignore, Height=#PB_Ignore, Flags=0, Resize_Priority.l=0, Tab_ID.s="")
     Protected *Window.Object
     
     If Not AddElement(Object())
@@ -228,19 +228,27 @@ Module Window
     
     *Window = Object()
     
-    Protected Flags = #PB_Window_WindowCentered
+    Protected Window_Flags
     Protected *Container
     Protected *Temp.Object
     
-    If Resizable
-      Flags | #PB_Window_SizeGadget
+    If Flags & #Flag_Resizeable
+      Window_Flags = #PB_Window_WindowCentered | #PB_Window_SystemMenu | #PB_Window_SizeGadget
+    Else
+      Window_Flags = #PB_Window_WindowCentered | #PB_Window_SystemMenu
+    EndIf
+    
+    If Flags & #Flag_MaximizeGadget
+      Window_Flags | #PB_Window_MaximizeGadget
+    Else
+      Window_Flags | #PB_Window_Tool
     EndIf
     
     ;*Window\MDI_Window = MDI
     *Window\Name = Name
     *Window\Name_Short = Name_Short
     ;If *Window\MDI_Window
-    *Window\ID = D3docker::Window_Add(Main\Docker, X, Y, Width, Height, Name, Flags, Resize_Priority)
+    *Window\ID = D3docker::Window_Add(Main\Docker, X, Y, Width, Height, Name, Window_Flags, Resize_Priority)
     ;EndIf
     *Window\Node = *Object
     *Window\Tab_ID = Tab_ID
@@ -252,7 +260,7 @@ Module Window
     BindEvent(#PB_Event_MinimizeWindow, @Event_MinimizeWindow(), *Window\ID)
     BindEvent(#PB_Event_RestoreWindow, @Event_RestoreWindow(), *Window\ID)
     
-    If Docked
+    If Flags & #Flag_Docked
       ;*Temp = Get_Active()
       ;If *Temp
       ;  *Container = D3docker::Get_Container(*Temp\ID)
@@ -338,8 +346,8 @@ Module Window
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 254
-; FirstLine = 231
+; CursorPosition = 39
+; FirstLine = 29
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP

@@ -454,7 +454,7 @@ Module _Node_Hash_Generator
       Width = 500
       Height = 200
       
-      *Object\Window = Window::Create(*Node, *Node\Name_Inherited, *Node\Name, #False, 0, 0, Width, Height, #True)
+      *Object\Window = Window::Create(*Node, *Node\Name_Inherited, *Node\Name, 0, 0, Width, Height, Window::#Flag_Resizeable)
       
       ; #### Toolbar
       *Object\ToolBar = CreateToolBar(#PB_Any, WindowID(*Object\Window\ID))
@@ -667,8 +667,8 @@ Module _Node_Hash_Generator
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 357
-; FirstLine = 334
+; CursorPosition = 456
+; FirstLine = 440
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP

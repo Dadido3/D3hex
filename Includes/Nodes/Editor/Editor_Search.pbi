@@ -1256,7 +1256,7 @@ Procedure Search_Window_Open(*Node.Node::Object)
     Width = 410
     Height = 320
     
-    *Object_Search\Window = Window::Create(*Node, "Editor_Search", "Editor_Search", #False, 0, 0, Width, Height, #False)
+    *Object_Search\Window = Window::Create(*Node, "Editor_Search", "Editor_Search", 0, 0, Width, Height)
     
     ; #### Gadgets
     *Object_Search\Text[0] = TextGadget(#PB_Any, 10, 10, 100, 20, "Search for:", #PB_Text_Right)
@@ -1902,8 +1902,8 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1212
-; FirstLine = 1176
+; CursorPosition = 1258
+; FirstLine = 1251
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

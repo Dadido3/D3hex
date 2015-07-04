@@ -443,7 +443,7 @@ Procedure Settings_Window_Open(*Node.Node::Object)
     Width = 270
     Height = 470
     
-    *Settings_Window\Window = Window::Create(*Node, "View2D_Settings", "View2D_Settings", #False, 0, 0, Width, Height, #False)
+    *Settings_Window\Window = Window::Create(*Node, "View2D_Settings", "View2D_Settings", 0, 0, Width, Height)
     
     ; #### Gadgets
     
@@ -579,7 +579,7 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 385
-; FirstLine = 363
+; CursorPosition = 445
+; FirstLine = 438
 ; Folding = --
 ; EnableXP

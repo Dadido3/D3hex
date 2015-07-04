@@ -896,7 +896,7 @@ Module _Node_Process
       Width = 400
       Height = 400
       
-      *Object\Window = Window::Create(*Node, *Node\Name_Inherited, *Node\Name, #False, 0, 0, Width, Height, #False)
+      *Object\Window = Window::Create(*Node, *Node\Name_Inherited, *Node\Name, 0, 0, Width, Height)
       
       ; #### Toolbar
       
@@ -1006,8 +1006,8 @@ Module _Node_Process
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 853
-; FirstLine = 824
+; CursorPosition = 882
+; FirstLine = 882
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

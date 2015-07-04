@@ -151,7 +151,7 @@
 ;   - Node "Editor": Fixed writing at the end of data
 ;   - Node "View2D": Added standard configuration
 ;   
-; - V0.960 (INDEV)
+; - V0.962 (INDEV)
 ;   - Node "File": Ignore result of File-requesters if it is ""
 ;   - Network_Terminal:
 ;     - Data_Set is not triggering an update event
@@ -171,6 +171,8 @@
 ;   - Splitted the code in modules
 ;   - Added node for hash-generation
 ;   - Scrollbars and window dragging doesn't block the program anymore
+;   - Files can be dragged inside the Node-Editor
+;   - Window::Create(...) has now a flag variable
 ;   
 ; ##################################################### Begin #######################################################
 
@@ -198,7 +200,7 @@ XIncludeFile "Includes/Icons.pbi"
 DeclareModule Main
   EnableExplicit
   ; ################################################### Constants ###################################################
-  #Version = 0960
+  #Version = 0962
   
   Enumeration 1
     #Menu_Dummy
@@ -278,7 +280,6 @@ XIncludeFile "Includes/Node_Type.pbi"
 XIncludeFile "Includes/Node.pbi"
 XIncludeFile "Includes/About.pbi"
 XIncludeFile "Includes/Window.pbi"
-XIncludeFile "Includes/Node_Editor.pbi"
 
 XIncludeFile "Includes/Nodes/Binary_Operation/Binary_Operation.pbi"
 XIncludeFile "Includes/Nodes/Copy/Copy.pbi"
@@ -295,6 +296,8 @@ XIncludeFile "Includes/Nodes/Process/Process.pbi"
 XIncludeFile "Includes/Nodes/Random/Random.pbi"
 XIncludeFile "Includes/Nodes/View1D/View1D.pbi"
 XIncludeFile "Includes/Nodes/View2D/View2D.pbi"
+
+XIncludeFile "Includes/Node_Editor.pbi"
 
 Module Main
   ; ################################################### Includes ####################################################
@@ -713,8 +716,8 @@ Module Main
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 693
-; FirstLine = 660
+; CursorPosition = 193
+; FirstLine = 151
 ; Folding = --
 ; EnableUnicode
 ; EnableXP

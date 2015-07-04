@@ -860,7 +860,7 @@ Module _Node_Data_Inspector
       Width = 300
       Height = 430
       
-      *Object\Window = Window::Create(*Node, *Node\Name_Inherited, *Node\Name, #False, 0, 0, Width, Height, #True)
+      *Object\Window = Window::Create(*Node, *Node\Name_Inherited, *Node\Name, 0, 0, Width, Height, Window::#Flag_Resizeable)
       
       ; #### Gadgets
       
@@ -983,8 +983,8 @@ Module _Node_Data_Inspector
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 818
-; FirstLine = 789
+; CursorPosition = 862
+; FirstLine = 849
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP

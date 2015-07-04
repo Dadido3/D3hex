@@ -405,7 +405,7 @@ Module _Node_Copy
       Width = 210
       Height = 190
       
-      *Object\Window = Window::Create(*Node, *Node\Name_Inherited, *Node\Name, #False, 0, 0, Width, Height, #False)
+      *Object\Window = Window::Create(*Node, *Node\Name_Inherited, *Node\Name, 0, 0, Width, Height)
       
       ; #### Gadgets
       
@@ -686,8 +686,8 @@ Module _Node_Copy
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 359
-; FirstLine = 334
+; CursorPosition = 407
+; FirstLine = 388
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP

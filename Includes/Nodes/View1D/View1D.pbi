@@ -1149,7 +1149,7 @@ Module _Node_View1D
       Width = 500
       Height = 300
       
-      *Object\Window = Window::Create(*Node, *Node\Name_Inherited, *Node\Name, #True, #PB_Ignore, #PB_Ignore, Width, Height, #True, 10, Main\Node_Type\UID)
+      *Object\Window = Window::Create(*Node, *Node\Name_Inherited, *Node\Name, #PB_Ignore, #PB_Ignore, Width, Height, Window::#Flag_Resizeable | Window::#Flag_Docked | Window::#Flag_MaximizeGadget, 10, Main\Node_Type\UID)
       
       ; #### Toolbar
       *Object\ToolBar = CreateToolBar(#PB_Any, WindowID(*Object\Window\ID))
@@ -1292,7 +1292,7 @@ Module _Node_View1D
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1107
-; FirstLine = 1077
+; CursorPosition = 1151
+; FirstLine = 1141
 ; Folding = ----
 ; EnableXP

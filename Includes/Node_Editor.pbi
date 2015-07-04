@@ -840,23 +840,51 @@ Module Node_Editor
     Protected R_X.d, R_Y.d
     Protected *Node_Type.Node_Type::Object
     Protected *Object.Node::Object
+    Protected i, Filename.s
+    Protected *A.Node::Object, *B.Node::Object, *C.Node::Object
     
     R_X = (EventDropX() - Window\Offset_X) / Window\Zoom
     R_Y = (EventDropY() - Window\Offset_Y) / Window\Zoom
-    If EventDropAction() = #DragDrop_Private_Objects
-      *Node_Type = Node_Type::Get(GetGadgetItemData(Window\TreeList, GetGadgetState(Window\TreeList)))
-      If  *Node_Type
-        *Object = *Node_Type\Function_Create(#True)
-        If *Object
-          *Object\X = R_X
-          *Object\Y = R_Y
-          If Window\Snapping
-            *Object\X = Round(*Object\X / 50, #PB_Round_Nearest) * 50
-            *Object\Y = Round(*Object\Y / 50, #PB_Round_Nearest) * 50
+    Select EventDropType()
+      Case #PB_Drop_Private
+        Select EventDropPrivate()
+          Case #DragDrop_Private_Node_New
+            *Node_Type = Node_Type::Get(GetGadgetItemData(Window\TreeList, GetGadgetState(Window\TreeList)))
+            If  *Node_Type
+              *Object = *Node_Type\Function_Create(#True)
+              If *Object
+                *Object\X = R_X
+                *Object\Y = R_Y
+                If Window\Snapping
+                  *Object\X = Round(*Object\X / 50, #PB_Round_Nearest) * 50
+                  *Object\Y = Round(*Object\Y / 50, #PB_Round_Nearest) * 50
+                EndIf
+              EndIf
+            EndIf
+            
+        EndSelect
+        
+      Case #PB_Drop_Files
+        For i = 1 To CountString(EventDropFiles(), Chr(10)) + 1
+          Filename = StringField(EventDropFiles(), i, Chr(10))
+          If Filename
+            *A = _Node_File::Create_And_Open(Filename)
+            If *A
+              *B = _Node_History::Create(#False)
+              If *B
+                *C = _Node_Editor::Create(#False)
+                Node::Link_Connect(Node::Output_Get(*A, 0), Node::Input_Get(*B, 0))
+                Node::Link_Connect(Node::Output_Get(*B, 0), Node::Input_Get(*C, 0))
+                If *C And *C\Function_Window
+                  *C\Function_Window(*C)
+                EndIf
+                Node_Editor::Align_Object(*A)
+              EndIf
+            EndIf
           EndIf
-        EndIf
-      EndIf
-    EndIf
+        Next
+        
+    EndSelect
   EndProcedure
   
   Procedure TreeList_Refresh()
@@ -905,7 +933,7 @@ Module Node_Editor
     
     Select Event_Type
       Case #PB_EventType_DragStart
-        DragPrivate(#DragDrop_Private_Objects, #PB_Drag_Copy)
+        DragPrivate(#DragDrop_Private_Node_New, #PB_Drag_Copy)
         
     EndSelect
     
@@ -1006,7 +1034,7 @@ Module Node_Editor
     Protected ToolBarHeight
     
     If Window\Window = #Null
-      Window\Window = Window::Create(#Null, "Node Editor", "Node Editor", #True, #PB_Ignore, #PB_Ignore, 500, 500, #True, 20)
+      Window\Window = Window::Create(#Null, "Node Editor", "Node Editor", #PB_Ignore, #PB_Ignore, 500, 500, Window::#Flag_Resizeable | Window::#Flag_Docked | Window::#Flag_MaximizeGadget, 20)
       
       ; #### Toolbar
       Window\ToolBar = CreateToolBar(#PB_Any, WindowID(Window\Window\ID))
@@ -1026,7 +1054,8 @@ Module Node_Editor
       Window\TreeList = TreeGadget(#PB_Any, 350, ToolBarHeight, 150, 500-ToolBarHeight)
       
       BindGadgetEvent(Window\Canvas, @Event_Canvas())
-      EnableGadgetDrop(Window\Canvas, #PB_Drop_Private, #PB_Drag_Copy, #DragDrop_Private_Objects)
+      EnableGadgetDrop(Window\Canvas, #PB_Drop_Private, #PB_Drag_Copy, #DragDrop_Private_Node_New)
+      EnableGadgetDrop(Window\Canvas, #PB_Drop_Files, #PB_Drag_Copy)
       BindEvent(#PB_Event_GadgetDrop, @Event_Canvas_Drop(), Window\Window\ID, Window\Canvas)
       
       BindGadgetEvent(Window\TreeList, @Event_TreeList())
@@ -1117,8 +1146,8 @@ Module Node_Editor
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 54
-; FirstLine = 41
+; CursorPosition = 1036
+; FirstLine = 1023
 ; Folding = ----
 ; EnableUnicode
 ; EnableXP

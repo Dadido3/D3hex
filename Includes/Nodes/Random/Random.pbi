@@ -507,7 +507,7 @@ Module _Node_Random
       Width = 200
       Height = 60
       
-      *Object\Window = Window::Create(*Node, *Node\Name_Inherited, *Node\Name, #False, 0, 0, Width, Height, #False)
+      *Object\Window = Window::Create(*Node, *Node\Name_Inherited, *Node\Name, 0, 0, Width, Height)
       
       ; #### Toolbar
       
@@ -594,7 +594,7 @@ Module _Node_Random
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 464
-; FirstLine = 435
+; CursorPosition = 509
+; FirstLine = 505
 ; Folding = ----
 ; EnableXP

@@ -1216,7 +1216,7 @@ Module _Node_History
       Width = 300
       Height = 80
       
-      *Object\Window = Window::Create(*Node, *Node\Name_Inherited, *Node\Name, #False, 0, 0, Width, Height, #False)
+      *Object\Window = Window::Create(*Node, *Node\Name_Inherited, *Node\Name, 0, 0, Width, Height)
       
       ; #### Gadgets
       *Object\Text = TextGadget(#PB_Any, 10, 10, Width-20, Height-40, "")
@@ -1303,7 +1303,7 @@ Module _Node_History
   
 EndModule
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1175
-; FirstLine = 1144
+; CursorPosition = 1218
+; FirstLine = 1205
 ; Folding = ------
 ; EnableXP

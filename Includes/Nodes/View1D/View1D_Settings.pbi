@@ -460,7 +460,7 @@ Procedure Settings_Window_Open(*Node.Node::Object)
     Width = 270
     Height = 410
     
-    *Settings_Window\Window = Window::Create(*Node, "View1D_Settings", "View1D_Settings", #False, 0, 0, Width, Height, #False)
+    *Settings_Window\Window = Window::Create(*Node, "View1D_Settings", "View1D_Settings", 0, 0, Width, Height)
     
     ; #### Gadgets
     
@@ -575,7 +575,7 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 408
-; FirstLine = 380
+; CursorPosition = 462
+; FirstLine = 452
 ; Folding = ---
 ; EnableXP
