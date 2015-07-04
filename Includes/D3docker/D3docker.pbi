@@ -32,10 +32,12 @@
 ; - 0.800 22.06.2015
 ;   - Implemented mostly everything necessary
 ;   
-; - 0.812 (INDEV)
+; - 0.814 (INDEV)
 ;   - Docker containers can now be dragged
 ;   - Removed fixed window-flags inside Window_Add(...)
 ;   - Determine the mouse position with GetCursorPos_(...)
+;   - Fixed an issue with Container_Resize_Between(...)
+;   - Fixed the redraw issues of the empty space between containers
 ;   - A lot of bugfixes and little changes
 ; 
 ; 
@@ -58,7 +60,7 @@ DeclareModule D3docker
   EnableExplicit
   ; ################################################## Constants ################################################
   #PB_GadgetType_D3docker=20150607
-  #Version = 812
+  #Version = 814
   
   ; #### Directions for placing a docker
   Enumeration
@@ -229,6 +231,7 @@ Module D3docker
     Gadget_Text.i
     Gadget_Canvas.i
     Gadget_TabBar.i
+    Gadget_Empty.i[2]     ; Gadget to fill empty spaces to prevent redraw issues. (A hack until a better way is implemented)
     
     ; #### Docker
     Docker_Button_Close.Canvas_Button
@@ -1329,6 +1332,8 @@ Module D3docker
           *Container\Docker_Button_Close\Width = 16 : *Container\Docker_Button_Close\Height = 16 : *Container\Docker_Button_Close\Image = Image_Button_Close
           *Container\Docker_Button_Undock\Width = 16 : *Container\Docker_Button_Undock\Height = 16 : *Container\Docker_Button_Undock\Image = Image_Button_Undock
           BindGadgetEvent(*Container\Gadget_Canvas, @Container_Docker_Callback_Gadget_Canvas()) : SetGadgetData(*Container\Gadget_Canvas, *Container)
+          *Container\Gadget_Empty[0] = CanvasGadget(#PB_Any, 0, 0, 0, 0)
+          *Container\Gadget_Empty[1] = CanvasGadget(#PB_Any, 0, 0, 0, 0)
           If *Container\Window
             *Container\Priority = *Container\Window\Resize_Priority
             *Container\Title = GetWindowTitle(*Window\Window)
@@ -1343,8 +1348,16 @@ Module D3docker
           EndIf
           
         Case #Container_Type_Split_H
+          OpenGadgetList(\Root\Gadget_Container)
+          *Container\Gadget_Empty[0] = CanvasGadget(#PB_Any, 0, 0, 0, 0)
+          *Container\Gadget_Empty[1] = CanvasGadget(#PB_Any, 0, 0, 0, 0)
+          CloseGadgetList()
           
         Case #Container_Type_Split_V
+          OpenGadgetList(\Root\Gadget_Container)
+          *Container\Gadget_Empty[0] = CanvasGadget(#PB_Any, 0, 0, 0, 0)
+          *Container\Gadget_Empty[1] = CanvasGadget(#PB_Any, 0, 0, 0, 0)
+          CloseGadgetList()
           
         Case #Container_Type_Spliter
           OpenGadgetList(\Root\Gadget_Container)
@@ -1356,6 +1369,8 @@ Module D3docker
           OpenGadgetList(\Root\Gadget_Container)
           *Container\Gadget_TabBar = TabBarGadget(#PB_Any, *Container\X, *Container\Y, *Container\Width, #Container_Tabbed_Bar_Height, #TabBarGadget_None, \Parent_Window)
           BindGadgetEvent(*Container\Gadget_TabBar, @Container_Callback_Gadget_TabBar()) : SetTabBarGadgetData(*Container\Gadget_TabBar, *Container)
+          *Container\Gadget_Empty[0] = CanvasGadget(#PB_Any, 0, 0, 0, 0)
+          *Container\Gadget_Empty[1] = CanvasGadget(#PB_Any, 0, 0, 0, 0)
           CloseGadgetList()
           
         Default
@@ -1474,10 +1489,12 @@ Module D3docker
       EndSelect
       
       ; #### Free gadgets....
-      If IsGadget(*Container\Gadget_Canvas)    : FreeGadget(*Container\Gadget_Canvas)       : EndIf
-      If IsGadget(*Container\Gadget_Text)      : FreeGadget(*Container\Gadget_Text)         : EndIf
-      If IsGadget(*Container\Gadget_Container) : FreeGadget(*Container\Gadget_Container)    : EndIf
-      If IsGadget(*Container\Gadget_TabBar)    : FreeTabBarGadget(*Container\Gadget_TabBar) : EndIf
+      If IsGadget(*Container\Gadget_Canvas)     : FreeGadget(*Container\Gadget_Canvas)        : EndIf
+      If IsGadget(*Container\Gadget_Text)       : FreeGadget(*Container\Gadget_Text)          : EndIf
+      If IsGadget(*Container\Gadget_Container)  : FreeGadget(*Container\Gadget_Container)     : EndIf
+      If IsGadget(*Container\Gadget_TabBar)     : FreeTabBarGadget(*Container\Gadget_TabBar)  : EndIf
+      If IsGadget(*Container\Gadget_Empty[0])   : FreeGadget(*Container\Gadget_Empty[0])      : EndIf
+      If IsGadget(*Container\Gadget_Empty[1])   : FreeGadget(*Container\Gadget_Empty[1])      : EndIf
       
       FreeStructure(*Container)
       
@@ -1623,7 +1640,7 @@ Module D3docker
     ;Protected Effective_Size.d
     Protected Position
     Protected Scale.d, Total_Size.l
-    ;Protected Temp_Size.d, Position.d
+    Protected Width_Pre_Limit.l, Height_Pre_Limit.l
     Protected Old_Size, Difference
     Protected Found
     Protected NewList Temp_Size.Temp_Size()
@@ -1631,6 +1648,9 @@ Module D3docker
     Protected hWnd, rect.RECT
     Protected *params.GADGET_PARAMS=GetParams(*Gadget)
     With *params
+      
+      Width_Pre_Limit = Width
+      Height_Pre_Limit = Height
       
       If Width < 0  : Width = 0  : EndIf
       If Height < 0 : Height = 0 : EndIf
@@ -1850,6 +1870,26 @@ Module D3docker
         EndSelect
       ;EndIf
       
+      ; #### Resize the "empty" gadgets to fill the empty space
+      If IsGadget(*Container\Gadget_Empty[0]) And Width < Width_Pre_Limit
+        ResizeGadget(*Container\Gadget_Empty[0], *Container\X + Width, *Container\Y, Width_Pre_Limit - Width, Height_Pre_Limit)
+        If StartDrawing(CanvasOutput(*Container\Gadget_Empty[0]))
+          Box(0, 0, Width_Pre_Limit - Width, Height_Pre_Limit, #Color_Splitter_Background)
+          StopDrawing()
+        EndIf
+      ElseIf IsGadget(*Container\Gadget_Empty[0]) And 
+        ResizeGadget(*Container\Gadget_Empty[0], 0, 0, 0, 0)
+      EndIf
+      If IsGadget(*Container\Gadget_Empty[1]) And Height < Height_Pre_Limit
+        ResizeGadget(*Container\Gadget_Empty[1], *Container\X, *Container\Y + Height, *Container\Width, Height_Pre_Limit - Height)
+        If StartDrawing(CanvasOutput(*Container\Gadget_Empty[1]))
+          Box(0, 0, *Container\Width, Height_Pre_Limit - Height, #Color_Splitter_Background)
+          StopDrawing()
+        EndIf
+      ElseIf IsGadget(*Container\Gadget_Empty[1]) And 
+        ResizeGadget(*Container\Gadget_Empty[1], 0, 0, 0, 0)
+      EndIf
+      
       ; TODO: Fix flickering when resizing window
       If Iteration = 0
         SendMessage_(GadgetID(\Root\Gadget_Container), #WM_SETREDRAW, #True, 0)
@@ -1874,10 +1914,12 @@ Module D3docker
     If Index <= 0 Or Index >= ListSize(*Container\Container())
       ProcedureReturn 0
     EndIf
-    Protected Temp_Size_Difference
+    Protected Temp_Difference
     Protected rect.RECT
     Protected Position
     Protected NewList Temp_Size.Temp_Size()
+    Protected *A.Temp_Size, *B.Temp_Size
+    Protected A_Difference_Min, A_Difference_Max, B_Difference_Min, B_Difference_Max
     Protected *params.GADGET_PARAMS=GetParams(*Gadget)
     With *params
       
@@ -1900,38 +1942,45 @@ Module D3docker
           Next
       EndSelect
       
-      If SelectElement(Temp_Size(), Index-1)
-        Temp_Size_Difference = Difference
-        Repeat
-          Temp_Size()\Size + Temp_Size_Difference
-          Temp_Size_Difference = 0
-          If Temp_Size()\Size < Temp_Size()\Min_Size
-            Temp_Size_Difference = Temp_Size()\Size - Temp_Size()\Min_Size
-            Temp_Size()\Size = Temp_Size()\Min_Size
-          ElseIf Temp_Size()\Size > Temp_Size()\Max_Size
-            Temp_Size_Difference = Temp_Size()\Size - Temp_Size()\Max_Size
-            Temp_Size()\Size = Temp_Size()\Max_Size
-          EndIf
-        Until Not PreviousElement(Temp_Size())
-      EndIf
+      *A = SelectElement(Temp_Size(), Index-1)
+      *B = SelectElement(Temp_Size(), Index)
       
-      If SelectElement(Temp_Size(), Index)
-        Temp_Size_Difference - Difference
-        Repeat
-          Temp_Size()\Size + Temp_Size_Difference
-          Temp_Size_Difference = 0
-          If Temp_Size()\Size < Temp_Size()\Min_Size
-            Temp_Size_Difference = Temp_Size()\Size - Temp_Size()\Min_Size
-            Temp_Size()\Size = Temp_Size()\Min_Size
-          ElseIf Temp_Size()\Size > Temp_Size()\Max_Size
-            Temp_Size_Difference = Temp_Size()\Size - Temp_Size()\Max_Size
-            Temp_Size()\Size = Temp_Size()\Max_Size
-          EndIf
-        Until Not NextElement(Temp_Size())
-      EndIf
-      If SelectElement(Temp_Size(), Index-1)
-        Temp_Size()\Size + Temp_Size_Difference
-      EndIf
+      While *A And *B
+        A_Difference_Max = *A\Max_Size - *A\Size
+        A_Difference_Min = *A\Min_Size - *A\Size
+        B_Difference_Max = *B\Size - *B\Min_Size
+        B_Difference_Min = *B\Size - *B\Max_Size
+        Temp_Difference = Difference
+        
+        If Temp_Difference > A_Difference_Max
+          Temp_Difference = A_Difference_Max
+        EndIf
+        If Temp_Difference < A_Difference_Min
+          Temp_Difference = A_Difference_Min
+        EndIf
+        If Temp_Difference > B_Difference_Max
+          Temp_Difference = B_Difference_Max
+        EndIf
+        If Temp_Difference < B_Difference_Min
+          Temp_Difference = B_Difference_Min
+        EndIf
+        
+        *A\Size + Temp_Difference
+        *B\Size - Temp_Difference
+        Difference - Temp_Difference
+        
+        If ( Difference > 0 And A_Difference_Max = 0 ) Or ( Difference < 0 And A_Difference_Min = 0 )
+          ChangeCurrentElement(Temp_Size(), *A)
+          *A = PreviousElement(Temp_Size())
+        EndIf
+        If ( Difference > 0 And B_Difference_Max = 0 ) Or ( Difference < 0 And B_Difference_Min = 0 )
+          ChangeCurrentElement(Temp_Size(), *B)
+          *B = NextElement(Temp_Size())
+        EndIf
+        If Difference = 0
+          Break
+        EndIf
+      Wend
       
       SendMessage_(GadgetID(\Root\Gadget_Container), #WM_SETREDRAW, #False, 0)
       
@@ -1939,13 +1988,13 @@ Module D3docker
         Case #Container_Type_Split_H
           Position = *Container\X
           ForEach Temp_Size()
-            Container_Resize(*Gadget, Temp_Size()\Container, Position, Temp_Size()\Container\Y, Temp_Size()\Size, Temp_Size()\Container\Height, #Null, 1)
+            Container_Resize(*Gadget, Temp_Size()\Container, Position, Temp_Size()\Container\Y, Temp_Size()\Size, *Container\Height, #Null, 1)
             Position + Temp_Size()\Size
           Next
         Case #Container_Type_Split_V
           Position = *Container\Y
           ForEach Temp_Size()
-            Container_Resize(*Gadget, Temp_Size()\Container, Temp_Size()\Container\X, Position, Temp_Size()\Container\Width, Temp_Size()\Size, #Null, 1)
+            Container_Resize(*Gadget, Temp_Size()\Container, Temp_Size()\Container\X, Position, *Container\Width, Temp_Size()\Size, #Null, 1)
             Position + Temp_Size()\Size
           Next
       EndSelect
@@ -2232,8 +2281,8 @@ Module D3docker
   
 EndModule
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 37
-; FirstLine = 24
+; CursorPosition = 38
+; FirstLine = 15
 ; Folding = --------
 ; EnableUnicode
 ; EnableXP
