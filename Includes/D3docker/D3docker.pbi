@@ -32,8 +32,10 @@
 ; - 0.800 22.06.2015
 ;   - Implemented mostly everything necessary
 ;   
-; - 0.810 (INDEV)
+; - 0.812 (INDEV)
 ;   - Docker containers can now be dragged
+;   - Removed fixed window-flags inside Window_Add(...)
+;   - Determine the mouse position with GetCursorPos_(...)
 ;   - A lot of bugfixes and little changes
 ; 
 ; 
@@ -56,7 +58,7 @@ DeclareModule D3docker
   EnableExplicit
   ; ################################################## Constants ################################################
   #PB_GadgetType_D3docker=20150607
-  #Version = 810
+  #Version = 812
   
   ; #### Directions for placing a docker
   Enumeration
@@ -451,6 +453,7 @@ Module D3docker
     Protected *Rect.RECT
     Protected rect.RECT
     Protected *Points.POINTS
+    Protected pt.Point
     Protected Center_X.l, Center_Y.l
     Protected i
     
@@ -536,8 +539,9 @@ Module D3docker
               Diamond_Create(*Window\Gadget, \Root, (rect\left+rect\right)/2-#Diamond_Size/2, rect\bottom-#Diamond_Size, #Direction_Bottom, *Window\hWnd)
             EndIf
           EndIf
-          *Window\Mouse_Drag_X = *Rect\left + *Window\Mouse_Drag_X_Offset
-          *Window\Mouse_Drag_Y = *Rect\top + *Window\Mouse_Drag_Y_Offset
+          GetCursorPos_(pt)
+          *Window\Mouse_Drag_X = pt\x;*Rect\left + *Window\Mouse_Drag_X_Offset
+          *Window\Mouse_Drag_Y = pt\y;*Rect\top + *Window\Mouse_Drag_Y_Offset
           *Diamond = Diamond_Get_By_Coordinate(*Window\Gadget, *Window\Mouse_Drag_X, *Window\Mouse_Drag_Y)
           If *Diamond
             SetWindowLong_(*Window\hWnd,#GWL_EXSTYLE,GetWindowLong_(*Window\hWnd, #GWL_EXSTYLE) | #WS_EX_LAYERED)
@@ -568,11 +572,11 @@ Module D3docker
           EndIf
         EndWith
         
-      Case #WM_NCLBUTTONDOWN
-        GetWindowRect_(hWnd, rect)
-        *Points = @lParam
-        *Window\Mouse_Drag_X_Offset = *Points\x - rect\left
-        *Window\Mouse_Drag_Y_Offset = *Points\y - rect\top
+      ;Case #WM_NCLBUTTONDOWN
+        ;GetWindowRect_(hWnd, rect)
+        ;*Points = @lParam
+        ;*Window\Mouse_Drag_X_Offset = *Points\x - rect\left
+        ;*Window\Mouse_Drag_Y_Offset = *Points\y - rect\top
         
     EndSelect
     
@@ -594,7 +598,7 @@ Module D3docker
       AddElement(\Window())
       
       PushListPosition(\Window())
-      Window = OpenWindow(#PB_Any, X, Y, Width, Height, Title, #PB_Window_Tool | #PB_Window_SystemMenu | Flags, WindowID(\Parent_Window))
+      Window = OpenWindow(#PB_Any, X, Y, Width, Height, Title, Flags, WindowID(\Parent_Window))
       PopListPosition(\Window())
       
       \Window()\Window = Window
@@ -2228,8 +2232,8 @@ Module D3docker
   
 EndModule
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 118
-; FirstLine = 83
+; CursorPosition = 37
+; FirstLine = 24
 ; Folding = --------
 ; EnableUnicode
 ; EnableXP
