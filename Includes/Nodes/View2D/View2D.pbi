@@ -60,6 +60,8 @@ Module _Node_View2D
   Enumeration
     #Menu_Settings
     #Menu_Normalize
+    #Menu_Fit_X
+    #Menu_Fit_Y
   EndEnumeration
   
   ; ################################################### Structures ##################################################
@@ -165,6 +167,8 @@ Module _Node_View2D
   ; ################################################### Icons ... ###################################################
   
   Global Icon_Normalize = CatchImage(#PB_Any, ?Icon_Normalize)
+  Global Icon_Fit_X = CatchImage(#PB_Any, ?Icon_Fit_X)
+  Global Icon_Fit_Y = CatchImage(#PB_Any, ?Icon_Fit_Y)
   
   ; ################################################### Declares ####################################################
   
@@ -473,6 +477,7 @@ Module _Node_View2D
     Protected Found
     Protected Input_Chunk_ID.Input_Channel_Chunk_ID
     Protected Bytes_Per_Line_1.q, Bytes_Per_Line_2.q
+    Protected Old_Bits_Per_Pixel.i
     
     If Not *Node
       ProcedureReturn #False
@@ -498,7 +503,7 @@ Module _Node_View2D
         
         ; #### Get the settings from the data descriptor of the output
         If Not *Input_Channel\Manually
-          ;*Input_Channel\Width = 1920  ; ################################################ Delete Me!
+          ;*Input_Channel\Width = 1920  ; TODO: Get settings from data-descriptor
           ;*Input_Channel\Line_Offset = 0
           ;*Input_Channel\Pixel_Format = #PixelFormat_24_BGR
           ;*Input_Channel\Reverse_Y = #True
@@ -508,7 +513,7 @@ Module _Node_View2D
           *Input_Channel\Width = 1
         EndIf
         
-        Bytes_Per_Line_1 = (*Input_Channel\Width * *Input_Channel\Bits_Per_Pixel) / 8 + *Input_Channel\Line_Offset
+        Old_Bits_Per_Pixel = *Input_Channel\Bits_Per_Pixel
         
         ; #### Set Bits_Per_Pixel accordingly to the Pixel_Format
         Select *Input_Channel\Pixel_Format
@@ -528,8 +533,16 @@ Module _Node_View2D
             *Input_Channel\Bits_Per_Pixel = 32
         EndSelect
         
+        If *Input_Channel\Line_Offset < 1 - (*Input_Channel\Width * *Input_Channel\Bits_Per_Pixel) / 8
+          *Input_Channel\Line_Offset = 1 - (*Input_Channel\Width * *Input_Channel\Bits_Per_Pixel) / 8
+          SetGadgetState(*Object\Settings_Window\Spin_In[2], *Input_Channel\Line_Offset)
+        EndIf
+        
+        Bytes_Per_Line_1 = (*Input_Channel\Width * Old_Bits_Per_Pixel) / 8 + *Input_Channel\Line_Offset
         Bytes_Per_Line_2 = (*Input_Channel\Width * *Input_Channel\Bits_Per_Pixel) / 8 + *Input_Channel\Line_Offset
-        *Object\Offset_Y = (*Object\Offset_Y) * Bytes_Per_Line_1 / Bytes_Per_Line_2
+        If Bytes_Per_Line_1 > 0 And Bytes_Per_Line_2 > 0
+          *Object\Offset_Y = *Object\Offset_Y * Bytes_Per_Line_1 / Bytes_Per_Line_2
+        EndIf
         
         *Input_Channel\Height = Quad_Divide_Ceil(Node::Input_Get_Size(*Node\Input()) * 8 - *Input_Channel\Offset * 8, (*Input_Channel\Width * *Input_Channel\Bits_Per_Pixel + *Input_Channel\Line_Offset * 8))
         
@@ -896,7 +909,9 @@ Module _Node_View2D
               *Object\Redraw = #True
             EndIf
             
-            DrawImage(ImageID(*Input_Channel\Chunk()\Image_ID), X_M, Y_M)
+            If ImageID(*Input_Channel\Chunk()\Image_ID)
+              DrawImage(ImageID(*Input_Channel\Chunk()\Image_ID), X_M, Y_M)
+            EndIf
           EndIf
           
           If *Input_Channel\Chunk()\Redraw Or *Input_Channel\Chunk()\Image_ID = #Null
@@ -1087,6 +1102,7 @@ Module _Node_View2D
           Organize(*Node)
           Get_Data(*Node)
           Canvas_Redraw(*Node)
+          SetActiveGadget(*Object\Canvas_Data)
         EndIf
         
       Case #WM_VSCROLL
@@ -1115,6 +1131,7 @@ Module _Node_View2D
           Organize(*Node)
           Get_Data(*Node)
           Canvas_Redraw(*Node)
+          SetActiveGadget(*Object\Canvas_Data)
         EndIf
         
     EndSelect
@@ -1151,6 +1168,10 @@ Module _Node_View2D
     
     Data_Width = Width - ScrollBar_Y_Width
     Data_Height = Height - ScrollBar_X_Height - ToolBarHeight
+    
+    ; #### Add to offset
+    *Object\Offset_X + (Data_Width - GadgetWidth(*Object\Canvas_Data)) / 2
+    *Object\Offset_Y + (Data_Height - GadgetHeight(*Object\Canvas_Data)) / 2
     
     ; #### Gadgets
     ResizeGadget(*Object\ScrollBar_X, 0, Data_Height+ToolBarHeight, Data_Width, ScrollBar_X_Height)
@@ -1190,7 +1211,8 @@ Module _Node_View2D
     Protected Event_Menu = EventMenu()
     
     Protected *Input_Channel.Input_Channel
-    Protected Max.d, Min.d
+    Protected Min_Zoom.d, Temp_Zoom.d
+    Protected X_Max.d, X_Min.d, Y_Max.d, Y_Min.d
     
     Protected *Window.Window::Object = Window::Get(Event_Window)
     If Not *Window
@@ -1210,9 +1232,57 @@ Module _Node_View2D
         Settings_Window_Open(*Node)
         
       Case #Menu_Normalize
-        *Object\Offset_X - (1.0/*Object\Zoom - 1) * ( - *Object\Offset_X)
-        *Object\Offset_Y - (1.0/*Object\Zoom - 1) * ( - *Object\Offset_Y)
+        *Object\Offset_X - (1.0/*Object\Zoom - 1) * (GadgetWidth(*Object\Canvas_Data)/2 - *Object\Offset_X)
+        *Object\Offset_Y - (1.0/*Object\Zoom - 1) * (GadgetHeight(*Object\Canvas_Data)/2 - *Object\Offset_Y)
         *Object\Zoom = 1
+        *Object\Redraw = #True
+        
+      Case #Menu_Fit_X
+        ForEach *Node\Input()
+          *Input_Channel = *Node\Input()\Custom_Data
+          If *Input_Channel
+            If X_Max < *Input_Channel\Width : X_Max = *Input_Channel\Width : EndIf
+            If *Input_Channel\Reverse_Y
+              If Y_Min > -*Input_Channel\Height : Y_Min = -*Input_Channel\Height : EndIf
+            Else
+              If Y_Max < *Input_Channel\Height : Y_Max = *Input_Channel\Height : EndIf
+            EndIf
+            Temp_Zoom = GadgetWidth(*Object\Canvas_Data) / *Input_Channel\Width
+            Temp_Zoom = Pow(2, Round(Log(Temp_Zoom)/Log(2), #PB_Round_Down))
+            If Min_Zoom > Temp_Zoom Or ListIndex(*Node\Input()) = 0
+              Min_Zoom = Temp_Zoom
+            EndIf
+          EndIf
+        Next
+        If Min_Zoom > 0
+          *Object\Zoom = Min_Zoom
+        EndIf
+        *Object\Offset_X = GadgetWidth(*Object\Canvas_Data)/2 - (X_Max + X_Min)/2 * *Object\Zoom
+        *Object\Offset_Y = GadgetHeight(*Object\Canvas_Data)/2 - (Y_Max + Y_Min)/2 * *Object\Zoom
+        *Object\Redraw = #True
+        
+      Case #Menu_Fit_Y
+        ForEach *Node\Input()
+          *Input_Channel = *Node\Input()\Custom_Data
+          If *Input_Channel
+            If X_Max < *Input_Channel\Width : X_Max = *Input_Channel\Width : EndIf
+            If *Input_Channel\Reverse_Y
+              If Y_Min > -*Input_Channel\Height : Y_Min = -*Input_Channel\Height : EndIf
+            Else
+              If Y_Max < *Input_Channel\Height : Y_Max = *Input_Channel\Height : EndIf
+            EndIf
+            Temp_Zoom = GadgetHeight(*Object\Canvas_Data) / *Input_Channel\Height
+            Temp_Zoom = Pow(2, Round(Log(Temp_Zoom)/Log(2), #PB_Round_Down))
+            If Min_Zoom > Temp_Zoom Or ListIndex(*Node\Input()) = 0
+              Min_Zoom = Temp_Zoom
+            EndIf
+          EndIf
+        Next
+        If Min_Zoom > 0
+          *Object\Zoom = Min_Zoom
+        EndIf
+        *Object\Offset_X = GadgetWidth(*Object\Canvas_Data)/2 - (X_Max + X_Min)/2 * *Object\Zoom
+        *Object\Offset_Y = GadgetHeight(*Object\Canvas_Data)/2 - (Y_Max + Y_Min)/2 * *Object\Zoom
         *Object\Redraw = #True
         
     EndSelect
@@ -1262,6 +1332,8 @@ Module _Node_View2D
       *Object\ToolBar = CreateToolBar(#PB_Any, WindowID(*Object\Window\ID))
       ToolBarImageButton(#Menu_Settings, ImageID(Icons::Icon_Gear))
       ToolBarImageButton(#Menu_Normalize, ImageID(Icon_Normalize))
+      ToolBarImageButton(#Menu_Fit_X, ImageID(Icon_Fit_X))
+      ToolBarImageButton(#Menu_Fit_Y, ImageID(Icon_Fit_Y))
       
       ToolBarHeight = ToolBarHeight(*Object\ToolBar)
       
@@ -1377,12 +1449,14 @@ Module _Node_View2D
   
   DataSection
     Icon_Normalize:   : IncludeBinary "../../../Data/Icons/Graph_Normalize.png"
+    Icon_Fit_X:       : IncludeBinary "../../../Data/Icons/Image_Fit_X.png"
+    Icon_Fit_Y:       : IncludeBinary "../../../Data/Icons/Image_Fit_Y.png"
   EndDataSection
   
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1258
-; FirstLine = 1242
+; CursorPosition = 1173
+; FirstLine = 1141
 ; Folding = ----
 ; EnableXP

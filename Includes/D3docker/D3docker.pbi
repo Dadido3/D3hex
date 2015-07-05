@@ -43,10 +43,10 @@
 ; 
 ; 
 ; TODO: Loading and Saving layouts from/to json or xml...
-; TODO: Container_Resize_Between has some problems with *Container\Max_Width or *Container\Max_Height
 ; TODO: Merge the Container_Docker bar with the tab bar of the tabbed container
 ; TODO: Allow the docking to undocked windows
 ; TODO: Add static containers (not movable and/or not removable)
+; TODO: When switching the active window, restore the active gadget of that window
 ; 
 ; #################################################### Includes #################################################
 
@@ -2281,8 +2281,8 @@ Module D3docker
   
 EndModule
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 38
-; FirstLine = 15
+; CursorPosition = 40
+; FirstLine = 21
 ; Folding = --------
 ; EnableUnicode
 ; EnableXP

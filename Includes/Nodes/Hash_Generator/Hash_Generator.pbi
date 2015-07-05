@@ -550,8 +550,11 @@ Module _Node_Hash_Generator
       *Object\Calculate = #False
       
       ; #### Get the lowest position of all hash functions
+      Position = 9223372036854775807
       If *Object\Hash_CRC32\Item_State & #PB_ListIcon_Checked
-        Position = *Object\Hash_CRC32\Temp_Value()\Position
+        If Position > *Object\Hash_CRC32\Temp_Value()\Position
+          Position = *Object\Hash_CRC32\Temp_Value()\Position
+        EndIf
       EndIf
       If *Object\Hash_MD5\Item_State & #PB_ListIcon_Checked
         If Position > *Object\Hash_MD5\Temp_Value()\Position
@@ -667,8 +670,8 @@ Module _Node_Hash_Generator
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 456
-; FirstLine = 440
+; CursorPosition = 549
+; FirstLine = 522
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP

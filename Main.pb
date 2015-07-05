@@ -22,6 +22,7 @@
 ; Todo:
 ; - Each node HAS to return an segment-list via ...Get_Segments(...)
 ; - Store/Restore Window states/positions into/from the configurations.
+; - Negative positions in Output_Get_Data() should be allowed, but shouldn't return #Metadata_NoError
 ;   
 ; - Editor:
 ;   - Autoscroll
@@ -151,7 +152,7 @@
 ;   - Node "Editor": Fixed writing at the end of data
 ;   - Node "View2D": Added standard configuration
 ;   
-; - V0.962 (INDEV)
+; - V0.964 (INDEV)
 ;   - Node "File": Ignore result of File-requesters if it is ""
 ;   - Network_Terminal:
 ;     - Data_Set is not triggering an update event
@@ -167,12 +168,13 @@
 ;     - Resized the gadget a bit
 ;   - Fixed crash
 ;   - Statusbar works again for node "Editor"
-;   - Many other small changes and refactoring
 ;   - Splitted the code in modules
 ;   - Added node for hash-generation
 ;   - Scrollbars and window dragging doesn't block the program anymore
 ;   - Files can be dragged inside the Node-Editor
 ;   - Window::Create(...) has now a flag variable
+;   - Bugfixing and improvements in View1D and View2D
+;   - Many other small changes and refactoring
 ;   
 ; ##################################################### Begin #######################################################
 
@@ -200,7 +202,7 @@ XIncludeFile "Includes/Icons.pbi"
 DeclareModule Main
   EnableExplicit
   ; ################################################### Constants ###################################################
-  #Version = 0962
+  #Version = 0964
   
   Enumeration 1
     #Menu_Dummy
@@ -716,8 +718,8 @@ Module Main
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 193
-; FirstLine = 151
+; CursorPosition = 180
+; FirstLine = 168
 ; Folding = --
 ; EnableUnicode
 ; EnableXP

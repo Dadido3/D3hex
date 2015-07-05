@@ -105,7 +105,7 @@ Module Icons
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 92
+; CursorPosition = 93
 ; FirstLine = 56
 ; EnableUnicode
 ; EnableXP

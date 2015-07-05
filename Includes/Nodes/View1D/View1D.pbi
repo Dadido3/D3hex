@@ -60,6 +60,10 @@ Module _Node_View1D
     #Menu_Lines
   EndEnumeration
   
+  #Canvas_X_Height = 100
+  #Canvas_Y_Width = 100
+  #ScrollBar_X_Height = 17
+  
   ; ################################################### Structures ##################################################
   
   Structure RGB
@@ -117,7 +121,8 @@ Module _Node_View1D
     Zoom_X.d
     Zoom_Y.d
     
-    Elements.q      ; Amount of Elements
+    Position_Min.d      ; Position of the most left data-point
+    Position_Max.d      ; Position of the most right data-point
     
     Connect.i       ; #True: Connect the data points with lines
     
@@ -421,28 +426,43 @@ Module _Node_View1D
       ProcedureReturn #False
     EndIf
     
-    *Object\Elements = 0
+    *Object\Position_Min = Infinity()
+    *Object\Position_Max = -Infinity()
     
     ; #### Limit Zoom in X
     If *Object\Zoom_X < 0.0001
       *Object\Zoom_X = 0.0001
     EndIf
     
-    ; #### Go throught each input
     ForEach *Node\Input()
       *Input_Channel = *Node\Input()\Custom_Data
       If *Input_Channel
-        ; #### Get max. amount of elements
-        If *Input_Channel\ElementSize > 0
-          If *Object\Elements < Node::Input_Get_Size(*Node\Input()) / *Input_Channel\ElementSize
-            *Object\Elements = Node::Input_Get_Size(*Node\Input()) / *Input_Channel\ElementSize
-          EndIf
-        EndIf
-        
         ; #### Get the settings from the data descriptor of the output
         If Not *Input_Channel\Manually
-          *Input_Channel\ElementSize = 1
-          *Input_Channel\ElementType = #PB_Ascii
+          ; TODO: Get settings from data-descriptor
+          *Input_Channel\ElementType = #Integer_U_1
+        EndIf
+        
+        ; #### Set ElementSize
+        Select *Input_Channel\ElementType
+          Case #Integer_U_1 : *Input_Channel\ElementSize = 1
+          Case #Integer_S_1 : *Input_Channel\ElementSize = 1
+          Case #Integer_U_2 : *Input_Channel\ElementSize = 2
+          Case #Integer_S_2 : *Input_Channel\ElementSize = 2
+          Case #Integer_S_4 : *Input_Channel\ElementSize = 4
+          Case #Integer_S_8 : *Input_Channel\ElementSize = 8
+          Case #Float_4     : *Input_Channel\ElementSize = 4
+          Case #Float_8     : *Input_Channel\ElementSize = 8
+        EndSelect
+        
+        ; #### Get range of all points
+        If *Input_Channel\ElementSize > 0
+          If *Object\Position_Min > *Input_Channel\Offset / *Input_Channel\ElementSize
+            *Object\Position_Min = *Input_Channel\Offset / *Input_Channel\ElementSize
+          EndIf
+          If *Object\Position_Max < (*Input_Channel\Offset + Node::Input_Get_Size(*Node\Input())) / *Input_Channel\ElementSize
+            *Object\Position_Max = (*Input_Channel\Offset + Node::Input_Get_Size(*Node\Input())) / *Input_Channel\ElementSize
+          EndIf
         EndIf
       EndIf
     Next
@@ -451,7 +471,9 @@ Module _Node_View1D
     Protected Width = GadgetWidth(*Object\Canvas_Data)
     Protected Height = GadgetHeight(*Object\Canvas_Data)
     
-    SetGadgetAttribute(*Object\ScrollBar_X, #PB_ScrollBar_Maximum, *Object\Elements * *Object\Zoom_X)
+    
+    SetGadgetAttribute(*Object\ScrollBar_X, #PB_ScrollBar_Maximum, *Object\Position_Max * *Object\Zoom_X)
+    SetGadgetAttribute(*Object\ScrollBar_X, #PB_ScrollBar_Minimum, *Object\Position_Min * *Object\Zoom_X)
     SetGadgetAttribute(*Object\ScrollBar_X, #PB_ScrollBar_PageLength, Width)
     SetGadgetState(*Object\ScrollBar_X, -*Object\Offset_X)
     
@@ -459,7 +481,7 @@ Module _Node_View1D
   EndProcedure
   
   Procedure Get_Data(*Node.Node::Object)
-    Protected *Temp, Temp_Size, Elements, Temp_Start.q
+    Protected *Temp, Temp_Size.q, Elements.q, Temp_Start.q, Difference.q
     Protected Width
     Protected *Input_Channel.Input_Channel
     Protected i
@@ -481,14 +503,19 @@ Module _Node_View1D
         
         ClearList(*Input_Channel\Value())
         
+        Elements = Width / *Object\Zoom_X + 1
+        Temp_Size = Elements * *Input_Channel\ElementSize
+        
         Temp_Start = (-*Object\Offset_X / *Object\Zoom_X)
         Temp_Start * *Input_Channel\ElementSize
+        Temp_Start - *Input_Channel\Offset
         If Temp_Start < 0
-          Temp_Start = 0
+          Difference = Quad_Divide_Floor(Temp_Start, *Input_Channel\ElementSize) * *Input_Channel\ElementSize
+          Temp_Size + Difference
+          Elements = Temp_Size / *Input_Channel\ElementSize
+          Temp_Start - Difference
         EndIf
         
-        Elements = Width / *Object\Zoom_X
-        Temp_Size = Elements * *Input_Channel\ElementSize
         If Temp_Start + Temp_Size > Node::Input_Get_Size(*Node\Input())
           Temp_Size = Node::Input_Get_Size(*Node\Input()) - Temp_Start
           Elements = Temp_Size / *Input_Channel\ElementSize
@@ -499,16 +526,16 @@ Module _Node_View1D
             Node::Input_Get_Data(*Node\Input(), Temp_Start, Temp_Size, *Temp, #Null)
             For i = 0 To Elements-1
               AddElement(*Input_Channel\Value())
-              *Input_Channel\Value()\Position = Temp_Start / *Input_Channel\ElementSize + i
+              *Input_Channel\Value()\Position = (Temp_Start + *Input_Channel\Offset) / *Input_Channel\ElementSize + i
               Select *Input_Channel\ElementType
-                Case #PB_Byte    : *Input_Channel\Value()\Value = PeekB(*Temp+i)
-                Case #PB_Ascii   : *Input_Channel\Value()\Value = PeekA(*Temp+i)
-                Case #PB_Word    : *Input_Channel\Value()\Value = PeekW(*Temp+i*2)
-                Case #PB_Unicode : *Input_Channel\Value()\Value = PeekU(*Temp+i*2)
-                Case #PB_Long    : *Input_Channel\Value()\Value = PeekL(*Temp+i*4)
-                Case #PB_Quad    : *Input_Channel\Value()\Value = PeekQ(*Temp+i*8)
-                Case #PB_Float   : *Input_Channel\Value()\Value = PeekF(*Temp+i*4)
-                Case #PB_Double  : *Input_Channel\Value()\Value = PeekD(*Temp+i*8)
+                Case #Integer_U_1 : *Input_Channel\Value()\Value = PeekA(*Temp+i)
+                Case #Integer_S_1 : *Input_Channel\Value()\Value = PeekB(*Temp+i)
+                Case #Integer_U_2 : *Input_Channel\Value()\Value = PeekU(*Temp+i*2)
+                Case #Integer_S_2 : *Input_Channel\Value()\Value = PeekW(*Temp+i*2)
+                Case #Integer_S_4 : *Input_Channel\Value()\Value = PeekL(*Temp+i*4)
+                Case #Integer_S_8 : *Input_Channel\Value()\Value = PeekQ(*Temp+i*8)
+                Case #Float_4     : *Input_Channel\Value()\Value = PeekF(*Temp+i*4)
+                Case #Float_8     : *Input_Channel\Value()\Value = PeekD(*Temp+i*8)
               EndSelect
             Next
             FreeMemory(*Temp)
@@ -569,10 +596,10 @@ Module _Node_View1D
     ; #### Draw Grid
     Division_Size_X = Pow(10,Round(Log10(1 / *Object\Zoom_X),#PB_Round_Up))*20
     Divisions_X = Round((Width + 100) / *Object\Zoom_X, #PB_Round_Up) / Division_Size_X
-    For ix = 0 To Divisions_X
-      X_M = ix * Division_Size_X * *Object\Zoom_X + *Object\Offset_X - Round(*Object\Offset_X / (Division_Size_X * *Object\Zoom_X), #PB_Round_Down) * (Division_Size_X * *Object\Zoom_X)
-      X_R = (X_M - *Object\Offset_X) / *Object\Zoom_X
-      Text = LSet(StrD(X_R), 13)
+    For ix = -1 To Divisions_X
+      X_M = ix * Division_Size_X * *Object\Zoom_X + *Object\Offset_X - Round(*Object\Offset_X / (Division_Size_X * *Object\Zoom_X), #PB_Round_Down) * (Division_Size_X * *Object\Zoom_X) + #Canvas_Y_Width
+      X_R = (X_M - #Canvas_Y_Width - *Object\Offset_X) / *Object\Zoom_X
+      Text = LSet(RTrim(RTrim(StrD(X_R,3), "0"), "."), 13)
       Text_Width = TextWidth(Text)
       Text_Height = TextHeight(Text)
       DrawRotatedText(X_M-0.9*Text_Width-0.9*Text_Height, 0.9*Text_Width-0.9*Text_Height, Text, 45)
@@ -603,7 +630,7 @@ Module _Node_View1D
     For iy = -Divisions_Y/2-1 To Divisions_Y/2
       Y_M = iy * Division_Size_Y * *Object\Zoom_Y + Height/2 + *Object\Offset_Y - Round(*Object\Offset_Y / (Division_Size_Y * *Object\Zoom_Y), #PB_Round_Down) * (Division_Size_Y * *Object\Zoom_Y)
       Y_R = (Height/2 + *Object\Offset_Y - Y_M) / *Object\Zoom_Y
-      Text = LSet(StrD(Y_R), 13)
+      Text = LSet(RTrim(RTrim(StrD(Y_R,3), "0"), "."), 13)
       Text_Width = TextWidth(Text)
       Text_Height = TextHeight(Text)
       DrawText(Width - Text_Width, Y_M-Text_Height, Text)
@@ -856,7 +883,7 @@ Module _Node_View1D
         ;If *Object\Zoom_X * Temp_Zoom > 1
         ;  Temp_Zoom = 1 / *Object\Zoom_X
         ;EndIf
-        *Object\Offset_X - (Temp_Zoom - 1) * (GetGadgetAttribute(Event_Gadget, #PB_Canvas_MouseX) - *Object\Offset_X)
+        *Object\Offset_X - (Temp_Zoom - 1) * (GetGadgetAttribute(Event_Gadget, #PB_Canvas_MouseX) - #Canvas_Y_Width - *Object\Offset_X)
         ;*Object\Offset_Y - (Temp_Zoom - 1) * (GetGadgetAttribute(Event_Gadget, #PB_Canvas_MouseY) - GadgetHeight(Event_Gadget)/2 - *Object\Offset_Y)
         *Object\Zoom_X * Temp_Zoom
         ;*Object\Zoom_Y * Temp_Zoom
@@ -975,6 +1002,9 @@ Module _Node_View1D
           Organize(*Node)
           Get_Data(*Node)
           Canvas_Redraw(*Node)
+          If GetActiveGadget() <> *Object\Canvas_Data And GetActiveGadget() <> *Object\Canvas_X And GetActiveGadget() <> *Object\Canvas_Y
+            SetActiveGadget(*Object\Canvas_X)
+          EndIf
         EndIf
         
     EndSelect
@@ -983,7 +1013,7 @@ Module _Node_View1D
   EndProcedure
   
   Procedure Window_Event_SizeWindow()
-    Protected Width, Height, Data_Width, Data_Height, ToolBarHeight, Canvas_X_Height, Canvas_Y_Width, ScrollBar_X_Height
+    Protected Width, Height, Data_Width, Data_Height, ToolBarHeight
     Protected Event_Window = EventWindow()
     Protected Event_Gadget = EventGadget()
     Protected Event_Type = EventType()
@@ -1006,20 +1036,15 @@ Module _Node_View1D
     
     ToolBarHeight = ToolBarHeight(*Object\ToolBar)
     
-    Canvas_X_Height = 100
-    Canvas_Y_Width = 100
-    
-    ScrollBar_X_Height = 17
-    
-    Data_Width = Width - Canvas_Y_Width
-    Data_Height = Height - ScrollBar_X_Height - Canvas_X_Height - ToolBarHeight
+    Data_Width = Width - #Canvas_Y_Width
+    Data_Height = Height - #ScrollBar_X_Height - #Canvas_X_Height - ToolBarHeight
     
     ; #### Gadgets
-    ResizeGadget(*Object\ScrollBar_X, Canvas_Y_Width, Height-ScrollBar_X_Height, Data_Width, ScrollBar_X_Height)
+    ResizeGadget(*Object\ScrollBar_X, 0, Height-#ScrollBar_X_Height, Data_Width+#Canvas_Y_Width, #ScrollBar_X_Height)
     
-    ResizeGadget(*Object\Canvas_X, Canvas_Y_Width, ToolBarHeight+Data_Height, Data_Width, Canvas_X_Height)
-    ResizeGadget(*Object\Canvas_Y, 0, ToolBarHeight, Canvas_Y_Width, Data_Height)
-    ResizeGadget(*Object\Canvas_Data, Canvas_Y_Width, ToolBarHeight, Data_Width, Data_Height)
+    ResizeGadget(*Object\Canvas_X, 0, ToolBarHeight+Data_Height, Data_Width+#Canvas_Y_Width, #Canvas_X_Height)
+    ResizeGadget(*Object\Canvas_Y, 0, ToolBarHeight, #Canvas_Y_Width, Data_Height)
+    ResizeGadget(*Object\Canvas_Data, #Canvas_Y_Width, ToolBarHeight, Data_Width, Data_Height)
     
     Organize(*Node)
     Get_Data(*Node)
@@ -1134,7 +1159,7 @@ Module _Node_View1D
   EndProcedure
   
   Procedure Window_Open(*Node.Node::Object)
-    Protected Width, Height, Data_Width, Data_Height, ToolBarHeight, Canvas_X_Height, Canvas_Y_Width, ScrollBar_X_Height
+    Protected Width, Height, Data_Width, Data_Height, ToolBarHeight
     
     If Not *Node
       ProcedureReturn #False
@@ -1162,20 +1187,15 @@ Module _Node_View1D
       
       ToolBarHeight = ToolBarHeight(*Object\ToolBar)
       
-      Canvas_X_Height = 100
-      Canvas_Y_Width = 100
-      
-      ScrollBar_X_Height = 17
-      
-      Data_Width = Width - Canvas_Y_Width
-      Data_Height = Height - ScrollBar_X_Height - Canvas_X_Height - ToolBarHeight
+      Data_Width = Width - #Canvas_Y_Width
+      Data_Height = Height - #ScrollBar_X_Height - #Canvas_X_Height - ToolBarHeight
       
       ; #### Gadgets
-      *Object\ScrollBar_X = ScrollBarGadget(#PB_Any, Canvas_Y_Width, Height-ScrollBar_X_Height, Data_Width, ScrollBar_X_Height, 0, 10, 1)
+      *Object\ScrollBar_X = ScrollBarGadget(#PB_Any, 0, Height-#ScrollBar_X_Height, Data_Width+#Canvas_Y_Width, #ScrollBar_X_Height, 0, 10, 1)
       
-      *Object\Canvas_X = CanvasGadget(#PB_Any, Canvas_Y_Width, ToolBarHeight+Data_Height, Data_Width, Canvas_X_Height, #PB_Canvas_Keyboard)
-      *Object\Canvas_Y = CanvasGadget(#PB_Any, 0, ToolBarHeight, Canvas_Y_Width, Data_Height, #PB_Canvas_Keyboard)
-      *Object\Canvas_Data = CanvasGadget(#PB_Any, Canvas_Y_Width, ToolBarHeight, Data_Width, Data_Height, #PB_Canvas_Keyboard)
+      *Object\Canvas_X = CanvasGadget(#PB_Any, 0, ToolBarHeight+Data_Height, Data_Width+#Canvas_Y_Width, #Canvas_X_Height, #PB_Canvas_Keyboard | #PB_Canvas_DrawFocus)
+      *Object\Canvas_Y = CanvasGadget(#PB_Any, 0, ToolBarHeight, #Canvas_Y_Width, Data_Height, #PB_Canvas_Keyboard | #PB_Canvas_DrawFocus)
+      *Object\Canvas_Data = CanvasGadget(#PB_Any, #Canvas_Y_Width, ToolBarHeight, Data_Width, Data_Height, #PB_Canvas_Keyboard)
       
       BindEvent(#PB_Event_SizeWindow, @Window_Event_SizeWindow(), *Object\Window\ID)
       ;BindEvent(#PB_Event_Repaint, @Window_Event_SizeWindow(), *Object\Window\ID)
@@ -1292,7 +1312,7 @@ Module _Node_View1D
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1151
-; FirstLine = 1141
+; CursorPosition = 537
+; FirstLine = 534
 ; Folding = ----
 ; EnableXP

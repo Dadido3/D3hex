@@ -2177,6 +2177,7 @@ Module _Node_Editor
           Organize(*Node)
           Get_Data(*Node)
           Canvas_Redraw(*Node)
+          SetActiveGadget(*Object\Canvas)
         EndIf
         
     EndSelect
@@ -2465,8 +2466,8 @@ Module _Node_Editor
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 2334
-; FirstLine = 2318
+; CursorPosition = 2178
+; FirstLine = 2140
 ; Folding = -------
 ; EnableUnicode
 ; EnableXP

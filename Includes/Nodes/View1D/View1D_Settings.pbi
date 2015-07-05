@@ -50,7 +50,6 @@ Structure Settings_Window
   Text_In.i [5]
   ComboBox_In.i
   Spin_In.i
-  Button_In_Set.i
   Button_In_Add.i
   Button_In_Delete.i
 EndStructure
@@ -113,6 +112,11 @@ Procedure Settings_Update_ListIcon(*Node.Node::Object)
     EndIf
   Next
   
+  If GetGadgetState(*Settings_Window\ListIcon_In) < 0
+    SetGadgetState(*Settings_Window\ListIcon_In, 0)
+  EndIf
+  *Settings_Window\Update_Data = #True
+  
   ProcedureReturn #True
 EndProcedure
 
@@ -135,46 +139,50 @@ Procedure Settings_Update_Data(*Node.Node::Object)
   
   If GetGadgetState(*Settings_Window\ListIcon_In) >= 0
     *Input = GetGadgetItemData(*Settings_Window\ListIcon_In, GetGadgetState(*Settings_Window\ListIcon_In))
+    DisableGadget(*Settings_Window\CheckBox_In, #False)
+    DisableGadget(*Settings_Window\ComboBox_In, #False)
+    DisableGadget(*Settings_Window\Spin_In, #False)
+    DisableGadget(*Settings_Window\Button_In_Delete, #False)
+  Else
+    DisableGadget(*Settings_Window\CheckBox_In, #True)      : SetGadgetState(*Settings_Window\CheckBox_In, #False)
+    DisableGadget(*Settings_Window\ComboBox_In, #True)      : SetGadgetState(*Settings_Window\ComboBox_In, -1)
+    DisableGadget(*Settings_Window\Spin_In, #True)          : SetGadgetState(*Settings_Window\Spin_In, 0)
+    DisableGadget(*Settings_Window\Button_In_Delete, #True)
   EndIf
   ForEach *Node\Input()
     If *Node\Input() = *Input
-      For i = 0 To CountGadgetItems(*Settings_Window\ListIcon_In) - 1
-        If GetGadgetItemData(*Settings_Window\ListIcon_In, i) = *Input
-          SetGadgetState(*Settings_Window\ListIcon_In, i)
-          
-          *Input_Channel = *Input\Custom_Data
-          If Not *Input_Channel
-            ProcedureReturn #False
-          EndIf
-          
-          SetGadgetData(*Settings_Window\Canvas_In, *Input_Channel\Color)
-          If StartDrawing(CanvasOutput(*Settings_Window\Canvas_In))
-            Box(0, 0, GadgetWidth(*Settings_Window\Canvas_In), GadgetHeight(*Settings_Window\Canvas_In), GetGadgetData(*Settings_Window\Canvas_In))
-            StopDrawing()
-          EndIf
-          
-          SetGadgetState(*Settings_Window\CheckBox_In, *Input_Channel\Manually)
-          
-          SetGadgetState(*Settings_Window\Spin_In, *Input_Channel\Offset)
-          For i = 0 To CountGadgetItems(*Settings_Window\ComboBox_In) - 1
-            If GetGadgetItemData(*Settings_Window\ComboBox_In, i) = *Input_Channel\ElementType
-              SetGadgetState(*Settings_Window\ComboBox_In, i)
-              Break
-            EndIf
-          Next
-          If GetGadgetState(*Settings_Window\CheckBox_In)
-            ;DisableGadget(*Settings_Window\Canvas_In, #False)
-            DisableGadget(*Settings_Window\ComboBox_In, #False)
-            DisableGadget(*Settings_Window\Spin_In, #False)
-          Else
-            ;DisableGadget(*Settings_Window\Canvas_In, #True)
-            DisableGadget(*Settings_Window\ComboBox_In, #True)
-            DisableGadget(*Settings_Window\Spin_In, #True)
-          EndIf
-          
-          ProcedureReturn #True
+      
+      *Input_Channel = *Input\Custom_Data
+      If Not *Input_Channel
+        ProcedureReturn #False
+      EndIf
+      
+      SetGadgetData(*Settings_Window\Canvas_In, *Input_Channel\Color)
+      If StartDrawing(CanvasOutput(*Settings_Window\Canvas_In))
+        Box(0, 0, GadgetWidth(*Settings_Window\Canvas_In), GadgetHeight(*Settings_Window\Canvas_In), GetGadgetData(*Settings_Window\Canvas_In))
+        StopDrawing()
+      EndIf
+      
+      SetGadgetState(*Settings_Window\CheckBox_In, *Input_Channel\Manually)
+      
+      SetGadgetState(*Settings_Window\Spin_In, *Input_Channel\Offset)
+      For i = 0 To CountGadgetItems(*Settings_Window\ComboBox_In) - 1
+        If GetGadgetItemData(*Settings_Window\ComboBox_In, i) = *Input_Channel\ElementType
+          SetGadgetState(*Settings_Window\ComboBox_In, i)
+          Break
         EndIf
       Next
+      If GetGadgetState(*Settings_Window\CheckBox_In)
+        ;DisableGadget(*Settings_Window\Canvas_In, #False)
+        DisableGadget(*Settings_Window\ComboBox_In, #False)
+        DisableGadget(*Settings_Window\Spin_In, #False)
+      Else
+        ;DisableGadget(*Settings_Window\Canvas_In, #True)
+        DisableGadget(*Settings_Window\ComboBox_In, #True)
+        DisableGadget(*Settings_Window\Spin_In, #True)
+      EndIf
+      
+      ProcedureReturn #True
     EndIf
   Next
   
@@ -207,88 +215,18 @@ Procedure Settings_Window_Event_ListIcon_In()
   
 EndProcedure
 
-Procedure Settings_Window_Event_CheckBox_In()
+Procedure Settings_Window_Event_Value_Change()
   Protected Event_Window = EventWindow()
   Protected Event_Gadget = EventGadget()
   Protected Event_Type = EventType()
   
-  Protected *Window.Window::Object = Window::Get(Event_Window)
-  If Not *Window
-    ProcedureReturn 
-  EndIf
-  Protected *Node.Node::Object = *Window\Node
-  If Not *Node
-    ProcedureReturn
-  EndIf
-  Protected *Object.Object = *Node\Custom_Data
-  If Not *Object
-    ProcedureReturn
-  EndIf
-  Protected *Settings_Window.Settings_Window = *Object\Settings_Window
-  If Not *Settings_Window
-    ProcedureReturn
-  EndIf
-  
-  If GetGadgetState(*Settings_Window\CheckBox_In)
-    DisableGadget(*Settings_Window\Canvas_In, #False)
-    DisableGadget(*Settings_Window\ComboBox_In, #False)
-    DisableGadget(*Settings_Window\Spin_In, #False)
-  Else
-    DisableGadget(*Settings_Window\Canvas_In, #True)
-    DisableGadget(*Settings_Window\ComboBox_In, #True)
-    DisableGadget(*Settings_Window\Spin_In, #True)
-  EndIf
-  
-EndProcedure
-
-Procedure Settings_Window_Event_Canvas_In()
-  Protected Event_Window = EventWindow()
-  Protected Event_Gadget = EventGadget()
-  Protected Event_Type = EventType()
-  
-  Protected *Input.Node::Conn_Input
+  Protected *Node_Input.Node::Conn_Input
   Protected *Input_Channel.Input_Channel
+  Protected Result
   
   Protected *Window.Window::Object = Window::Get(Event_Window)
   If Not *Window
-    ProcedureReturn 
-  EndIf
-  Protected *Node.Node::Object = *Window\Node
-  If Not *Node
     ProcedureReturn
-  EndIf
-  Protected *Object.Object = *Node\Custom_Data
-  If Not *Object
-    ProcedureReturn
-  EndIf
-  Protected *Settings_Window.Settings_Window = *Object\Settings_Window
-  If Not *Settings_Window
-    ProcedureReturn
-  EndIf
-  
-  Select Event_Type
-    Case #PB_EventType_LeftClick
-      SetGadgetData(*Settings_Window\Canvas_In, ColorRequester(GetGadgetData(*Settings_Window\Canvas_In)))
-      If StartDrawing(CanvasOutput(*Settings_Window\Canvas_In))
-        Box(0, 0, GadgetWidth(*Settings_Window\Canvas_In), GadgetHeight(*Settings_Window\Canvas_In), GetGadgetData(*Settings_Window\Canvas_In))
-        StopDrawing()
-      EndIf
-      
-  EndSelect
-  
-EndProcedure
-
-Procedure Settings_Window_Event_Button_In_Set()
-  Protected Event_Window = EventWindow()
-  Protected Event_Gadget = EventGadget()
-  Protected Event_Type = EventType()
-  
-  Protected *Input.Node::Conn_Input
-  Protected *Input_Channel.Input_Channel
-  
-  Protected *Window.Window::Object = Window::Get(Event_Window)
-  If Not *Window
-    ProcedureReturn 
   EndIf
   Protected *Node.Node::Object = *Window\Node
   If Not *Node
@@ -304,32 +242,53 @@ Procedure Settings_Window_Event_Button_In_Set()
   EndIf
   
   If GetGadgetState(*Settings_Window\ListIcon_In) >= 0
-    *Input = GetGadgetItemData(*Settings_Window\ListIcon_In, GetGadgetState(*Settings_Window\ListIcon_In))
+    *Node_Input = GetGadgetItemData(*Settings_Window\ListIcon_In, GetGadgetState(*Settings_Window\ListIcon_In))
   EndIf
   ForEach *Node\Input()
-    If *Node\Input() = *Input
-      *Input_Channel = *Input\Custom_Data
+    If *Node\Input() = *Node_Input
+      *Input_Channel = *Node_Input\Custom_Data
       If Not *Input_Channel
-        ProcedureReturn #False
+        ProcedureReturn
       EndIf
       
-      *Input_Channel\Manually = GetGadgetState(*Settings_Window\CheckBox_In)
-      If GetGadgetState(*Settings_Window\ComboBox_In) >= 0
-        Select GetGadgetItemData(*Settings_Window\ComboBox_In, GetGadgetState(*Settings_Window\ComboBox_In))
-          Case #PB_Ascii    : *Input_Channel\ElementSize = 1 : *Input_Channel\ElementType = #PB_Ascii
-          Case #PB_Byte     : *Input_Channel\ElementSize = 1 : *Input_Channel\ElementType = #PB_Byte
-          Case #PB_Unicode  : *Input_Channel\ElementSize = 2 : *Input_Channel\ElementType = #PB_Unicode
-          Case #PB_Word     : *Input_Channel\ElementSize = 2 : *Input_Channel\ElementType = #PB_Word
-          Case #PB_Long     : *Input_Channel\ElementSize = 4 : *Input_Channel\ElementType = #PB_Long
-          Case #PB_Quad     : *Input_Channel\ElementSize = 8 : *Input_Channel\ElementType = #PB_Quad
-          Case #PB_Float    : *Input_Channel\ElementSize = 4 : *Input_Channel\ElementType = #PB_Float
-          Case #PB_Double   : *Input_Channel\ElementSize = 8 : *Input_Channel\ElementType = #PB_Double
-        EndSelect
-      EndIf
-      
-      *Input_Channel\Color = GetGadgetData(*Settings_Window\Canvas_In)
-      
-      *Input_Channel\Offset = GetGadgetState(*Settings_Window\Spin_In)
+      Select Event_Gadget
+        Case *Settings_Window\CheckBox_In
+          *Input_Channel\Manually = GetGadgetState(*Settings_Window\CheckBox_In)
+          
+          If GetGadgetState(*Settings_Window\CheckBox_In)
+            DisableGadget(*Settings_Window\Canvas_In, #False)
+            DisableGadget(*Settings_Window\ComboBox_In, #False)
+            DisableGadget(*Settings_Window\Spin_In, #False)
+          Else
+            DisableGadget(*Settings_Window\Canvas_In, #True)
+            DisableGadget(*Settings_Window\ComboBox_In, #True)
+            DisableGadget(*Settings_Window\Spin_In, #True)
+          EndIf
+          
+        Case *Settings_Window\Canvas_In
+          Select Event_Type
+            Case #PB_EventType_LeftClick
+              Result = ColorRequester(GetGadgetData(*Settings_Window\Canvas_In))
+              If Result >= 0
+                *Input_Channel\Color = Result
+                SetGadgetData(*Settings_Window\Canvas_In, Result)
+                If StartDrawing(CanvasOutput(*Settings_Window\Canvas_In))
+                  Box(0, 0, GadgetWidth(*Settings_Window\Canvas_In), GadgetHeight(*Settings_Window\Canvas_In), GetGadgetData(*Settings_Window\Canvas_In))
+                  StopDrawing()
+                EndIf
+              EndIf
+              
+          EndSelect
+          
+        Case *Settings_Window\ComboBox_In
+          If GetGadgetState(*Settings_Window\ComboBox_In) >= 0
+            *Input_Channel\ElementType = GetGadgetItemData(*Settings_Window\ComboBox_In, GetGadgetState(*Settings_Window\ComboBox_In))
+          EndIf
+          
+        Case *Settings_Window\Spin_In
+          *Input_Channel\Offset = GetGadgetState(*Settings_Window\Spin_In)
+          
+      EndSelect
       
       *Object\Redraw = #True
       
@@ -367,8 +326,11 @@ Procedure Settings_Window_Event_Button_In_Add()
   
   ; #### Add Input
   *Input = Node::Input_Add(*Node)
-  *Input\Custom_Data = AllocateStructure(Input)
+  *Input\Custom_Data = AllocateStructure(Input_Channel)
   *Input\Function_Event = @Input_Event()
+  
+  *Input_Channel = *Input\Custom_Data
+  *Input_Channel\ElementType = #Integer_U_1
   
   *Settings_Window\Update_ListIcon = #True
 EndProcedure
@@ -477,26 +439,26 @@ Procedure Settings_Window_Open(*Node.Node::Object)
     
     *Settings_Window\Text_In[1] = TextGadget(#PB_Any, 20, 300, 50, 20, "Type:", #PB_Text_Right)
     *Settings_Window\ComboBox_In = ComboBoxGadget(#PB_Any, 80, 300, 170, 20)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 0, "uint8")  : SetGadgetItemData(*Settings_Window\ComboBox_In, 0, #PB_Ascii)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 1, "int8")   : SetGadgetItemData(*Settings_Window\ComboBox_In, 1, #PB_Byte)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 2, "uint16") : SetGadgetItemData(*Settings_Window\ComboBox_In, 2, #PB_Unicode)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 3, "int16")  : SetGadgetItemData(*Settings_Window\ComboBox_In, 3, #PB_Word)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 4, "int32")  : SetGadgetItemData(*Settings_Window\ComboBox_In, 4, #PB_Long)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 5, "int64")  : SetGadgetItemData(*Settings_Window\ComboBox_In, 5, #PB_Quad)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 6, "float32"): SetGadgetItemData(*Settings_Window\ComboBox_In, 6, #PB_Float)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 7, "float64"): SetGadgetItemData(*Settings_Window\ComboBox_In, 7, #PB_Double)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 0, "uint8")  : SetGadgetItemData(*Settings_Window\ComboBox_In, 0, #Integer_U_1)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 1, "int8")   : SetGadgetItemData(*Settings_Window\ComboBox_In, 1, #Integer_S_1)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 2, "uint16") : SetGadgetItemData(*Settings_Window\ComboBox_In, 2, #Integer_U_2)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 3, "int16")  : SetGadgetItemData(*Settings_Window\ComboBox_In, 3, #Integer_S_2)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 4, "int32")  : SetGadgetItemData(*Settings_Window\ComboBox_In, 4, #Integer_S_4)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 5, "int64")  : SetGadgetItemData(*Settings_Window\ComboBox_In, 5, #Integer_S_8)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 6, "float32"): SetGadgetItemData(*Settings_Window\ComboBox_In, 6, #Float_4)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 7, "float64"): SetGadgetItemData(*Settings_Window\ComboBox_In, 7, #Float_8)
     
     *Settings_Window\Text_In[2] = TextGadget(#PB_Any, 20, 330, 50, 20, "Offset:", #PB_Text_Right)
-    *Settings_Window\Spin_In = SpinGadget(#PB_Any, 80, 330, 170, 20, 0, 1000000000, #PB_Spin_Numeric)
+    *Settings_Window\Spin_In = SpinGadget(#PB_Any, 80, 330, 170, 20, -2147483648, 2147483647, #PB_Spin_Numeric)
     ;*Settings_Window\Button_In_Color = ButtonGadget(#PB_Any, )
-    *Settings_Window\Button_In_Set = ButtonGadget(#PB_Any, 20, 360, 70, 30, "Set")
     *Settings_Window\Button_In_Add = ButtonGadget(#PB_Any, 100, 360, 70, 30, "Add")
     *Settings_Window\Button_In_Delete = ButtonGadget(#PB_Any, 180, 360, 70, 30, "Delete")
     
     BindGadgetEvent(*Settings_Window\ListIcon_In, @Settings_Window_Event_ListIcon_In())
-    BindGadgetEvent(*Settings_Window\CheckBox_in, @Settings_Window_Event_CheckBox_In())
-    BindGadgetEvent(*Settings_Window\Canvas_In, @Settings_Window_Event_Canvas_In())
-    BindGadgetEvent(*Settings_Window\Button_In_Set, @Settings_Window_Event_Button_In_Set())
+    BindGadgetEvent(*Settings_Window\CheckBox_in, @Settings_Window_Event_Value_Change())
+    BindGadgetEvent(*Settings_Window\Canvas_In, @Settings_Window_Event_Value_Change())
+    BindGadgetEvent(*Settings_Window\ComboBox_In, @Settings_Window_Event_Value_Change())
+    BindGadgetEvent(*Settings_Window\Spin_In, @Settings_Window_Event_Value_Change())
     BindGadgetEvent(*Settings_Window\Button_In_Add, @Settings_Window_Event_Button_In_Add())
     BindGadgetEvent(*Settings_Window\Button_In_Delete, @Settings_Window_Event_Button_In_Delete())
     
@@ -524,9 +486,10 @@ Procedure Settings_Window_Close(*Node.Node::Object)
   If *Settings_Window\Window
     
     UnbindGadgetEvent(*Settings_Window\ListIcon_In, @Settings_Window_Event_ListIcon_In())
-    UnbindGadgetEvent(*Settings_Window\CheckBox_in, @Settings_Window_Event_CheckBox_In())
-    UnbindGadgetEvent(*Settings_Window\Canvas_In, @Settings_Window_Event_Canvas_In())
-    UnbindGadgetEvent(*Settings_Window\Button_In_Set, @Settings_Window_Event_Button_In_Set())
+    UnbindGadgetEvent(*Settings_Window\CheckBox_in, @Settings_Window_Event_Value_Change())
+    UnbindGadgetEvent(*Settings_Window\Canvas_In, @Settings_Window_Event_Value_Change())
+    UnbindGadgetEvent(*Settings_Window\ComboBox_In, @Settings_Window_Event_Value_Change())
+    UnbindGadgetEvent(*Settings_Window\Spin_In, @Settings_Window_Event_Value_Change())
     UnbindGadgetEvent(*Settings_Window\Button_In_Add, @Settings_Window_Event_Button_In_Add())
     UnbindGadgetEvent(*Settings_Window\Button_In_Delete, @Settings_Window_Event_Button_In_Delete())
     
@@ -575,7 +538,7 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 462
-; FirstLine = 452
-; Folding = ---
+; CursorPosition = 428
+; FirstLine = 416
+; Folding = --
 ; EnableXP

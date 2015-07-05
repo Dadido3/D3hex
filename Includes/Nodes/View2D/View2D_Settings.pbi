@@ -112,6 +112,11 @@ Procedure Settings_Update_ListIcon(*Node.Node::Object)
     EndIf
   Next
   
+  If GetGadgetState(*Settings_Window\ListIcon_In) < 0
+    SetGadgetState(*Settings_Window\ListIcon_In, 0)
+  EndIf
+  *Settings_Window\Update_Data = #True
+  
   ProcedureReturn #True
 EndProcedure
 
@@ -134,52 +139,62 @@ Procedure Settings_Update_Data(*Node.Node::Object)
   
   If GetGadgetState(*Settings_Window\ListIcon_In) >= 0
     *Node_Input = GetGadgetItemData(*Settings_Window\ListIcon_In, GetGadgetState(*Settings_Window\ListIcon_In))
+    DisableGadget(*Settings_Window\CheckBox_In[0], #False)
+    DisableGadget(*Settings_Window\ComboBox_In, #False)
+    DisableGadget(*Settings_Window\Spin_In[0], #False)
+    DisableGadget(*Settings_Window\Spin_In[1], #False)
+    DisableGadget(*Settings_Window\Spin_In[2], #False)
+    DisableGadget(*Settings_Window\CheckBox_In[1], #False)
+    DisableGadget(*Settings_Window\Button_In_Delete, #False)
+  Else
+    DisableGadget(*Settings_Window\CheckBox_In[0], #True)   : SetGadgetState(*Settings_Window\CheckBox_In[0], #False)
+    DisableGadget(*Settings_Window\ComboBox_In, #True)      : SetGadgetState(*Settings_Window\ComboBox_In, -1)
+    DisableGadget(*Settings_Window\Spin_In[0], #True)       : SetGadgetState(*Settings_Window\Spin_In[0], 0)
+    DisableGadget(*Settings_Window\Spin_In[1], #True)       : SetGadgetState(*Settings_Window\Spin_In[1], 0)
+    DisableGadget(*Settings_Window\Spin_In[2], #True)       : SetGadgetState(*Settings_Window\Spin_In[2], 0)
+    DisableGadget(*Settings_Window\CheckBox_In[1], #True)   : SetGadgetState(*Settings_Window\CheckBox_In[1], #False)
+    DisableGadget(*Settings_Window\Button_In_Delete, #True)
   EndIf
   ForEach *Node\Input()
     If *Node\Input() = *Node_Input
-      For i = 0 To CountGadgetItems(*Settings_Window\ListIcon_In) - 1
-        If GetGadgetItemData(*Settings_Window\ListIcon_In, i) = *Node_Input
-          SetGadgetState(*Settings_Window\ListIcon_In, i)
-          
-          *Input_Channel = *Node_Input\Custom_Data
-          If Not *Input_Channel
-            ProcedureReturn #False
-          EndIf
-          
-          SetGadgetState(*Settings_Window\CheckBox_In[0], *Input_Channel\Manually)
-          
-          SetGadgetState(*Settings_Window\Spin_In[0], *Input_Channel\Width)
-          
-          SetGadgetState(*Settings_Window\Spin_In[1], *Input_Channel\Offset)
-          
-          SetGadgetState(*Settings_Window\Spin_In[2], *Input_Channel\Line_Offset)
-          
-          SetGadgetState(*Settings_Window\CheckBox_In[1], *Input_Channel\Reverse_Y)
-          
-          For i = 0 To CountGadgetItems(*Settings_Window\ComboBox_In) - 1
-            If GetGadgetItemData(*Settings_Window\ComboBox_In, i) = *Input_Channel\Pixel_Format
-              SetGadgetState(*Settings_Window\ComboBox_In, i)
-              Break
-            EndIf
-          Next
-          
-          If GetGadgetState(*Settings_Window\CheckBox_In[0])
-            DisableGadget(*Settings_Window\ComboBox_In, #False)
-            DisableGadget(*Settings_Window\Spin_In[0], #False)
-            DisableGadget(*Settings_Window\Spin_In[1], #False)
-            DisableGadget(*Settings_Window\Spin_In[2], #False)
-            DisableGadget(*Settings_Window\CheckBox_In[1], #False)
-          Else
-            DisableGadget(*Settings_Window\ComboBox_In, #True)
-            DisableGadget(*Settings_Window\Spin_In[0], #True)
-            DisableGadget(*Settings_Window\Spin_In[1], #True)
-            DisableGadget(*Settings_Window\Spin_In[2], #True)
-            DisableGadget(*Settings_Window\CheckBox_In[1], #True)
-          EndIf
-          
-          ProcedureReturn #True
+      
+      *Input_Channel = *Node_Input\Custom_Data
+      If Not *Input_Channel
+        ProcedureReturn #False
+      EndIf
+      
+      SetGadgetState(*Settings_Window\CheckBox_In[0], *Input_Channel\Manually)
+      
+      SetGadgetState(*Settings_Window\Spin_In[0], *Input_Channel\Width)
+      
+      SetGadgetState(*Settings_Window\Spin_In[1], *Input_Channel\Offset)
+      
+      SetGadgetState(*Settings_Window\Spin_In[2], *Input_Channel\Line_Offset)
+      
+      SetGadgetState(*Settings_Window\CheckBox_In[1], *Input_Channel\Reverse_Y)
+      
+      For i = 0 To CountGadgetItems(*Settings_Window\ComboBox_In) - 1
+        If GetGadgetItemData(*Settings_Window\ComboBox_In, i) = *Input_Channel\Pixel_Format
+          SetGadgetState(*Settings_Window\ComboBox_In, i)
+          Break
         EndIf
       Next
+      
+      If GetGadgetState(*Settings_Window\CheckBox_In[0])
+        DisableGadget(*Settings_Window\ComboBox_In, #False)
+        DisableGadget(*Settings_Window\Spin_In[0], #False)
+        DisableGadget(*Settings_Window\Spin_In[1], #False)
+        DisableGadget(*Settings_Window\Spin_In[2], #False)
+        DisableGadget(*Settings_Window\CheckBox_In[1], #False)
+      Else
+        DisableGadget(*Settings_Window\ComboBox_In, #True)
+        DisableGadget(*Settings_Window\Spin_In[0], #True)
+        DisableGadget(*Settings_Window\Spin_In[1], #True)
+        DisableGadget(*Settings_Window\Spin_In[2], #True)
+        DisableGadget(*Settings_Window\CheckBox_In[1], #True)
+      EndIf
+      
+      ProcedureReturn #True
     EndIf
   Next
   
@@ -208,7 +223,8 @@ Procedure Settings_Window_Event_ListIcon_In()
     ProcedureReturn
   EndIf
   
-  Settings_Update_Data(*Node)
+  *Settings_Window\Update_Data = #True
+  ;Settings_Update_Data(*Node)
   
 EndProcedure
 
@@ -290,7 +306,9 @@ Procedure Settings_Window_Event_Value_Change()
       
       Bytes_Per_Line_2 = (*Input_Channel\Width * *Input_Channel\Bits_Per_Pixel) / 8 + *Input_Channel\Line_Offset
       
-      *Object\Offset_Y = (*Object\Offset_Y) * Bytes_Per_Line_1 / Bytes_Per_Line_2
+      If Bytes_Per_Line_1 > 0 And Bytes_Per_Line_2 > 0
+        *Object\Offset_Y = (*Object\Offset_Y - GadgetHeight(*Object\Canvas_Data)/2) * Bytes_Per_Line_1 / Bytes_Per_Line_2 + GadgetHeight(*Object\Canvas_Data)/2
+      EndIf
       
       *Object\Redraw = #True
       
@@ -332,7 +350,7 @@ Procedure Settings_Window_Event_Button_In_Add()
   
   ; #### Add Input
   *Node_Input = Node::Input_Add(*Node)
-  *Node_Input\Custom_Data = AllocateStructure(Input)
+  *Node_Input\Custom_Data = AllocateStructure(Input_Channel)
   *Node_Input\Function_Event = @Input_Event()
   
   *Input_Channel = *Node_Input\Custom_Data
@@ -461,23 +479,23 @@ Procedure Settings_Window_Open(*Node.Node::Object)
     
     *Settings_Window\Text_In[1] = TextGadget(#PB_Any, 20, 300, 50, 20, "Type:", #PB_Text_Right)
     *Settings_Window\ComboBox_In = ComboBoxGadget(#PB_Any, 80, 300, 170, 20)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 0,  "1 bbp Gray")        : SetGadgetItemData(*Settings_Window\ComboBox_In, 0,  #PixelFormat_1_Gray)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 1,  "1 bbp Indexed")     : SetGadgetItemData(*Settings_Window\ComboBox_In, 1,  #PixelFormat_1_Indexed)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 2,  "2 bbp Gray")        : SetGadgetItemData(*Settings_Window\ComboBox_In, 2,  #PixelFormat_2_Gray)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 3,  "2 bbp Indexed")     : SetGadgetItemData(*Settings_Window\ComboBox_In, 3,  #PixelFormat_2_Indexed)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 4,  "4 bbp Gray")        : SetGadgetItemData(*Settings_Window\ComboBox_In, 4,  #PixelFormat_4_Gray)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 5,  "4 bbp Indexed")     : SetGadgetItemData(*Settings_Window\ComboBox_In, 5,  #PixelFormat_4_Indexed)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 6,  "8 bbp Gray")        : SetGadgetItemData(*Settings_Window\ComboBox_In, 6,  #PixelFormat_8_Gray)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 7,  "8 bbp Indexed")     : SetGadgetItemData(*Settings_Window\ComboBox_In, 7,  #PixelFormat_8_Indexed)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 8,  "16 bbp Gray")       : SetGadgetItemData(*Settings_Window\ComboBox_In, 8,  #PixelFormat_16_Gray)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 9,  "16 bbp RGB 555")    : SetGadgetItemData(*Settings_Window\ComboBox_In, 9,  #PixelFormat_16_RGB_555)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 10, "16 bbp RGB 565")    : SetGadgetItemData(*Settings_Window\ComboBox_In, 10, #PixelFormat_16_RGB_565)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 11, "16 bbp ARGB 1555")  : SetGadgetItemData(*Settings_Window\ComboBox_In, 11, #PixelFormat_16_ARGB_1555)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 12, "16 bbp Indexed")    : SetGadgetItemData(*Settings_Window\ComboBox_In, 12, #PixelFormat_16_Indexed)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 13, "24 bbp RGB")        : SetGadgetItemData(*Settings_Window\ComboBox_In, 13, #PixelFormat_24_RGB)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 14, "24 bbp BGR")        : SetGadgetItemData(*Settings_Window\ComboBox_In, 14, #PixelFormat_24_BGR)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 15, "32 bbp ARGB")       : SetGadgetItemData(*Settings_Window\ComboBox_In, 15, #PixelFormat_32_ARGB)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 16, "32 bbp ABGR")       : SetGadgetItemData(*Settings_Window\ComboBox_In, 16, #PixelFormat_32_ABGR)
+    ;AddGadgetItem(*Settings_Window\ComboBox_In, 0,  "1 bbp Gray")        : SetGadgetItemData(*Settings_Window\ComboBox_In, 0,  #PixelFormat_1_Gray)
+    ;AddGadgetItem(*Settings_Window\ComboBox_In, 1,  "1 bbp Indexed")     : SetGadgetItemData(*Settings_Window\ComboBox_In, 1,  #PixelFormat_1_Indexed)
+    ;AddGadgetItem(*Settings_Window\ComboBox_In, 2,  "2 bbp Gray")        : SetGadgetItemData(*Settings_Window\ComboBox_In, 2,  #PixelFormat_2_Gray)
+    ;AddGadgetItem(*Settings_Window\ComboBox_In, 3,  "2 bbp Indexed")     : SetGadgetItemData(*Settings_Window\ComboBox_In, 3,  #PixelFormat_2_Indexed)
+    ;AddGadgetItem(*Settings_Window\ComboBox_In, 4,  "4 bbp Gray")        : SetGadgetItemData(*Settings_Window\ComboBox_In, 4,  #PixelFormat_4_Gray)
+    ;AddGadgetItem(*Settings_Window\ComboBox_In, 5,  "4 bbp Indexed")     : SetGadgetItemData(*Settings_Window\ComboBox_In, 5,  #PixelFormat_4_Indexed)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 0,  "8 bbp Gray")        : SetGadgetItemData(*Settings_Window\ComboBox_In, 0,  #PixelFormat_8_Gray)
+    ;AddGadgetItem(*Settings_Window\ComboBox_In, 7,  "8 bbp Indexed")     : SetGadgetItemData(*Settings_Window\ComboBox_In, 7,  #PixelFormat_8_Indexed)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 1,  "16 bbp Gray")       : SetGadgetItemData(*Settings_Window\ComboBox_In, 1,  #PixelFormat_16_Gray)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 2,  "16 bbp RGB 555")    : SetGadgetItemData(*Settings_Window\ComboBox_In, 2,  #PixelFormat_16_RGB_555)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 3, "16 bbp RGB 565")     : SetGadgetItemData(*Settings_Window\ComboBox_In, 3, #PixelFormat_16_RGB_565)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 4, "16 bbp ARGB 1555")   : SetGadgetItemData(*Settings_Window\ComboBox_In, 4, #PixelFormat_16_ARGB_1555)
+    ;AddGadgetItem(*Settings_Window\ComboBox_In, 12, "16 bbp Indexed")    : SetGadgetItemData(*Settings_Window\ComboBox_In, 12, #PixelFormat_16_Indexed)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 5, "24 bbp RGB")         : SetGadgetItemData(*Settings_Window\ComboBox_In, 5, #PixelFormat_24_RGB)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 6, "24 bbp BGR")         : SetGadgetItemData(*Settings_Window\ComboBox_In, 6, #PixelFormat_24_BGR)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 7, "32 bbp ARGB")        : SetGadgetItemData(*Settings_Window\ComboBox_In, 7, #PixelFormat_32_ARGB)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 8, "32 bbp ABGR")        : SetGadgetItemData(*Settings_Window\ComboBox_In, 8, #PixelFormat_32_ABGR)
     
     *Settings_Window\Text_In[2] = TextGadget(#PB_Any, 20, 330, 50, 20, "Offset:", #PB_Text_Right)
     *Settings_Window\Spin_In[1] = SpinGadget(#PB_Any, 80, 330, 170, 20, -2147483648, 2147483647, #PB_Spin_Numeric)
@@ -579,7 +597,7 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 445
-; FirstLine = 438
+; CursorPosition = 155
+; FirstLine = 122
 ; Folding = --
 ; EnableXP
