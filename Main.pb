@@ -152,7 +152,7 @@
 ;   - Node "Editor": Fixed writing at the end of data
 ;   - Node "View2D": Added standard configuration
 ;   
-; - V0.964 (INDEV)
+; - V0.965 (INDEV)
 ;   - Node "File": Ignore result of File-requesters if it is ""
 ;   - Network_Terminal:
 ;     - Data_Set is not triggering an update event
@@ -174,6 +174,7 @@
 ;   - Files can be dragged inside the Node-Editor
 ;   - Window::Create(...) has now a flag variable
 ;   - Bugfixing and improvements in View1D and View2D
+;     - Added uint32 and uint64 to View1D
 ;   - Many other small changes and refactoring
 ;   
 ; ##################################################### Begin #######################################################
@@ -202,7 +203,7 @@ XIncludeFile "Includes/Icons.pbi"
 DeclareModule Main
   EnableExplicit
   ; ################################################### Constants ###################################################
-  #Version = 0964
+  #Version = 0965
   
   Enumeration 1
     #Menu_Dummy
@@ -718,8 +719,8 @@ Module Main
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 180
-; FirstLine = 168
+; CursorPosition = 175
+; FirstLine = 135
 ; Folding = --
 ; EnableUnicode
 ; EnableXP

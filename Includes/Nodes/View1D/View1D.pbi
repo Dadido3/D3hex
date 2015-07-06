@@ -449,7 +449,9 @@ Module _Node_View1D
           Case #Integer_S_1 : *Input_Channel\ElementSize = 1
           Case #Integer_U_2 : *Input_Channel\ElementSize = 2
           Case #Integer_S_2 : *Input_Channel\ElementSize = 2
+          Case #Integer_U_4 : *Input_Channel\ElementSize = 4
           Case #Integer_S_4 : *Input_Channel\ElementSize = 4
+          Case #Integer_U_8 : *Input_Channel\ElementSize = 8
           Case #Integer_S_8 : *Input_Channel\ElementSize = 8
           Case #Float_4     : *Input_Channel\ElementSize = 4
           Case #Float_8     : *Input_Channel\ElementSize = 8
@@ -484,6 +486,7 @@ Module _Node_View1D
     Protected *Temp, Temp_Size.q, Elements.q, Temp_Start.q, Difference.q
     Protected Width
     Protected *Input_Channel.Input_Channel
+    Protected Temp_Value.q, Temp_Value_2.q
     Protected i
     
     If Not *Node
@@ -503,10 +506,10 @@ Module _Node_View1D
         
         ClearList(*Input_Channel\Value())
         
-        Elements = Width / *Object\Zoom_X + 1
+        Elements = Width / *Object\Zoom_X + 3
         Temp_Size = Elements * *Input_Channel\ElementSize
         
-        Temp_Start = (-*Object\Offset_X / *Object\Zoom_X)
+        Temp_Start = (-*Object\Offset_X / *Object\Zoom_X) - 1
         Temp_Start * *Input_Channel\ElementSize
         Temp_Start - *Input_Channel\Offset
         If Temp_Start < 0
@@ -532,7 +535,23 @@ Module _Node_View1D
                 Case #Integer_S_1 : *Input_Channel\Value()\Value = PeekB(*Temp+i)
                 Case #Integer_U_2 : *Input_Channel\Value()\Value = PeekU(*Temp+i*2)
                 Case #Integer_S_2 : *Input_Channel\Value()\Value = PeekW(*Temp+i*2)
+                Case #Integer_U_4
+                  Temp_Value = PeekL(*Temp+i*4)
+                  Temp_Value_2 = Temp_Value & $7FFFFFFF
+                  If Temp_Value & $80000000
+                    *Input_Channel\Value()\Value = Temp_Value_2 + 2147483648.0
+                  Else
+                    *Input_Channel\Value()\Value = Temp_Value_2
+                  EndIf
                 Case #Integer_S_4 : *Input_Channel\Value()\Value = PeekL(*Temp+i*4)
+                Case #Integer_U_8
+                  Temp_Value = PeekQ(*Temp+i*8)
+                  Temp_Value_2 = Temp_Value & $7FFFFFFFFFFFFFFF
+                  If Temp_Value & $8000000000000000
+                    *Input_Channel\Value()\Value = Temp_Value_2 + 9223372036854775807.0 ; #### 9223372036854775808.0 (The correct value) somehow gets casted to a quad and will result in -1
+                  Else
+                    *Input_Channel\Value()\Value = Temp_Value_2
+                  EndIf
                 Case #Integer_S_8 : *Input_Channel\Value()\Value = PeekQ(*Temp+i*8)
                 Case #Float_4     : *Input_Channel\Value()\Value = PeekF(*Temp+i*4)
                 Case #Float_8     : *Input_Channel\Value()\Value = PeekD(*Temp+i*8)
@@ -1312,7 +1331,7 @@ Module _Node_View1D
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 537
-; FirstLine = 534
+; CursorPosition = 508
+; FirstLine = 484
 ; Folding = ----
 ; EnableXP

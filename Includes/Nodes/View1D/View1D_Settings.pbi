@@ -443,10 +443,12 @@ Procedure Settings_Window_Open(*Node.Node::Object)
     AddGadgetItem(*Settings_Window\ComboBox_In, 1, "int8")   : SetGadgetItemData(*Settings_Window\ComboBox_In, 1, #Integer_S_1)
     AddGadgetItem(*Settings_Window\ComboBox_In, 2, "uint16") : SetGadgetItemData(*Settings_Window\ComboBox_In, 2, #Integer_U_2)
     AddGadgetItem(*Settings_Window\ComboBox_In, 3, "int16")  : SetGadgetItemData(*Settings_Window\ComboBox_In, 3, #Integer_S_2)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 4, "int32")  : SetGadgetItemData(*Settings_Window\ComboBox_In, 4, #Integer_S_4)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 5, "int64")  : SetGadgetItemData(*Settings_Window\ComboBox_In, 5, #Integer_S_8)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 6, "float32"): SetGadgetItemData(*Settings_Window\ComboBox_In, 6, #Float_4)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 7, "float64"): SetGadgetItemData(*Settings_Window\ComboBox_In, 7, #Float_8)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 4, "uint32") : SetGadgetItemData(*Settings_Window\ComboBox_In, 4, #Integer_U_4)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 5, "int32")  : SetGadgetItemData(*Settings_Window\ComboBox_In, 5, #Integer_S_4)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 6, "uint64") : SetGadgetItemData(*Settings_Window\ComboBox_In, 6, #Integer_U_8)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 7, "int64")  : SetGadgetItemData(*Settings_Window\ComboBox_In, 7, #Integer_S_8)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 8, "float32"): SetGadgetItemData(*Settings_Window\ComboBox_In, 8, #Float_4)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 9, "float64"): SetGadgetItemData(*Settings_Window\ComboBox_In, 9, #Float_8)
     
     *Settings_Window\Text_In[2] = TextGadget(#PB_Any, 20, 330, 50, 20, "Offset:", #PB_Text_Right)
     *Settings_Window\Spin_In = SpinGadget(#PB_Any, 80, 330, 170, 20, -2147483648, 2147483647, #PB_Spin_Numeric)
@@ -538,7 +540,7 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 428
-; FirstLine = 416
+; CursorPosition = 122
+; FirstLine = 22
 ; Folding = --
 ; EnableXP

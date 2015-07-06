@@ -52,28 +52,6 @@ Module _Node_Data_Inspector
   
   ; ################################################### Constants ###################################################
   
-  Enumeration
-    #Binary
-    #Integer_U_1; = #PB_Ascii
-    #Integer_S_1; = #PB_Byte
-    #Integer_U_2; = #PB_Unicode
-    #Integer_S_2; = #PB_Word
-    #Integer_U_4; = #PB_Long (Unsigned)
-    #Integer_S_4; = #PB_Long
-    #Integer_U_8; = #PB_Quad (Unsigned)
-    #Integer_S_8; = #PB_Quad
-    #Float_4    ; = #PB_Float
-    #Float_8    ; = #PB_Double
-    #String_Ascii
-    #String_UTF8
-    #String_UTF16
-    #String_UTF32
-    #String_UCS2
-    #String_UCS4
-    
-    #Types       ; The number of different datatypes
-  EndEnumeration
-  
   #Flag_Big_Endian     = %01
   #Flag_Null_Character = %10
   
@@ -232,7 +210,7 @@ Module _Node_Data_Inspector
     EndIf
     
     Select Type
-      Case #Binary
+      Case #Data_Raw
         ; #### Limit Size
         If Size > 1000
           Size = 1000
@@ -465,7 +443,7 @@ Module _Node_Data_Inspector
     EndIf
     
     Select Type
-      Case #Binary
+      Case #Data_Raw
         String = ReplaceString(String, " ", "")
         For i = 0 To (Len(String)/8)-1
           Part_String = Mid(String, i*8 + 1, 8)
@@ -983,8 +961,8 @@ Module _Node_Data_Inspector
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 862
-; FirstLine = 849
+; CursorPosition = 445
+; FirstLine = 441
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP
