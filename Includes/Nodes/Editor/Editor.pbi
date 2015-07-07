@@ -1001,10 +1001,11 @@ Module _Node_Editor
     Protected Hex_X.q       ; X-Screen-Coordinates of the hexfield
     Protected Ascii_X.q     ; X-Screen-Coordinates of the Asciifield
     Protected Temp_Adress.q
-    Protected Color_Front, Color_Back
+    Protected Color_Front_Hex, Color_Front_Ascii, Color_Back_Hex, Color_Back_Ascii
     Protected Metadata.a
     Protected String_Ascii.s{1}
     Protected String_Hex.s{2}
+    Protected *String_Temp_Buffer, String_Temp_Size
     
     If Not *Node
       ProcedureReturn #False
@@ -1015,6 +1016,13 @@ Module _Node_Editor
     EndIf
     Protected Width = GadgetWidth(*Object\Canvas)
     Protected Height = GadgetHeight(*Object\Canvas)
+    Protected Active
+    
+    If GetActiveGadget() = *Object\Canvas
+      Active = #True
+    Else
+      Active = #False
+    EndIf
     
     If Not StartDrawing(CanvasOutput(*Object\Canvas))
       ProcedureReturn #False
@@ -1084,12 +1092,47 @@ Module _Node_Editor
           Metadata = PeekA(*Object\Segment()\Raw_Metadata+i)
           
           If InRange(*Object\Select_Start, *Object\Select_End, Temp_Adress)
-            Color_Front = RGB(255,255,255)
-            Color_Back = RGB(51,153,255)
+            If Active
+              If *Object\Select_Field = 0
+                ; #### Hex selected
+                Color_Front_Hex = RGB(255,255,255)
+                Color_Front_Ascii = RGB(0,0,0)
+                Color_Back_Hex = RGB(51,153,255)
+                Color_Back_Ascii = RGB(169,212,255)
+              Else
+                ; #### Ascii selected
+                Color_Front_Hex = RGB(0,0,0)
+                Color_Front_Ascii = RGB(255,255,255)
+                Color_Back_Hex = RGB(169,212,255)
+                Color_Back_Ascii = RGB(51,153,255)
+              EndIf
+            Else
+              If *Object\Select_Field = 0
+                ; #### Hex selected
+                Color_Front_Hex = RGB(255,255,255)
+                Color_Front_Ascii = RGB(0,0,0)
+                Color_Back_Hex = RGB(127,127,127)
+                Color_Back_Ascii = RGB(200,200,200)
+              Else
+                ; #### Ascii selected
+                Color_Front_Hex = RGB(0,0,0)
+                Color_Front_Ascii = RGB(255,255,255)
+                Color_Back_Hex = RGB(200,200,200)
+                Color_Back_Ascii = RGB(127,127,127)
+              EndIf
+            EndIf
             If Metadata & #Metadata_NoError
               If Metadata & #Metadata_Readable
                 String_Hex = RSet(Hex(PeekA(*Object\Segment()\Raw_Data+i)),2,"0")
-                String_Ascii = PeekS(*Object\Segment()\Raw_Data+i, 1, #PB_Ascii)
+                If PeekA(*Object\Segment()\Raw_Data+i) = 0
+                  String_Ascii = " "
+                Else
+                  String_Temp_Size = MultiByteToWideChar_(437, #MB_USEGLYPHCHARS, *Object\Segment()\Raw_Data+i, 1, #Null, 0)
+                  *String_Temp_Buffer = AllocateMemory(String_Temp_Size)
+                  MultiByteToWideChar_(437, #MB_USEGLYPHCHARS, *Object\Segment()\Raw_Data+i, 1, *String_Temp_Buffer, String_Temp_Size)
+                  String_Ascii = PeekS(*String_Temp_Buffer, String_Temp_Size, #PB_Unicode)
+                  FreeMemory(*String_Temp_Buffer)
+                EndIf
               Else
                 String_Hex = "??"
                 String_Ascii = "?"
@@ -1102,39 +1145,49 @@ Module _Node_Editor
             If Metadata & #Metadata_NoError
               If Metadata & #Metadata_Readable
                 If Metadata & #Metadata_Changed
-                  Color_Front = RGB(0,0,255)
-                  Color_Back = RGB(255,255,255)
+                  Color_Front_Hex = RGB(0,0,255)
+                  Color_Back_Hex = RGB(255,255,255)
                 Else
-                  Color_Front = RGB(0,0,0)
-                  Color_Back = RGB(255,255,255)
+                  Color_Front_Hex = RGB(0,0,0)
+                  Color_Back_Hex = RGB(255,255,255)
                 EndIf
                 String_Hex = RSet(Hex(PeekA(*Object\Segment()\Raw_Data+i)),2,"0")
-                String_Ascii = PeekS(*Object\Segment()\Raw_Data+i, 1, #PB_Ascii)
+                If PeekA(*Object\Segment()\Raw_Data+i) = 0
+                  String_Ascii = " "
+                Else
+                  String_Temp_Size = MultiByteToWideChar_(437, #MB_USEGLYPHCHARS, *Object\Segment()\Raw_Data+i, 1, #Null, 0)
+                  *String_Temp_Buffer = AllocateMemory(String_Temp_Size)
+                  MultiByteToWideChar_(437, #MB_USEGLYPHCHARS, *Object\Segment()\Raw_Data+i, 1, *String_Temp_Buffer, String_Temp_Size)
+                  String_Ascii = PeekS(*String_Temp_Buffer, String_Temp_Size, #PB_Unicode)
+                  FreeMemory(*String_Temp_Buffer)
+                EndIf
               Else
-                Color_Front = RGB(255,0,0)
-                Color_Back = RGB(255,255,255)
+                Color_Front_Hex = RGB(255,0,0)
+                Color_Back_Hex = RGB(255,255,255)
                 String_Hex = "??"
                 String_Ascii = "?"
               EndIf
             Else
-              Color_Front = RGB(255,0,0)
-              Color_Back = RGB(255,255,255)
+              Color_Front_Hex = RGB(255,0,0)
+              Color_Back_Hex = RGB(255,255,255)
               String_Hex = "!!"
               String_Ascii = "!"
             EndIf
+            Color_Front_Ascii = Color_Front_Hex
+            Color_Back_Ascii = Color_Back_Hex
           EndIf
           
           ; #### Draw the Text
           Hex_X = *Object\X0 + D_X * Main\Font_Width * 3
-          DrawText(Hex_X, S_Y, String_Hex+" ", Color_Front, Color_Back)
+          DrawText(Hex_X, S_Y, String_Hex+" ", Color_Front_Hex, Color_Back_Hex)
           Ascii_X = *Object\X1 + D_X * Main\Font_Width
-          DrawText(Ascii_X, S_Y, String_Ascii, Color_Front, Color_Back)
+          DrawText(Ascii_X, S_Y, String_Ascii, Color_Front_Ascii, Color_Back_Ascii)
           
           ; #### Draw the cursors
           If Temp_Adress = *Object\Select_End
             ; #### Draw the Temp_Nibble
             If *Object\Temp_Nibble
-              DrawText(Hex_X, S_Y, Hex(*Object\Temp_Nibble_Value), RGB(0,0,255), Color_Back)
+              DrawText(Hex_X, S_Y, Hex(*Object\Temp_Nibble_Value), RGB(0,0,255), Color_Back_Hex)
             EndIf
             
             DrawingMode(#PB_2DDrawing_Outlined | #PB_2DDrawing_CustomFilter)
@@ -1727,8 +1780,8 @@ Module _Node_Editor
       Select Field
         Case 0 ; #### Hex
           If Set_Nibble
-            Mouse_Byte = Quad_Divide_Floor(Mouse_X - *Object\X0 + Main\Font_Width * 0.5, Main\Font_Width * 3)
-            If (Mouse_X - *Object\X0 - Main\Font_Width * 0.5 - Mouse_Byte * Main\Font_Width*3) > 0
+            Mouse_Byte = Quad_Divide_Floor(Mouse_X - *Object\X0 + Main\Font_Width * 1.0, Main\Font_Width * 3)
+            If (Mouse_X - *Object\X0 - Main\Font_Width * 0.3 - Mouse_Byte * Main\Font_Width*3) > 0
               Nibble = #True
             Else
               Nibble = #False
@@ -1891,6 +1944,9 @@ Module _Node_Editor
           Char = GetGadgetAttribute(*Object\Canvas, #PB_Canvas_Input)
           Write_Data(*Node, @Char, 1)
         EndIf
+        
+      Case #PB_EventType_Focus, #PB_EventType_LostFocus
+        *Object\Redraw = #True
         
       Case #PB_EventType_KeyDown
         Key = GetGadgetAttribute(*Object\Canvas, #PB_Canvas_Key)
@@ -2466,8 +2522,8 @@ Module _Node_Editor
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 2178
-; FirstLine = 2140
+; CursorPosition = 1782
+; FirstLine = 1764
 ; Folding = -------
 ; EnableUnicode
 ; EnableXP

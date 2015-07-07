@@ -211,10 +211,14 @@ Procedure Search_Window_Update_Input(*Node.Node::Object)
           DisableGadget(*Object_Search\CheckBox[0], #True)
           DisableGadget(*Object_Search\CheckBox[1], #True)
           DisableGadget(*Object_Search\CheckBox[2], #False)
-        Case #String_Ascii, #String_UTF8, #String_UTF16, #String_UTF32, #String_UCS2, #String_UCS4
+        Case #String_Ascii, #String_UTF8
           DisableGadget(*Object_Search\CheckBox[0], #False)
           DisableGadget(*Object_Search\CheckBox[1], #False)
           DisableGadget(*Object_Search\CheckBox[2], #True)
+        Case #String_UTF16, #String_UTF32, #String_UCS2, #String_UCS4
+          DisableGadget(*Object_Search\CheckBox[0], #False)
+          DisableGadget(*Object_Search\CheckBox[1], #False)
+          DisableGadget(*Object_Search\CheckBox[2], #False)
           
       EndSelect
       DisableGadget(*Object_Search\CheckBox[3], #False)
@@ -318,7 +322,7 @@ EndProcedure
 Macro Search_Prepare_Keyword_Helper(_Type)
   *Object_Search\Raw_Keyword_Size = StringByteLength(*Object_Search\Keyword, _Type)
   If *Object_Search\Zero_Byte
-    If *Object_Search\Type = #String_UCS2
+    If *Object_Search\Type = #String_UTF16
       *Object_Search\Raw_Keyword_Size + 2
     Else
       *Object_Search\Raw_Keyword_Size + 1
@@ -333,7 +337,7 @@ Macro Search_Prepare_Keyword_Helper(_Type)
   
   *Object_Search\Raw_Keyword_UC_Size = StringByteLength(UCase(*Object_Search\Keyword), _Type)
   If *Object_Search\Zero_Byte
-    If *Object_Search\Type = #String_UCS2
+    If *Object_Search\Type = #String_UTF16
       *Object_Search\Raw_Keyword_UC_Size + 2
     Else
       *Object_Search\Raw_Keyword_UC_Size + 1
@@ -348,7 +352,7 @@ Macro Search_Prepare_Keyword_Helper(_Type)
   
   *Object_Search\Raw_Keyword_LC_Size = StringByteLength(LCase(*Object_Search\Keyword), _Type)
   If *Object_Search\Zero_Byte
-    If *Object_Search\Type = #String_UCS2
+    If *Object_Search\Type = #String_UTF16
       *Object_Search\Raw_Keyword_LC_Size + 2
     Else
       *Object_Search\Raw_Keyword_LC_Size + 1
@@ -478,8 +482,19 @@ Procedure Search_Prepare_Keyword(*Node.Node::Object)
     Case #String_UTF8
       Search_Prepare_Keyword_Helper(#PB_UTF8)
       
-    Case #String_UCS2
+    Case #String_UTF16
       Search_Prepare_Keyword_Helper(#PB_Unicode)
+      If *Object_Search\Big_Endian
+        For i = 0 To *Object_Search\Raw_Keyword_Size-1 Step 2
+          Memory::Mirror(*Object_Search\Raw_Keyword + i, 2)
+        Next
+        For i = 0 To *Object_Search\Raw_Keyword_LC_Size-1 Step 2
+          Memory::Mirror(*Object_Search\Raw_Keyword_LC + i, 2)
+        Next
+        For i = 0 To *Object_Search\Raw_Keyword_UC_Size-1 Step 2
+          Memory::Mirror(*Object_Search\Raw_Keyword_UC + i, 2)
+        Next
+      EndIf
       
   EndSelect
   
@@ -641,7 +656,7 @@ Procedure Search_Prepare_Replacement(*Node.Node::Object)
         EndIf
       EndIf
       
-    Case #String_UCS2
+    Case #String_UTF16
       *Object_Search\Raw_Replacement_Size = StringByteLength(*Object_Search\Replacement, #PB_Unicode)
       If *Object_Search\Zero_Byte
         *Object_Search\Raw_Replacement_Size + 2
@@ -651,6 +666,11 @@ Procedure Search_Prepare_Replacement(*Node.Node::Object)
         If *Object_Search\Raw_Replacement
           PokeS(*Object_Search\Raw_Replacement, *Object_Search\Replacement, -1, #PB_Unicode)
         EndIf
+      EndIf
+      If *Object_Search\Big_Endian
+        For i = 0 To *Object_Search\Raw_Replacement_Size-1 Step 2
+          Memory::Mirror(*Object_Search\Raw_Replacement + i, 2)
+        Next
       EndIf
       
   EndSelect
@@ -1264,6 +1284,9 @@ Procedure Search_Window_Open(*Node.Node::Object)
     *Object_Search\String[0] = StringGadget(#PB_Any, 120, 10, Width-130, 20, "")
     *Object_Search\String[1] = StringGadget(#PB_Any, 120, 40, Width-130, 20, "")
     
+    GadgetToolTip(*Object_Search\String[0], "Input examples: $FF (Hexadecimal), %10101010 (Binary)")
+    GadgetToolTip(*Object_Search\String[1], "Input examples: $FF (Hexadecimal), %10101010 (Binary)")
+    
     *Object_Search\Frame[0] = FrameGadget(#PB_Any, 10, 70, Width-130, 140, "Type")
     *Object_Search\ComboBox[0] = ComboBoxGadget(#PB_Any, 20, 90, Width-150, 20)
     AddGadgetItem(*Object_Search\ComboBox[0], 0, "Raw Data")                 : SetGadgetItemData(*Object_Search\ComboBox[0], 0, #Data_Raw)
@@ -1277,7 +1300,7 @@ Procedure Search_Window_Open(*Node.Node::Object)
     AddGadgetItem(*Object_Search\ComboBox[0], 8, "8 Byte Float")             : SetGadgetItemData(*Object_Search\ComboBox[0], 8, #Float_8)
     AddGadgetItem(*Object_Search\ComboBox[0], 9, "Ascii String")             : SetGadgetItemData(*Object_Search\ComboBox[0], 9, #String_Ascii)
     AddGadgetItem(*Object_Search\ComboBox[0], 10, "UTF-8 String")            : SetGadgetItemData(*Object_Search\ComboBox[0], 10, #String_UTF8)
-    AddGadgetItem(*Object_Search\ComboBox[0], 11, "UCS-2 String")            : SetGadgetItemData(*Object_Search\ComboBox[0], 11, #String_UCS2)
+    AddGadgetItem(*Object_Search\ComboBox[0], 11, "UTF-16 String")           : SetGadgetItemData(*Object_Search\ComboBox[0], 11, #String_UTF16)
     
     *Object_Search\CheckBox[0] = CheckBoxGadget(#PB_Any, 20, 120, Width-150, 20, "Case Sensitive")
     *Object_Search\CheckBox[1] = CheckBoxGadget(#PB_Any, 20, 150, Width-150, 20, "Zero-Byte")
@@ -1289,6 +1312,8 @@ Procedure Search_Window_Open(*Node.Node::Object)
     *Object_Search\Option[1] = OptionGadget(#PB_Any, Width-100, 140, 80, 20, "Backward")
     
     *Object_Search\CheckBox[4] = CheckBoxGadget(#PB_Any, Width-110, 180, 100, 20, "No shifting")
+    
+    GadgetToolTip(*Object_Search\CheckBox[4], "Overwrite data instead of replacing it. This prevents the data from being shifted.")
     
     *Object_Search\Button_Search = ButtonGadget(#PB_Any, 10, 220, 90, 30, "Search")
     *Object_Search\Button_Continue = ButtonGadget(#PB_Any, 110, 220, 90, 30, "Continue")
@@ -1399,7 +1424,7 @@ Procedure Search_Do_Helper(*Node.Node::Object, Position.q, *Fast_Memory=#Null, F
         EndIf
       EndIf
       
-    Case #String_Ascii, #String_UTF8, #String_UCS2
+    Case #String_Ascii, #String_UTF8, #String_UTF16
       If *Object_Search\Case_Sensitive
         
         If *Fast_Memory
@@ -1441,7 +1466,7 @@ Procedure Search_Do_Helper(*Node.Node::Object, Position.q, *Fast_Memory=#Null, F
           Select *Object_Search\Type
             Case #String_Ascii  : Temp_String = PeekS(*Temp, Temp_Size, #PB_Ascii)
             Case #String_UTF8   : Temp_String = PeekS(*Temp, Temp_Size, #PB_UTF8)      ; Here the "Length" parameter is the amount of bytes to read
-            Case #String_UCS2   : Temp_String = PeekS(*Temp, Temp_Size/2, #PB_Unicode) ; Here the "Length" parameter is the amount of UCS-2 characters to read (each has 2 Byte)
+            Case #String_UTF16  : Temp_String = PeekS(*Temp, Temp_Size/2, #PB_Unicode) ; Here the "Length" parameter is the amount of words to read (Not necessarily the amount of characters)
           EndSelect
           
           If LCase(Temp_String) = LCase(*Object_Search\Keyword)
@@ -1902,8 +1927,8 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1258
-; FirstLine = 1251
+; CursorPosition = 1468
+; FirstLine = 1448
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

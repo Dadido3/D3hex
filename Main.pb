@@ -23,6 +23,7 @@
 ; - Each node HAS to return an segment-list via ...Get_Segments(...)
 ; - Store/Restore Window states/positions into/from the configurations.
 ; - Negative positions in Output_Get_Data() should be allowed, but shouldn't return #Metadata_NoError
+; - Support different code pages
 ;   
 ; - Editor:
 ;   - Autoscroll
@@ -152,7 +153,7 @@
 ;   - Node "Editor": Fixed writing at the end of data
 ;   - Node "View2D": Added standard configuration
 ;   
-; - V0.965 (INDEV)
+; - V0.966 (INDEV)
 ;   - Node "File": Ignore result of File-requesters if it is ""
 ;   - Network_Terminal:
 ;     - Data_Set is not triggering an update event
@@ -175,6 +176,9 @@
 ;   - Window::Create(...) has now a flag variable
 ;   - Bugfixing and improvements in View1D and View2D
 ;     - Added uint32 and uint64 to View1D
+;   - Fixed the string encoding
+;   - Added Tooltips
+;   - Changed colors in node "Editor"
 ;   - Many other small changes and refactoring
 ;   
 ; ##################################################### Begin #######################################################
@@ -203,7 +207,7 @@ XIncludeFile "Includes/Icons.pbi"
 DeclareModule Main
   EnableExplicit
   ; ################################################### Constants ###################################################
-  #Version = 0965
+  #Version = 0966
   
   Enumeration 1
     #Menu_Dummy
@@ -603,9 +607,9 @@ Module Main
     
     Window\ToolBar_ID = CreateToolBar(#PB_Any, WindowID(Window\ID))
     If Not Window\ToolBar_ID
-      MessageRequester("D3hex", "ToolBar konnte nicht erstellt werden.")
+      MessageRequester("D3hex", "Failed to create ToolBar. Program will shutdown.")
       CloseWindow(Window\ID)
-      ProcedureReturn 0
+      End
     EndIf
     
     ToolBarImageButton(#Menu_New, ImageID(Icon_New))
@@ -625,9 +629,9 @@ Module Main
     
     Window\StatusBar_ID = CreateStatusBar(#PB_Any, WindowID(Window\ID))
     If Not Window\StatusBar_ID
-      MessageRequester("D3hex", "Statusbar konnte nicht erstellt werden.")
+      MessageRequester("D3hex", "Failed to create StatusBar. Program will shutdown.")
       CloseWindow(Window\ID)
-      ProcedureReturn 0
+      End
     EndIf
     
     AddStatusBarField(150)
@@ -719,8 +723,8 @@ Module Main
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 175
-; FirstLine = 135
+; CursorPosition = 178
+; FirstLine = 140
 ; Folding = --
 ; EnableUnicode
 ; EnableXP

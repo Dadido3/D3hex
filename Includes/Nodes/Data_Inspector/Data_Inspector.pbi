@@ -385,10 +385,7 @@ Module _Node_Data_Inspector
         FreeMemory(*Temp_Data)
         FreeMemory(*Temp_Metadata)
         
-      ;Case #String_UTF16
-      ;Case #String_UTF32
-      
-      Case #String_UCS2
+      Case #String_UTF16
         ; #### Limit Size
         If Size > 10000000
           Size = 10000000
@@ -417,6 +414,8 @@ Module _Node_Data_Inspector
         FreeMemory(*Temp_Data)
         FreeMemory(*Temp_Metadata)
         
+      ;Case #String_UTF32
+      ;Case #String_UCS2
       ;Case #String_UCS4
       
     EndSelect
@@ -574,10 +573,7 @@ Module _Node_Data_Inspector
         
         FreeMemory(*Temp_Data)
         
-      ;Case #String_UTF16
-      ;Case #String_UTF32
-      
-      Case #String_UCS2
+      Case #String_UTF16
         Size = StringByteLength(String, #PB_Unicode)
         *Temp_Data = AllocateMemory(Size+2)
         If Not *Temp_Data
@@ -602,6 +598,8 @@ Module _Node_Data_Inspector
         
         FreeMemory(*Temp_Data)
         
+      ;Case #String_UTF32
+      ;Case #String_UCS2
       ;Case #String_UCS4
       
     EndSelect
@@ -703,6 +701,12 @@ Module _Node_Data_Inspector
     If GetGadgetState(Event_Gadget) >= 0
       String = GetGadgetItemText(Event_Gadget, GetGadgetState(Event_Gadget), 1)
       SetGadgetText(*Object\Editor, String)
+      DisableGadget(*Object\Editor, #False)
+      DisableGadget(*Object\Button_Set, #False)
+    Else
+      SetGadgetText(*Object\Editor, "")
+      DisableGadget(*Object\Editor, #True)
+      DisableGadget(*Object\Button_Set, #True)
     EndIf
     
   EndProcedure
@@ -846,23 +850,23 @@ Module _Node_Data_Inspector
       AddGadgetColumn(*Object\ListIcon, 1, "Value", 500)
       
       ; #### Add ListIcon items
-      AddGadgetItem(*Object\ListIcon,  0, "Binary")   : SetGadgetItemData(*Object\ListIcon,  0,  0)
-      AddGadgetItem(*Object\ListIcon,  1, "uint8")    : SetGadgetItemData(*Object\ListIcon,  1,  1)
-      AddGadgetItem(*Object\ListIcon,  2, "int8")     : SetGadgetItemData(*Object\ListIcon,  2,  2)
-      AddGadgetItem(*Object\ListIcon,  3, "uint16")   : SetGadgetItemData(*Object\ListIcon,  3,  3)
-      AddGadgetItem(*Object\ListIcon,  4, "int16")    : SetGadgetItemData(*Object\ListIcon,  4,  4)
-      AddGadgetItem(*Object\ListIcon,  5, "uint32")   : SetGadgetItemData(*Object\ListIcon,  5,  5)
-      AddGadgetItem(*Object\ListIcon,  6, "int32")    : SetGadgetItemData(*Object\ListIcon,  6,  6)
-      AddGadgetItem(*Object\ListIcon,  7, "uint64")   : SetGadgetItemData(*Object\ListIcon,  7,  7)
-      AddGadgetItem(*Object\ListIcon,  8, "int64")    : SetGadgetItemData(*Object\ListIcon,  8,  8)
-      AddGadgetItem(*Object\ListIcon,  9, "float32")  : SetGadgetItemData(*Object\ListIcon,  9,  9)
-      AddGadgetItem(*Object\ListIcon, 10, "float64")  : SetGadgetItemData(*Object\ListIcon, 10, 10)
-      AddGadgetItem(*Object\ListIcon, 11, "Ascii")    : SetGadgetItemData(*Object\ListIcon, 11, 11)
-      AddGadgetItem(*Object\ListIcon, 12, "UTF8")     : SetGadgetItemData(*Object\ListIcon, 12, 12)
-      ;AddGadgetItem(*Object\ListIcon, 13, "UTF16")    : SetGadgetItemData(*Object\ListIcon, 13, 13)
-      ;AddGadgetItem(*Object\ListIcon, 14, "UTF32")    : SetGadgetItemData(*Object\ListIcon, 14, 14)
-      AddGadgetItem(*Object\ListIcon, 13, "UCS2")     : SetGadgetItemData(*Object\ListIcon, 13, 15)
-      ;AddGadgetItem(*Object\ListIcon, 16, "UCS4")     : SetGadgetItemData(*Object\ListIcon, 16, 16)
+      AddGadgetItem(*Object\ListIcon,  0, "Binary")   : SetGadgetItemData(*Object\ListIcon,  0, #Data_Raw)
+      AddGadgetItem(*Object\ListIcon,  1, "uint8")    : SetGadgetItemData(*Object\ListIcon,  1, #Integer_U_1)
+      AddGadgetItem(*Object\ListIcon,  2, "int8")     : SetGadgetItemData(*Object\ListIcon,  2, #Integer_S_1)
+      AddGadgetItem(*Object\ListIcon,  3, "uint16")   : SetGadgetItemData(*Object\ListIcon,  3, #Integer_U_2)
+      AddGadgetItem(*Object\ListIcon,  4, "int16")    : SetGadgetItemData(*Object\ListIcon,  4, #Integer_S_2)
+      AddGadgetItem(*Object\ListIcon,  5, "uint32")   : SetGadgetItemData(*Object\ListIcon,  5, #Integer_U_4)
+      AddGadgetItem(*Object\ListIcon,  6, "int32")    : SetGadgetItemData(*Object\ListIcon,  6, #Integer_S_4)
+      AddGadgetItem(*Object\ListIcon,  7, "uint64")   : SetGadgetItemData(*Object\ListIcon,  7, #Integer_U_8)
+      AddGadgetItem(*Object\ListIcon,  8, "int64")    : SetGadgetItemData(*Object\ListIcon,  8, #Integer_S_8)
+      AddGadgetItem(*Object\ListIcon,  9, "float32")  : SetGadgetItemData(*Object\ListIcon,  9, #Float_4)
+      AddGadgetItem(*Object\ListIcon, 10, "float64")  : SetGadgetItemData(*Object\ListIcon, 10, #Float_8)
+      AddGadgetItem(*Object\ListIcon, 11, "Ascii")    : SetGadgetItemData(*Object\ListIcon, 11, #String_Ascii)
+      AddGadgetItem(*Object\ListIcon, 12, "UTF8")     : SetGadgetItemData(*Object\ListIcon, 12, #String_UTF8)
+      AddGadgetItem(*Object\ListIcon, 13, "UTF16")    : SetGadgetItemData(*Object\ListIcon, 13, #String_UTF16)
+      ;AddGadgetItem(*Object\ListIcon, 14, "UTF32")    : SetGadgetItemData(*Object\ListIcon, 14, #String_UTF32)
+      ;AddGadgetItem(*Object\ListIcon, 15, "UCS2")     : SetGadgetItemData(*Object\ListIcon, 15, #String_UCS2)
+      ;AddGadgetItem(*Object\ListIcon, 16, "UCS4")     : SetGadgetItemData(*Object\ListIcon, 16, #String_UCS4)
       
       *Object\Editor = EditorGadget(#PB_Any, 0, 330, Width, Height-370)
       
@@ -870,6 +874,9 @@ Module _Node_Data_Inspector
       
       *Object\CheckBox[0] = CheckBoxGadget(#PB_Any, 10, Height-30, 70, 20, "Big Endian")
       *Object\CheckBox[1] = CheckBoxGadget(#PB_Any, 90, Height-30, 90, 20, "Null-Character")
+      
+      DisableGadget(*Object\Editor, #True)
+      DisableGadget(*Object\Button_Set, #True)
       
       BindGadgetEvent(*Object\ListIcon, @Window_Event_ListIcon())
       BindGadgetEvent(*Object\Button_Set, @Window_Event_Button_Set())
@@ -961,8 +968,8 @@ Module _Node_Data_Inspector
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 445
-; FirstLine = 441
+; CursorPosition = 845
+; FirstLine = 836
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP

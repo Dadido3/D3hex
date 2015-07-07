@@ -47,6 +47,7 @@
 ; TODO: Allow the docking to undocked windows
 ; TODO: Add static containers (not movable and/or not removable)
 ; TODO: When switching the active window, restore the active gadget of that window
+; FIXME: Tabulator key changes to elements outside of the window
 ; 
 ; #################################################### Includes #################################################
 
@@ -621,6 +622,7 @@ Module D3docker
       \Window()\Flags_Docked & ~#WS_DLGFRAME
       \Window()\Flags_Docked & ~#WS_BORDER
       \Window()\Flags_Docked | #WS_CHILD
+      ;\Window()\Flags_Docked | #WS_EX_MDICHILD
       
       _Window_Set_Active(*Gadget, \Window(), #False)
       
@@ -1890,7 +1892,7 @@ Module D3docker
         ResizeGadget(*Container\Gadget_Empty[1], 0, 0, 0, 0)
       EndIf
       
-      ; TODO: Fix flickering when resizing window
+      ; FIXME: Fix flickering when resizing window
       If Iteration = 0
         SendMessage_(GadgetID(\Root\Gadget_Container), #WM_SETREDRAW, #True, 0)
         GetClientRect_(GadgetID(\Root\Gadget_Container), rect)
@@ -2281,8 +2283,8 @@ Module D3docker
   
 EndModule
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 40
-; FirstLine = 21
+; CursorPosition = 1894
+; FirstLine = 1890
 ; Folding = --------
 ; EnableUnicode
 ; EnableXP

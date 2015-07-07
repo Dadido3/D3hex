@@ -416,6 +416,8 @@ Module _Node_Dummy
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
+; CursorPosition = 270
+; FirstLine = 243
 ; Folding = --
 ; EnableUnicode
 ; EnableXP

@@ -1204,6 +1204,12 @@ Module _Node_View1D
       ToolBarImageButton(#Menu_Lines, ImageID(Icon_Lines), #PB_ToolBar_Toggle)
       SetToolBarButtonState(*Object\ToolBar, #Menu_Lines, *Object\Connect)
       
+      ToolBarToolTip(*Object\ToolBar, #Menu_Settings, "Settings")
+      ToolBarToolTip(*Object\ToolBar, #Menu_X_Normalize, "Normalize X")
+      ToolBarToolTip(*Object\ToolBar, #Menu_Y_Normalize, "Normalize Y")
+      ToolBarToolTip(*Object\ToolBar, #Menu_Y_Fit, "Fit vertically")
+      ToolBarToolTip(*Object\ToolBar, #Menu_Lines, "Toggle lines")
+      
       ToolBarHeight = ToolBarHeight(*Object\ToolBar)
       
       Data_Width = Width - #Canvas_Y_Width
@@ -1331,7 +1337,7 @@ Module _Node_View1D
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 508
-; FirstLine = 484
+; CursorPosition = 1210
+; FirstLine = 1185
 ; Folding = ----
 ; EnableXP

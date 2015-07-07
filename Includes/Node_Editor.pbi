@@ -1045,6 +1045,12 @@ Module Node_Editor
       ToolBarImageButton(#Menu_Grid_Snapping, ImageID(Icon_Grid_Snapping), #PB_ToolBar_Toggle)
       ToolBarImageButton(#Menu_Align, ImageID(Icon_Align))
       
+      ToolBarToolTip(Window\ToolBar, #Menu_Clear_Config, "Clear node configuration")
+      ToolBarToolTip(Window\ToolBar, #Menu_Load_Config, "Load node configuration")
+      ToolBarToolTip(Window\ToolBar, #Menu_Save_Config, "Save node configuration")
+      ToolBarToolTip(Window\ToolBar, #Menu_Grid_Snapping, "Toggle grid snapping")
+      ToolBarToolTip(Window\ToolBar, #Menu_Align, "Align selected nodes")
+      
       SetToolBarButtonState(Window\ToolBar, #Menu_Grid_Snapping, Window\Snapping)
       
       ToolBarHeight = ToolBarHeight(Window\ToolBar)
@@ -1146,8 +1152,8 @@ Module Node_Editor
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1036
-; FirstLine = 1023
+; CursorPosition = 1034
+; FirstLine = 1006
 ; Folding = ----
 ; EnableUnicode
 ; EnableXP

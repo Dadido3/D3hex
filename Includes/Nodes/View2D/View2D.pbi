@@ -1335,6 +1335,11 @@ Module _Node_View2D
       ToolBarImageButton(#Menu_Fit_X, ImageID(Icon_Fit_X))
       ToolBarImageButton(#Menu_Fit_Y, ImageID(Icon_Fit_Y))
       
+      ToolBarToolTip(*Object\ToolBar, #Menu_Settings, "Settings")
+      ToolBarToolTip(*Object\ToolBar, #Menu_Normalize, "Normalize zoom")
+      ToolBarToolTip(*Object\ToolBar, #Menu_Fit_X, "Fit image horizontally")
+      ToolBarToolTip(*Object\ToolBar, #Menu_Fit_Y, "Fit image vertically")
+      
       ToolBarHeight = ToolBarHeight(*Object\ToolBar)
       
       ScrollBar_X_Height = 17
@@ -1456,7 +1461,7 @@ Module _Node_View2D
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1173
-; FirstLine = 1141
+; CursorPosition = 1338
+; FirstLine = 1326
 ; Folding = ----
 ; EnableXP

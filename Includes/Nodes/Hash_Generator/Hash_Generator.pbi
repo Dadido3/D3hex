@@ -461,6 +461,9 @@ Module _Node_Hash_Generator
       ToolBarImageButton(#Menu_Automatic, ImageID(Icons::Icon_Automatic), #PB_ToolBar_Toggle) : SetToolBarButtonState(*Object\ToolBar, #Menu_Automatic, *Object\Automatic)
       ToolBarImageButton(#Menu_Refresh, ImageID(Icons::Icon_Refresh))
       
+      ToolBarToolTip(*Object\ToolBar, #Menu_Automatic, "Refresh automatically")
+      ToolBarToolTip(*Object\ToolBar, #Menu_Refresh, "Refresh") 
+      
       ToolBarHeight = ToolBarHeight(*Object\ToolBar)
       
       ; #### Gadgets
@@ -670,8 +673,8 @@ Module _Node_Hash_Generator
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 549
-; FirstLine = 522
+; CursorPosition = 463
+; FirstLine = 451
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP

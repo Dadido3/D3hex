@@ -497,7 +497,7 @@ Module _Node_History
         Node::Output_Event(FirstElement(*Node\Output()), *Event)
         
       Default
-        ; TODO: Correct the event-range!!!
+        ; TODO: Correct the event-range
         Node::Output_Event(FirstElement(*Node\Output()), *Event)
         
     EndSelect
@@ -1303,7 +1303,7 @@ Module _Node_History
   
 EndModule
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1218
-; FirstLine = 1205
+; CursorPosition = 499
+; FirstLine = 477
 ; Folding = ------
 ; EnableXP
