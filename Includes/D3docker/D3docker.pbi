@@ -32,13 +32,14 @@
 ; - 0.800 22.06.2015
 ;   - Implemented mostly everything necessary
 ;   
-; - 0.814 (INDEV)
+; - 0.815 (INDEV)
 ;   - Docker containers can now be dragged
 ;   - Removed fixed window-flags inside Window_Add(...)
 ;   - Determine the mouse position with GetCursorPos_(...)
 ;   - Fixed an issue with Container_Resize_Between(...)
 ;   - Fixed the redraw issues of the empty space between containers
 ;   - A lot of bugfixes and little changes
+;   - Reduced the amount of #PB_Event_ActivateWindow events
 ; 
 ; 
 ; 
@@ -61,7 +62,7 @@ DeclareModule D3docker
   EnableExplicit
   ; ################################################## Constants ################################################
   #PB_GadgetType_D3docker=20150607
-  #Version = 814
+  #Version = 815
   
   ; #### Directions for placing a docker
   Enumeration
@@ -728,6 +729,10 @@ Module D3docker
     Protected *Old_Container.Container
     Protected *params.GADGET_PARAMS=GetParams(*Gadget)
     With *params
+      If \Active_Window = *Window
+        ProcedureReturn #True
+      EndIf
+      
       If \Active_Window
         *Old_Container = \Active_Window\Container
       EndIf
@@ -758,6 +763,7 @@ Module D3docker
       EndIf
       
     EndWith
+    ProcedureReturn #True
   EndProcedure
   
   Procedure Window_Set_Active(Window)
@@ -2283,8 +2289,7 @@ Module D3docker
   
 EndModule
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1894
-; FirstLine = 1890
+; CursorPosition = 41
 ; Folding = --------
 ; EnableUnicode
 ; EnableXP
