@@ -153,7 +153,7 @@
 ;   - Node "Editor": Fixed writing at the end of data
 ;   - Node "View2D": Added standard configuration
 ;   
-; - V0.966 (INDEV)
+; - V0.967 (INDEV)
 ;   - Node "File": Ignore result of File-requesters if it is ""
 ;   - Network_Terminal:
 ;     - Data_Set is not triggering an update event
@@ -179,6 +179,7 @@
 ;   - Fixed the string encoding
 ;   - Added Tooltips
 ;   - Changed colors in node "Editor"
+;   - Added a event distributor for shortcut, menu and toolbar events
 ;   - Many other small changes and refactoring
 ;   
 ; ##################################################### Begin #######################################################
@@ -207,7 +208,7 @@ XIncludeFile "Includes/Icons.pbi"
 DeclareModule Main
   EnableExplicit
   ; ################################################### Constants ###################################################
-  #Version = 0966
+  #Version = 0967
   
   Enumeration 1
     #Menu_Dummy
@@ -238,6 +239,7 @@ DeclareModule Main
     #Menu_Search
     #Menu_Search_Continue
     
+    #Menu_Select_All
     #Menu_Goto
     
     ;#Menu_TileV
@@ -247,6 +249,8 @@ DeclareModule Main
     
     #Menu_Help
     #Menu_About
+    
+    #Menu_Custom_Shortcuts
   EndEnumeration
   
   ; ################################################### Structures ##################################################
@@ -278,6 +282,7 @@ DeclareModule Main
   ; ################################################### Variables ###################################################
 
   ; ################################################### Functions ###################################################
+  Declare   Window_KeyboardShortcut_Update()
   
 EndDeclareModule
 
@@ -348,31 +353,6 @@ Module Main
         EndIf
         
       Case #Menu_Close
-        
-        
-      Case #Menu_Save
-        *Active_Window.Window::Object = Window::Get_Active()
-        Node_Event.Node::Event
-        *Node.Node::Object
-        Node_Event\Type = Node::#Event_Save
-        If *Active_Window
-          *Node = *Active_Window\Node
-          If *Node And *Node\Function_Event
-            *Node\Function_Event(*Node, Node_Event)
-          EndIf
-        EndIf
-        
-      Case #Menu_SaveAs
-        *Active_Window.Window::Object = Window::Get_Active()
-        Node_Event.Node::Event
-        *Node.Node::Object
-        Node_Event\Type = Node::#Event_SaveAs
-        If *Active_Window
-          *Node = *Active_Window\Node
-          If *Node And *Node\Function_Event
-            *Node\Function_Event(*Node, Node_Event)
-          EndIf
-        EndIf
         
       Case #Menu_Open_File
         *A.Node::Object = _Node_File::Create(#True)
@@ -450,68 +430,30 @@ Module Main
           Node_Editor::Configuration_Save(Filename)
         EndIf
         
-      Case #Menu_Cut
-        *Active_Window.Window::Object = Window::Get_Active()
-        Node_Event.Node::Event
-        Node_Event\Type = Node::#Event_Cut
-        If *Active_Window
-          Node::Event(*Active_Window\Node, Node_Event)
-        EndIf
-        
-      Case #Menu_Copy
-        *Active_Window.Window::Object = Window::Get_Active()
-        Node_Event\Type = Node::#Event_Copy
-        If *Active_Window
-          Node::Event(*Active_Window\Node, Node_Event)
-        EndIf
-        
-      Case #Menu_Paste
-        *Active_Window.Window::Object = Window::Get_Active()
-        Node_Event\Type = Node::#Event_Paste
-        If *Active_Window
-          Node::Event(*Active_Window\Node, Node_Event)
-        EndIf
-        
-      Case #Menu_Undo
-        *Active_Window.Window::Object = Window::Get_Active()
-        Node_Event\Type = Node::#Event_Undo
-        If *Active_Window
-          Node::Event(*Active_Window\Node, Node_Event)
-        EndIf
-        
-      Case #Menu_Redo
-        *Active_Window.Window::Object = Window::Get_Active()
-        Node_Event\Type = Node::#Event_Redo
-        If *Active_Window
-          Node::Event(*Active_Window\Node, Node_Event)
-        EndIf
-        
-      Case #Menu_Search
-        *Active_Window.Window::Object = Window::Get_Active()
-        Node_Event\Type = Node::#Event_Search
-        If *Active_Window
-          Node::Event(*Active_Window\Node, Node_Event)
-        EndIf
-        
-      Case #Menu_Search_Continue
-        *Active_Window.Window::Object = Window::Get_Active()
-        Node_Event\Type = Node::#Event_Search_Continue
-        If *Active_Window
-          Node::Event(*Active_Window\Node, Node_Event)
-        EndIf
-        
-      Case #Menu_Goto
-        *Active_Window.Window::Object = Window::Get_Active()
-        Node_Event\Type = Node::#Event_Goto
-        If *Active_Window
-          Node::Event(*Active_Window\Node, Node_Event)
-        EndIf
-        
       Case #Menu_About
         About::Open()
         
       Case #Menu_Exit
         Main\Quit = 1
+        
+      Default
+        *Active_Window.Window::Object = Window::Get_Active()
+        If *Active_Window
+          If Event_Menu - #Menu_Custom_Shortcuts >= 0
+            ; #### Custom menu event
+            If SelectElement(*Active_Window\KeyboardShortcut(), Event_Menu - #Menu_Custom_Shortcuts)
+              PostEvent(#PB_Event_Menu, *Active_Window\ID, *Active_Window\KeyboardShortcut()\Event_Menu)
+            EndIf
+          Else
+            ; #### Menu event of the main window
+            ForEach *Active_Window\KeyboardShortcut()
+              If *Active_Window\KeyboardShortcut()\Main_Menu = Event_Menu
+                PostEvent(#PB_Event_Menu, *Active_Window\ID, *Active_Window\KeyboardShortcut()\Event_Menu)
+                Break
+              EndIf
+            Next
+          EndIf
+        EndIf
         
     EndSelect
   EndProcedure
@@ -524,6 +466,44 @@ Module Main
     Main\Quit = 1
   EndProcedure
   
+  Procedure Window_KeyboardShortcut_Update()
+    Protected *Active_Window.Window::Object = Window::Get_Active()
+    
+    RemoveKeyboardShortcut(Window\ID, #PB_Shortcut_All)
+    
+    DisableToolBarButton(Window\ToolBar_ID, #Menu_Save, #True)
+    DisableToolBarButton(Window\ToolBar_ID, #Menu_SaveAs, #True)
+    DisableToolBarButton(Window\ToolBar_ID, #Menu_Close, #True)
+    
+    DisableMenuItem(Window\Menu_ID, #Menu_Save, #True)
+    DisableMenuItem(Window\Menu_ID, #Menu_SaveAs, #True)
+    DisableMenuItem(Window\Menu_ID, #Menu_Close, #True)
+    DisableMenuItem(Window\Menu_ID, #Menu_Undo, #True)
+    DisableMenuItem(Window\Menu_ID, #Menu_Redo, #True)
+    DisableMenuItem(Window\Menu_ID, #Menu_Cut, #True)
+    DisableMenuItem(Window\Menu_ID, #Menu_Copy, #True)
+    DisableMenuItem(Window\Menu_ID, #Menu_Paste, #True)
+    DisableMenuItem(Window\Menu_ID, #Menu_Search, #True)
+    DisableMenuItem(Window\Menu_ID, #Menu_Search_Continue, #True)
+    DisableMenuItem(Window\Menu_ID, #Menu_Select_All, #True)
+    DisableMenuItem(Window\Menu_ID, #Menu_Goto, #True)
+    
+    If *Active_Window
+      ForEach *Active_Window\KeyboardShortcut()
+        If *Active_Window\KeyboardShortcut()\Key
+          AddKeyboardShortcut(Window\ID, *Active_Window\KeyboardShortcut()\Key, #Menu_Custom_Shortcuts + ListIndex(*Active_Window\KeyboardShortcut()))
+        EndIf
+        
+        If *Active_Window\KeyboardShortcut()\Main_Menu
+          DisableToolBarButton(Window\ToolBar_ID, *Active_Window\KeyboardShortcut()\Main_Menu, #False)
+          DisableMenuItem(Window\Menu_ID, *Active_Window\KeyboardShortcut()\Main_Menu, #False)
+        EndIf
+      Next
+    EndIf
+    
+    ProcedureReturn #True
+  EndProcedure
+  
   Procedure Window_Open(Width, Height)
     
     Window\ID = OpenWindow(#PB_Any, 0, 0, Width, Height, "D3hex V"+StrF(Main\Version*0.001,3), #PB_Window_SystemMenu | #PB_Window_SizeGadget | #PB_Window_TitleBar | #PB_Window_ScreenCentered | #PB_Window_MinimizeGadget | #PB_Window_MaximizeGadget)
@@ -534,7 +514,7 @@ Module Main
     
     SmartWindowRefresh(Window\ID, #True)
     
-    Window\Menu_ID = CreateImageMenu(#PB_Any, WindowID(Window\ID), #PB_Menu_ModernLook)
+    Window\Menu_ID = CreateImageMenu(#PB_Any, WindowID(Window\ID))
     If Not Window\Menu_ID
       MessageRequester("D3hex", "Menü konnte nicht erstellt werden.")
       CloseWindow(Window\ID)
@@ -566,6 +546,7 @@ Module Main
     MenuItem(#Menu_Search, "Search", ImageID(Icon_Search))
     MenuItem(#Menu_Search_Continue, "Continue", ImageID(Icon_Search_Continue))
     MenuBar()
+    MenuItem(#Menu_Select_All, "Select all")
     MenuItem(#Menu_Goto, "Goto", ImageID(Icon_Goto))
     
     MenuTitle("Nodes")
@@ -591,17 +572,17 @@ Module Main
     MenuItem(#Menu_Help, "Help")
     MenuItem(#Menu_About, "About")
     
-    ; ######################### Shortcuts
+    ; ######################### Shortcuts (Only global ones. No undo, copy, paste, ...)
     
-    AddKeyboardShortcut(Window\ID, #PB_Shortcut_Control | #PB_Shortcut_F, #Menu_Search)
-    AddKeyboardShortcut(Window\ID, #PB_Shortcut_F3, #Menu_Search_Continue)
+    ;AddKeyboardShortcut(Window\ID, #PB_Shortcut_Control | #PB_Shortcut_F, #Menu_Search)
+    ;AddKeyboardShortcut(Window\ID, #PB_Shortcut_F3, #Menu_Search_Continue)
     
-    AddKeyboardShortcut(Window\ID, #PB_Shortcut_Control | #PB_Shortcut_X, #Menu_Cut)
-    AddKeyboardShortcut(Window\ID, #PB_Shortcut_Control | #PB_Shortcut_C, #Menu_Copy)
-    AddKeyboardShortcut(Window\ID, #PB_Shortcut_Control | #PB_Shortcut_V, #Menu_Paste)
+    ;AddKeyboardShortcut(Window\ID, #PB_Shortcut_Control | #PB_Shortcut_X, #Menu_Cut)
+    ;AddKeyboardShortcut(Window\ID, #PB_Shortcut_Control | #PB_Shortcut_C, #Menu_Copy)
+    ;AddKeyboardShortcut(Window\ID, #PB_Shortcut_Control | #PB_Shortcut_V, #Menu_Paste)
     
-    AddKeyboardShortcut(Window\ID, #PB_Shortcut_Control | #PB_Shortcut_Z, #Menu_Undo)
-    AddKeyboardShortcut(Window\ID, #PB_Shortcut_Control | #PB_Shortcut_Y, #Menu_Redo)
+    ;AddKeyboardShortcut(Window\ID, #PB_Shortcut_Control | #PB_Shortcut_Z, #Menu_Undo)
+    ;AddKeyboardShortcut(Window\ID, #PB_Shortcut_Control | #PB_Shortcut_Y, #Menu_Redo)
     
     ; ######################### Toolbar
     
@@ -663,6 +644,10 @@ Module Main
     If UseGadgetList(WindowID(Window\ID))
       Window\D3docker = D3docker::Create(#PB_Any, 0, Window\ToolBar_Height, Window\D3docker_Width, Window\D3docker_Height, Window\ID)
     EndIf
+    
+    ; ################# Other
+    
+    Window_KeyboardShortcut_Update()
   EndProcedure
   
   Procedure Main()
@@ -723,8 +708,8 @@ Module Main
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 178
-; FirstLine = 140
+; CursorPosition = 210
+; FirstLine = 158
 ; Folding = --
 ; EnableUnicode
 ; EnableXP

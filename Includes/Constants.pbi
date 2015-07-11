@@ -96,7 +96,7 @@ Module Constants
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 84
-; FirstLine = 51
+; CursorPosition = 48
+; FirstLine = 29
 ; EnableUnicode
 ; EnableXP

@@ -41,12 +41,21 @@ DeclareModule Window
   EndEnumeration
   
   ; ################################################### Structures ##################################################
+  Structure KeyboardShortcut
+    Key.i             ; Key combination
+    
+    Event_Menu.i      ; Menu event which will get posted to the child window
+    Main_Menu.i       ; Menu of the main window (like undo, copy, ...)
+  EndStructure
+  
   Structure Object
     ID.i
     Name.s
     Name_Short.s
     
     Tab_ID.s          ; Windows with the same Tab_ID will be grouped into tabs if possible
+    
+    List KeyboardShortcut.KeyboardShortcut()
     
     *Node
   EndStructure
@@ -58,6 +67,8 @@ DeclareModule Window
   Declare   Get_Active()
   Declare   Set_Active(*Window.Object)
   Declare   Bounds(*Window.Object, Min_Width.l, Min_Height.l, Max_Width.l, Max_Height.l)
+  Declare   Remove_KeyboardShortcut(*Window.Object, Key.i)
+  Declare   Set_KeyboardShortcut(*Window.Object, Key.i, Event_Menu.i, Main_Menu.i=0)
   
   Declare   Create(*Object, Name.s, Name_Short.s, X=#PB_Ignore, Y=#PB_Ignore, Width=#PB_Ignore, Height=#PB_Ignore, Flags=0, Resize_Priority.l=0, Tab_ID.s="")
   Declare   Delete(*Window.Object)
@@ -159,14 +170,54 @@ Module Window
     ProcedureReturn #True
   EndProcedure
   
+  Procedure Remove_KeyboardShortcut(*Window.Object, Key.i)
+    If Not *Window
+      ProcedureReturn #False
+    EndIf
+    
+    ForEach *Window\KeyboardShortcut()
+      If *Window\KeyboardShortcut()\Key = Key
+        DeleteElement(*Window\KeyboardShortcut())
+      EndIf
+    Next
+    
+    If Key
+      RemoveKeyboardShortcut(*Window\ID, Key)
+    EndIf
+    
+    Main::Window_KeyboardShortcut_Update() ; #### Indirectly executed throught Set_KeyboardShortcut
+    
+    ProcedureReturn #True
+  EndProcedure
+  
+  Procedure Set_KeyboardShortcut(*Window.Object, Key.i, Event_Menu.i, Main_Menu.i=0)
+    If Not *Window
+      ProcedureReturn #False
+    EndIf
+    
+    Remove_KeyboardShortcut(*Window, Key)
+    
+    AddElement(*Window\KeyboardShortcut())
+    *Window\KeyboardShortcut()\Key = Key
+    *Window\KeyboardShortcut()\Event_Menu = Event_Menu
+    *Window\KeyboardShortcut()\Main_Menu = Main_Menu
+    
+    If Key
+      AddKeyboardShortcut(*Window\ID, Key, Event_Menu)
+    EndIf
+    
+    ProcedureReturn #True
+  EndProcedure
+  
   Procedure Event_ActivateWindow()
     Protected ID = EventWindow()
-    Protected i
     
     Protected *Window.Object = Get(ID)
     If Not *Window
       ProcedureReturn
     EndIf
+    
+    Main::Window_KeyboardShortcut_Update()
     
     StatusBarText(Main\StatusBar, 0, "")
     StatusBarText(Main\StatusBar, 1, "")
@@ -346,8 +397,8 @@ Module Window
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 39
-; FirstLine = 29
+; CursorPosition = 187
+; FirstLine = 169
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP

@@ -63,6 +63,9 @@ Module _Node_Editor
   ; ################################################### Constants ###################################################
   
   Enumeration
+    #Menu_Save
+    #Menu_SaveAs
+    
     #Menu_Search
     #Menu_Search_Continue
     #Menu_Goto
@@ -2317,6 +2320,14 @@ Module _Node_Editor
     Protected Event.Node::Event
     
     Select Event_Menu
+      Case #Menu_Save
+        Event\Type = Node::#Event_Save
+        Node::Input_Event(FirstElement(*Node\Input()), Event)
+        
+      Case #Menu_SaveAs
+        Event\Type = Node::#Event_SaveAs
+        Node::Input_Event(FirstElement(*Node\Input()), Event)
+        
       Case #Menu_Search
         Search_Window_Open(*Node)
         
@@ -2417,15 +2428,21 @@ Module _Node_Editor
       BindEvent(#PB_Event_CloseWindow, @Window_Event_CloseWindow(), *Object\Window\ID)
       BindGadgetEvent(*Object\Canvas, @Window_Event_Canvas())
       
-      AddKeyboardShortcut(*Object\Window\ID, #PB_Shortcut_Control | #PB_Shortcut_F, #Menu_Search)
-      AddKeyboardShortcut(*Object\Window\ID, #PB_Shortcut_F3, #Menu_Search_Continue)
+      Window::Set_KeyboardShortcut(*Object\Window, #PB_Shortcut_Control | #PB_Shortcut_S, #Menu_Save, Main::#Menu_Save)
+      Window::Set_KeyboardShortcut(*Object\Window, 0, #Menu_SaveAs, Main::#Menu_SaveAs)
       
-      AddKeyboardShortcut(*Object\Window\ID, #PB_Shortcut_Control | #PB_Shortcut_X, #Menu_Cut)
-      AddKeyboardShortcut(*Object\Window\ID, #PB_Shortcut_Control | #PB_Shortcut_C, #Menu_Copy)
-      AddKeyboardShortcut(*Object\Window\ID, #PB_Shortcut_Control | #PB_Shortcut_V, #Menu_Paste)
+      Window::Set_KeyboardShortcut(*Object\Window, #PB_Shortcut_Control | #PB_Shortcut_F, #Menu_Search, Main::#Menu_Search)
+      Window::Set_KeyboardShortcut(*Object\Window, #PB_Shortcut_F3, #Menu_Search_Continue, Main::#Menu_Search_Continue)
       
-      AddKeyboardShortcut(*Object\Window\ID, #PB_Shortcut_Control | #PB_Shortcut_Z, #Menu_Undo)
-      AddKeyboardShortcut(*Object\Window\ID, #PB_Shortcut_Control | #PB_Shortcut_Y, #Menu_Redo)
+      Window::Set_KeyboardShortcut(*Object\Window, #PB_Shortcut_Control | #PB_Shortcut_X, #Menu_Cut, Main::#Menu_Cut)
+      Window::Set_KeyboardShortcut(*Object\Window, #PB_Shortcut_Control | #PB_Shortcut_C, #Menu_Copy, Main::#Menu_Copy)
+      Window::Set_KeyboardShortcut(*Object\Window, #PB_Shortcut_Control | #PB_Shortcut_V, #Menu_Paste, Main::#Menu_Paste)
+      
+      Window::Set_KeyboardShortcut(*Object\Window, #PB_Shortcut_Control | #PB_Shortcut_Z, #Menu_Undo, Main::#Menu_Undo)
+      Window::Set_KeyboardShortcut(*Object\Window, #PB_Shortcut_Control | #PB_Shortcut_Y, #Menu_Redo, Main::#Menu_Redo)
+      
+      Window::Set_KeyboardShortcut(*Object\Window, #PB_Shortcut_Control | #PB_Shortcut_A, #PopupMenu_Select_All, Main::#Menu_Select_All)
+      Window::Set_KeyboardShortcut(*Object\Window, #PB_Shortcut_Control | #PB_Shortcut_G, #Menu_Goto, Main::#Menu_Goto)
       
       D3docker::Window_Set_Callback(*Object\Window\ID, @Window_Callback())
       
@@ -2522,8 +2539,8 @@ Module _Node_Editor
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1782
-; FirstLine = 1764
+; CursorPosition = 2443
+; FirstLine = 2408
 ; Folding = -------
 ; EnableUnicode
 ; EnableXP
