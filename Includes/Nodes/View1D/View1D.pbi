@@ -700,6 +700,10 @@ Module _Node_View1D
             X_M = *Input_Channel\Value()\Position * *Object\Zoom_X + *Object\Offset_X
             Y_M = Height/2 - *Input_Channel\Value()\Value * *Object\Zoom_Y + *Object\Offset_Y
             
+            ; #### Limit Y_M to a reasonable range
+            If Y_M > 100000 : Y_M = 100000 : EndIf
+            If Y_M < -100000 : Y_M = -100000 : EndIf
+            
             If Not First
               LineXY(X_M, Y_M, X_M_O, Y_M_O, *Input_Channel\Color)
             Else
@@ -1337,7 +1341,7 @@ Module _Node_View1D
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1210
-; FirstLine = 1185
+; CursorPosition = 703
+; FirstLine = 676
 ; Folding = ----
 ; EnableXP
