@@ -825,8 +825,6 @@ Module _Node_Process
   
   Procedure Window_Event_SizeWindow()
     Protected Event_Window = EventWindow()
-    Protected Event_Gadget = EventGadget()
-    Protected Event_Type = EventType()
     
     Protected *Window.Window::Object = Window::Get(Event_Window)
     If Not *Window
@@ -1006,8 +1004,8 @@ Module _Node_Process
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 882
-; FirstLine = 882
+; CursorPosition = 826
+; FirstLine = 821
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

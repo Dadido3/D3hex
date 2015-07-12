@@ -355,22 +355,7 @@ Module _Node_View1D
     EndIf
     
     Select *Event\Type
-      Case Node::#Event_Save
-        
-      Case Node::#Event_SaveAs
-        
-      Case Node::#Event_Undo
-        
-      Case Node::#Event_Redo
-        
-      Case Node::#Event_Goto
-        ; #### Open window here
-        
-      Case Node::#Event_Search
-        ; #### Open window here
-        
-      Case Node::#Event_Search_Continue
-        
+      
     EndSelect
     
     ProcedureReturn #True
@@ -1036,10 +1021,9 @@ Module _Node_View1D
   EndProcedure
   
   Procedure Window_Event_SizeWindow()
-    Protected Width, Height, Data_Width, Data_Height, ToolBarHeight
     Protected Event_Window = EventWindow()
-    Protected Event_Gadget = EventGadget()
-    Protected Event_Type = EventType()
+    
+    Protected Width, Height, Data_Width, Data_Height, ToolBarHeight
     
     Protected *Window.Window::Object = Window::Get(Event_Window)
     If Not *Window
@@ -1341,7 +1325,7 @@ Module _Node_View1D
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 703
-; FirstLine = 676
+; CursorPosition = 459
+; FirstLine = 422
 ; Folding = ----
 ; EnableXP

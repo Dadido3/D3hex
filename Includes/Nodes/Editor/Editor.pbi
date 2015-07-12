@@ -907,8 +907,10 @@ Module _Node_Editor
     
     *Object\Y0 = Main\Font_Height * 1.5
     *Object\X0 = Main\Font_Width * (*Object\Adress_Length + 2)
-    *Object\X1 = *Object\X0 + Main\Font_Width * (*Object\Line_Bytes * 3 + 1)
-    *Object\X2 = *Object\X1 + Main\Font_Width * (*Object\Line_Bytes + 1)
+    *Object\X1 = Main\Font_Width * (*Object\Line_Bytes * 3 + 1)
+    *Object\X2 = Main\Font_Width * (*Object\Line_Bytes + 1)       ; FIXME: Undo when the bug in PureBasic is fixed. Right now it's a silly workaround!
+    *Object\X1 + *Object\X0
+    *Object\X2 + *Object\X1
     
     *Object\Lines = Quad_Divide_Ceil(Height - *Object\Y0, Main\Font_Height)
     
@@ -1008,7 +1010,7 @@ Module _Node_Editor
     Protected Metadata.a
     Protected String_Ascii.s{1}
     Protected String_Hex.s{2}
-    Protected *String_Temp_Buffer, String_Temp_Size
+    Protected *String_Temp_Buffer, String_Temp_Size.i ; String_Temp_Size is in characters (#PB_Unicode --> #PB_UTF16 --> 16 bit)
     
     If Not *Node
       ProcedureReturn #False
@@ -1131,7 +1133,7 @@ Module _Node_Editor
                   String_Ascii = " "
                 Else
                   String_Temp_Size = MultiByteToWideChar_(437, #MB_USEGLYPHCHARS, *Object\Segment()\Raw_Data+i, 1, #Null, 0)
-                  *String_Temp_Buffer = AllocateMemory(String_Temp_Size)
+                  *String_Temp_Buffer = AllocateMemory(String_Temp_Size*2)
                   MultiByteToWideChar_(437, #MB_USEGLYPHCHARS, *Object\Segment()\Raw_Data+i, 1, *String_Temp_Buffer, String_Temp_Size)
                   String_Ascii = PeekS(*String_Temp_Buffer, String_Temp_Size, #PB_Unicode)
                   FreeMemory(*String_Temp_Buffer)
@@ -1159,7 +1161,7 @@ Module _Node_Editor
                   String_Ascii = " "
                 Else
                   String_Temp_Size = MultiByteToWideChar_(437, #MB_USEGLYPHCHARS, *Object\Segment()\Raw_Data+i, 1, #Null, 0)
-                  *String_Temp_Buffer = AllocateMemory(String_Temp_Size)
+                  *String_Temp_Buffer = AllocateMemory(String_Temp_Size*2)
                   MultiByteToWideChar_(437, #MB_USEGLYPHCHARS, *Object\Segment()\Raw_Data+i, 1, *String_Temp_Buffer, String_Temp_Size)
                   String_Ascii = PeekS(*String_Temp_Buffer, String_Temp_Size, #PB_Unicode)
                   FreeMemory(*String_Temp_Buffer)
@@ -2539,8 +2541,8 @@ Module _Node_Editor
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 2443
-; FirstLine = 2408
+; CursorPosition = 909
+; FirstLine = 881
 ; Folding = -------
 ; EnableUnicode
 ; EnableXP

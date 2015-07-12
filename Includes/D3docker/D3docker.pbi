@@ -597,46 +597,42 @@ Module D3docker
     If Not *Gadget
       ProcedureReturn #Null
     EndIf
-    Protected Window.i
+    Protected *Window.Window
     Protected *params.GADGET_PARAMS=GetParams(*Gadget)
     With *params
-      AddElement(\Window())
+      *Window = AddElement(\Window())
       
-      PushListPosition(\Window())
-      Window = OpenWindow(#PB_Any, X, Y, Width, Height, Title, Flags, WindowID(\Parent_Window))
-      PopListPosition(\Window())
+      *Window\Window = OpenWindow(#PB_Any, X, Y, Width, Height, Title, Flags, WindowID(\Parent_Window))
+      *Window\hWnd = WindowID(*Window\Window)
+      *Window\Gadget = *Gadget
+      ;SetWindowData(*Window\Window, *Window)
+      SetWindowCallback(@Window_Callback(), *Window\Window)
       
-      \Window()\Window = Window
-      \Window()\hWnd = WindowID(\Window()\Window)
-      \Window()\Gadget = *Gadget
-      ;SetWindowData(\Window()\Window, \Window())
-      SetWindowCallback(@Window_Callback(), \Window()\Window)
+      SmartWindowRefresh(*Window\Window, #True)
       
-      SmartWindowRefresh(\Window()\Window, #True)
+      *Window\Resize_Priority = Resize_Priority
       
-      \Window()\Resize_Priority = Resize_Priority
+      *Window\Flags_Normal = GetWindowLong_(*Window\hWnd, #GWL_STYLE)
+      *Window\Flags_Docked = *Window\Flags_Normal
+      *Window\Flags_Docked & ~#WS_POPUP
+      *Window\Flags_Docked & ~#WS_SIZEBOX
+      *Window\Flags_Docked & ~#WS_DLGFRAME
+      *Window\Flags_Docked & ~#WS_BORDER
+      *Window\Flags_Docked | #WS_CHILD
+      ;*Window\Flags_Docked | #WS_EX_MDICHILD
       
-      \Window()\Flags_Normal = GetWindowLong_(\Window()\hWnd, #GWL_STYLE)
-      \Window()\Flags_Docked = \Window()\Flags_Normal
-      \Window()\Flags_Docked & ~#WS_POPUP
-      \Window()\Flags_Docked & ~#WS_SIZEBOX
-      \Window()\Flags_Docked & ~#WS_DLGFRAME
-      \Window()\Flags_Docked & ~#WS_BORDER
-      \Window()\Flags_Docked | #WS_CHILD
-      ;\Window()\Flags_Docked | #WS_EX_MDICHILD
+      _Window_Set_Active(*Gadget, *Window, #False)
       
-      _Window_Set_Active(*Gadget, \Window(), #False)
-      
-      If \Window()\Flags_Normal & #WS_SIZEBOX
-        _Window_Bounds(*Gadget, \Window(), #PB_Default, #PB_Default, #PB_Default, #PB_Default)
+      If *Window\Flags_Normal & #WS_SIZEBOX
+        _Window_Bounds(*Gadget, *Window, #PB_Default, #PB_Default, #PB_Default, #PB_Default)
       Else
-        \Window()\Min_Width = Width
-        \Window()\Min_Height = Height
-        \Window()\Max_Width = \Window()\Min_Width
-        \Window()\Max_Height = \Window()\Min_Height
+        *Window\Min_Width = Width
+        *Window\Min_Height = Height
+        *Window\Max_Width = *Window\Min_Width
+        *Window\Max_Height = *Window\Min_Height
       EndIf
       
-      ProcedureReturn \Window()\Window
+      ProcedureReturn *Window\Window
     EndWith
   EndProcedure
   
@@ -1383,6 +1379,7 @@ Module D3docker
           
         Default
           FreeStructure(*Container) : *Container = #Null
+          ProcedureReturn #Null
       EndSelect
     EndWith
     
@@ -2289,7 +2286,8 @@ Module D3docker
   
 EndModule
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 41
+; CursorPosition = 1348
+; FirstLine = 1318
 ; Folding = --------
 ; EnableUnicode
 ; EnableXP

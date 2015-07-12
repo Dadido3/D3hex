@@ -1126,8 +1126,6 @@ Module _Node_History
   
   Procedure Window_Event_SizeWindow()
     Protected Event_Window = EventWindow()
-    Protected Event_Gadget = EventGadget()
-    Protected Event_Type = EventType()
     
     Protected *Window.Window::Object = Window::Get(Event_Window)
     If Not *Window
@@ -1303,7 +1301,7 @@ Module _Node_History
   
 EndModule
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 499
-; FirstLine = 477
+; CursorPosition = 1127
+; FirstLine = 1122
 ; Folding = ------
 ; EnableXP

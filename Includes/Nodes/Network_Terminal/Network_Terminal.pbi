@@ -936,8 +936,6 @@ Module _Node_Network_Terminal
   
   Procedure Window_Event_SizeWindow()
     Protected Event_Window = EventWindow()
-    Protected Event_Gadget = EventGadget()
-    Protected Event_Type = EventType()
     
     Protected *Window.Window::Object = Window::Get(Event_Window)
     If Not *Window
@@ -1261,8 +1259,8 @@ Module _Node_Network_Terminal
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1025
-; FirstLine = 1015
+; CursorPosition = 937
+; FirstLine = 932
 ; Folding = ------
 ; EnableUnicode
 ; EnableXP

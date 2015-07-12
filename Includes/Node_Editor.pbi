@@ -340,7 +340,9 @@ Module Node_Editor
     
     NBT::Element_Delete(*NBT_Element)
     
-    SetToolBarButtonState(Window\ToolBar, #Menu_Grid_Snapping, Window\Snapping)
+    If Window\Window
+      SetToolBarButtonState(Window\ToolBar, #Menu_Grid_Snapping, Window\Snapping)
+    EndIf
     
     Window\Redraw = #True
     
@@ -1152,8 +1154,8 @@ Module Node_Editor
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1034
-; FirstLine = 1006
+; CursorPosition = 1099
+; FirstLine = 1084
 ; Folding = ----
 ; EnableUnicode
 ; EnableXP

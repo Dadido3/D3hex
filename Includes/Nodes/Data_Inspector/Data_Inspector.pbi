@@ -769,8 +769,6 @@ Module _Node_Data_Inspector
   
   Procedure Window_Event_SizeWindow()
     Protected Event_Window = EventWindow()
-    Protected Event_Gadget = EventGadget()
-    Protected Event_Type = EventType()
     
     Protected *Window.Window::Object = Window::Get(Event_Window)
     If Not *Window
@@ -968,8 +966,8 @@ Module _Node_Data_Inspector
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 845
-; FirstLine = 836
+; CursorPosition = 769
+; FirstLine = 765
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP

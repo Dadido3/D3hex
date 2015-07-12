@@ -163,8 +163,6 @@ Module Logger
   
   Procedure Window_Event_SizeWindow()
     Protected Event_Window = EventWindow()
-    Protected Event_Gadget = EventGadget()
-    Protected Event_Type = EventType()
     
   EndProcedure
   
@@ -270,8 +268,8 @@ Module Logger
   
 EndModule
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 258
-; FirstLine = 213
+; CursorPosition = 184
+; FirstLine = 156
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP

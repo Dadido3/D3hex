@@ -871,8 +871,6 @@ Module _Node_Binary_Operation
   
   Procedure Window_Event_SizeWindow()
     Protected Event_Window = EventWindow()
-    Protected Event_Gadget = EventGadget()
-    Protected Event_Type = EventType()
     
     Protected *Window.Window::Object = Window::Get(Event_Window)
     If Not *Window
@@ -1089,8 +1087,8 @@ Module _Node_Binary_Operation
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 939
-; FirstLine = 923
+; CursorPosition = 871
+; FirstLine = 867
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

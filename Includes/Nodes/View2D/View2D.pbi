@@ -400,22 +400,7 @@ Module _Node_View2D
     EndIf
     
     Select *Event\Type
-      Case Node::#Event_Save
-        
-      Case Node::#Event_SaveAs
-        
-      Case Node::#Event_Undo
-        
-      Case Node::#Event_Redo
-        
-      Case Node::#Event_Goto
-        ; #### Open window here
-        
-      Case Node::#Event_Search
-        ; #### Open window here
-        
-      Case Node::#Event_Search_Continue
-        
+      
     EndSelect
     
     ProcedureReturn #True
@@ -1140,10 +1125,9 @@ Module _Node_View2D
   EndProcedure
   
   Procedure Window_Event_SizeWindow()
-    Protected Width, Height, Data_Width, Data_Height, ToolBarHeight, ScrollBar_X_Height, ScrollBar_Y_Width
     Protected Event_Window = EventWindow()
-    Protected Event_Gadget = EventGadget()
-    Protected Event_Type = EventType()
+    
+    Protected Width, Height, Data_Width, Data_Height, ToolBarHeight, ScrollBar_X_Height, ScrollBar_Y_Width
     
     Protected *Window.Window::Object = Window::Get(Event_Window)
     If Not *Window
@@ -1461,7 +1445,7 @@ Module _Node_View2D
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1338
-; FirstLine = 1326
+; CursorPosition = 402
+; FirstLine = 385
 ; Folding = ----
 ; EnableXP

@@ -307,9 +307,9 @@ Module Window
     ;SmartWindowRefresh(*Window\ID, 1)
     
     BindEvent(#PB_Event_ActivateWindow, @Event_ActivateWindow(), *Window\ID)
-    BindEvent(#PB_Event_MaximizeWindow, @Event_MaximizeWindow(), *Window\ID)
-    BindEvent(#PB_Event_MinimizeWindow, @Event_MinimizeWindow(), *Window\ID)
-    BindEvent(#PB_Event_RestoreWindow, @Event_RestoreWindow(), *Window\ID)
+    ;BindEvent(#PB_Event_MaximizeWindow, @Event_MaximizeWindow(), *Window\ID)
+    ;BindEvent(#PB_Event_MinimizeWindow, @Event_MinimizeWindow(), *Window\ID)
+    ;BindEvent(#PB_Event_RestoreWindow, @Event_RestoreWindow(), *Window\ID)
     
     If Flags & #Flag_Docked
       ;*Temp = Get_Active()
@@ -397,8 +397,8 @@ Module Window
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 187
-; FirstLine = 169
+; CursorPosition = 313
+; FirstLine = 293
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP

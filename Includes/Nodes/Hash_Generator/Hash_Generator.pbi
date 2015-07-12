@@ -362,8 +362,6 @@ Module _Node_Hash_Generator
   
   Procedure Window_Event_SizeWindow()
     Protected Event_Window = EventWindow()
-    Protected Event_Gadget = EventGadget()
-    Protected Event_Type = EventType()
     
     Protected *Window.Window::Object = Window::Get(Event_Window)
     If Not *Window
@@ -673,8 +671,8 @@ Module _Node_Hash_Generator
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 463
-; FirstLine = 451
+; CursorPosition = 363
+; FirstLine = 358
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP
