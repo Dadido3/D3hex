@@ -153,7 +153,7 @@
 ;   - Node "Editor": Fixed writing at the end of data
 ;   - Node "View2D": Added standard configuration
 ;   
-; - V0.967 (INDEV)
+; - V0.967 (13.07.2015)
 ;   - Node "File": Ignore result of File-requesters if it is ""
 ;   - Network_Terminal:
 ;     - Data_Set is not triggering an update event
@@ -181,6 +181,10 @@
 ;   - Changed colors in node "Editor"
 ;   - Added a event distributor for shortcut, menu and toolbar events
 ;   - Many other small changes and refactoring
+;   
+; - V0.968 (INDEV)
+;   - 
+;   
 ;   
 ; ##################################################### Begin #######################################################
 
@@ -708,8 +712,8 @@ Module Main
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 154
-; FirstLine = 142
+; CursorPosition = 185
+; FirstLine = 145
 ; Folding = --
 ; EnableUnicode
 ; EnableXP

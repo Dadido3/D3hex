@@ -7,7 +7,7 @@
   <section name="data">
     <explorer view="Includes\Nodes\View2D\" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2015-07-12 13:33" user="David Vogel" host="DAVIDS"/>
+    <lastopen date="2015-07-13 15:24" user="David Vogel" host="DAVIDS"/>
   </section>
   <section name="files">
     <file name="Includes\About.pbi">
@@ -152,21 +152,21 @@
     </file>
     <file name="Main.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="bcb78203946ada0c406850db7bfa17cb"/>
+      <fingerprint md5="c53347f1b98816500fae5c81d2f0bc98"/>
     </file>
   </section>
   <section name="targets">
     <target name="x86" enabled="1" default="0">
       <inputfile value="Main.pb"/>
-      <outputfile value="Distribution\x86\D3hex.x86.exe"/>
+      <outputfile value="Distribution\x86\D3hex.exe"/>
       <compiler version="PureBasic 5.31 (Windows - x86)"/>
-      <executable value="Distribution\x86\D3hex.x86.exe"/>
+      <executable value="Distribution\x86\D3hex.exe"/>
       <directory value="Distribution\x86\"/>
       <options unicode="1" xpskin="1" user="1" onerror="1" debug="1"/>
       <purifier enable="1" granularity="1,1,1,1"/>
       <icon enable="1">Data\Images\Icon.ico</icon>
-      <compilecount enable="1" value="523"/>
-      <buildcount enable="1" value="56"/>
+      <compilecount enable="1" value="525"/>
+      <buildcount enable="1" value="58"/>
       <versioninfo enable="1">
         <field3 value="D3hex"/>
         <field14 value="D3nexus.de"/>
@@ -175,15 +175,15 @@
     </target>
     <target name="x64" enabled="1" default="1">
       <inputfile value="Main.pb"/>
-      <outputfile value="Distribution\x64\D3hex.x64.exe"/>
+      <outputfile value="Distribution\x64\D3hex.exe"/>
       <compiler version="PureBasic 5.31 (Windows - x64)"/>
-      <executable value="Distribution\x64\D3hex.x64.exe"/>
+      <executable value="Distribution\x64\D3hex.exe"/>
       <directory value="Distribution\x64\"/>
       <options unicode="1" xpskin="1" user="1" onerror="1" debug="1"/>
       <purifier enable="0" granularity="1,1,1,1"/>
       <icon enable="1">Data\Images\Icon.ico</icon>
-      <compilecount enable="1" value="3760"/>
-      <buildcount enable="1" value="63"/>
+      <compilecount enable="1" value="3762"/>
+      <buildcount enable="1" value="65"/>
       <versioninfo enable="1">
         <field3 value="D3hex"/>
         <field14 value="D3nexus.de"/>
