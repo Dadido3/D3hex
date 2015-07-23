@@ -2364,6 +2364,11 @@ Module _Node_Editor
         *Object\Select_Nibble = #False
         *Object\Temp_Nibble = #False
         *Object\Redraw = #True
+        ; #### Send an Update event to the selection-output
+        Event\Type = Node::#Link_Event_Update
+        Event\Position = 0
+        Event\Size = *Object\Data_Size
+        Node::Output_Event(FirstElement(*Node\Output()), Event)
         
     EndSelect
   EndProcedure
@@ -2541,8 +2546,8 @@ Module _Node_Editor
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 909
-; FirstLine = 881
-; Folding = -------
+; CursorPosition = 2366
+; FirstLine = 2347
+; Folding = --------
 ; EnableUnicode
 ; EnableXP

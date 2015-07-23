@@ -183,7 +183,8 @@
 ;   - Many other small changes and refactoring
 ;   
 ; - V0.968 (INDEV)
-;   - 
+;   - Editor node:
+;     - Select all does now trigger an update event
 ;   
 ;   
 ; ##################################################### Begin #######################################################
@@ -212,7 +213,7 @@ XIncludeFile "Includes/Icons.pbi"
 DeclareModule Main
   EnableExplicit
   ; ################################################### Constants ###################################################
-  #Version = 0967
+  #Version = 0968
   
   Enumeration 1
     #Menu_Dummy
@@ -712,8 +713,8 @@ Module Main
 EndModule
 
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 185
-; FirstLine = 145
+; CursorPosition = 57
+; FirstLine = 133
 ; Folding = --
 ; EnableUnicode
 ; EnableXP
