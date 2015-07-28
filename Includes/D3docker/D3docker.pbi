@@ -40,6 +40,7 @@
 ;   - Fixed the redraw issues of the empty space between containers
 ;   - A lot of bugfixes and little changes
 ;   - Reduced the amount of #PB_Event_ActivateWindow events
+;   - Also hide the "Empty" gadgets
 ; 
 ; 
 ; 
@@ -1071,18 +1072,10 @@ Module D3docker
           Next
           
         Case #Container_Type_Docker
-          Select State
-            Case #True
-              If *Container\Window
-                HideWindow(*Container\Window\Window, #True)
-              EndIf
-              HideGadget(*Container\Gadget_Canvas, #True)
-            Case #False
-              If *Container\Window
-                HideWindow(*Container\Window\Window, #False)
-              EndIf
-              HideGadget(*Container\Gadget_Canvas, #False)
-          EndSelect
+          If *Container\Window
+            HideWindow(*Container\Window\Window, State)
+          EndIf
+          HideGadget(*Container\Gadget_Canvas, State)
           
         Case #Container_Type_Split_H
           ForEach *Container\Container()
@@ -1095,25 +1088,23 @@ Module D3docker
           Next
           
         Case #Container_Type_Spliter
-          Select State
-            Case #True
-              HideGadget(*Container\Gadget_Canvas, #True)
-            Case #False
-              HideGadget(*Container\Gadget_Canvas, #False)
-          EndSelect
+          HideGadget(*Container\Gadget_Canvas, State)
           
         Case #Container_Type_Tabbed
-          Select State
-            Case #True
-              HideGadget(*Container\Gadget_TabBar, #True)
-            Case #False
-              HideGadget(*Container\Gadget_TabBar, #False)
-          EndSelect
+          HideGadget(*Container\Gadget_TabBar, State)
           ForEach *Container\Container()
             Container_Hide(*Gadget, *Container\Container(), State, Iteration+1)
           Next
           
       EndSelect
+      
+      If *Container\Gadget_Empty[0]
+        HideGadget(*Container\Gadget_Empty[0], State)
+      EndIf
+      If *Container\Gadget_Empty[1]
+        HideGadget(*Container\Gadget_Empty[1], State)
+      EndIf
+      
     EndWith
   EndProcedure
   
@@ -2286,8 +2277,8 @@ Module D3docker
   
 EndModule
 ; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1348
-; FirstLine = 1318
-; Folding = --------
+; CursorPosition = 42
+; FirstLine = 24
+; Folding = ---------
 ; EnableUnicode
 ; EnableXP
