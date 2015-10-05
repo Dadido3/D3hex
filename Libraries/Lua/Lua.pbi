@@ -558,34 +558,6 @@ Module Lua
   
   ; ################## Procedures and Macros for some exceptions ##################
   
-  ; ###########################
-  ; #### Just a short test ####
-  ; ###########################
-  ProcedureC Test(*Lua_State)
-    Debug PeekS(lua_tostring(*Lua_State, 1),-1, #PB_UTF8)
-    ProcedureReturn 0 ; Anzahl der Rückgabeargumente
-  EndProcedure
-  
-  *Lua_State = luaL_newstate()
-  
-  lua_pushcclosure(*Lua_State, @luaL_openlibs(), 0)
-  lua_call(*Lua_State, 0, 0)
-  ;lua_callk(*Lua_State, 0, 0, 0, #Null)
-  
-  lua_register(*Lua_State, "Test", @Test())
-  
-  Debug PeekD(lua_version(*Lua_State))
-  
-  Debug luaL_dostring(*Lua_State, "Test('test: 㩛ä+¡m↓')")
-  
-  ;Debug PeekS(lua_tostring(*Lua_State, -1), -1, #PB_UTF8)
-  
-  ;Input()
-  ; ###########################
-  ; #### Just a short test ####
-  ; ###########################
-  
-  
 EndModule
 
 ; /******************************************************************************
@@ -610,9 +582,9 @@ EndModule
 ; * TORT Or OTHERWISE, ARISING FROM, OUT OF Or IN CONNECTION With THE
 ; * SOFTWARE Or THE USE Or OTHER DEALINGS IN THE SOFTWARE.
 ; ******************************************************************************/
-; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 578
-; FirstLine = 545
+; IDE Options = PureBasic 5.40 LTS Beta 8 (Windows - x64)
+; CursorPosition = 557
+; FirstLine = 534
 ; Folding = --------
 ; EnableUnicode
 ; EnableXP
