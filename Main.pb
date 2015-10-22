@@ -182,9 +182,11 @@
 ;   - Added a event distributor for shortcut, menu and toolbar events
 ;   - Many other small changes and refactoring
 ;   
-; - V0.968 (INDEV)
+; - V0.969 (INDEV)
 ;   - Editor node:
 ;     - Select all does now trigger an update event
+;   - Hash generator node:
+;     - More hashfunctions (CRC32, MD5, SHA-1, SHA-2 (244), SHA-2 (256), SHA-2 (384), SHA-2 (512), SHA-3 (244), SHA-3 (256), SHA-3 (384), SHA-3 (512))
 ;   
 ;   
 ; ##################################################### Begin #######################################################
@@ -712,9 +714,9 @@ Module Main
   
 EndModule
 
-; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 57
-; FirstLine = 133
+; IDE Options = PureBasic 5.40 LTS Beta 8 (Windows - x64)
+; CursorPosition = 188
+; FirstLine = 148
 ; Folding = --
 ; EnableUnicode
 ; EnableXP

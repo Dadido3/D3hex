@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns="http://www.purebasic.com/namespace" version="1.0" creator="PureBasic 5.31 (Windows - x64)">
+<project xmlns="http://www.purebasic.com/namespace" version="1.0" creator="PureBasic 5.40 LTS Beta 8 (Windows - x64)">
   <section name="config">
     <options closefiles="1" openmode="0" name="D3hex"/>
   </section>
   <section name="data">
     <explorer view="Includes\Nodes\View2D\" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2015-07-13 15:24" user="David Vogel" host="DAVIDS"/>
+    <lastopen date="2015-10-22 21:39" user="David Vogel" host="DAVIDS"/>
   </section>
   <section name="files">
     <file name="Includes\About.pbi">
@@ -24,15 +24,15 @@
     </file>
     <file name="Includes\D3docker\D3docker.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+++"/>
-      <fingerprint md5="5f0df95290d3846e75e992d708593b75"/>
+      <fingerprint md5="4451b2767588e0ee4cdfd91e1e64c419"/>
     </file>
     <file name="Includes\D3docker\TabBarGadget.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="0" panelstate="+++"/>
       <fingerprint md5="9f6bdea983cf61fe38307c348888b70e"/>
     </file>
     <file name="Includes\D3HT.pbi">
-      <config load="0" scan="1" panel="1" warn="1" lastopen="0" panelstate="++"/>
-      <fingerprint md5="9b9bdc726b2d591606ea58de37ac0991"/>
+      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
+      <fingerprint md5="c422c04600fe30c9478a0555d73bfd93"/>
     </file>
     <file name="Includes\D3NBT.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="0" panelstate="++"/>
@@ -84,7 +84,7 @@
     </file>
     <file name="Includes\Nodes\Editor\Editor.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
-      <fingerprint md5="aa302dfa319089e979d431a8ba1a3f1a"/>
+      <fingerprint md5="7393d75a8d5fa59ea5b96e06e65f9b30"/>
     </file>
     <file name="Includes\Nodes\Editor\Editor_Goto.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="0" panelstate="++++"/>
@@ -99,8 +99,8 @@
       <fingerprint md5="8a76c797702acd3dd6f9e475ca69df47"/>
     </file>
     <file name="Includes\Nodes\Hash_Generator\Hash_Generator.pbi">
-      <config load="0" scan="1" panel="1" warn="1" lastopen="0" panelstate="+++-"/>
-      <fingerprint md5="123d942d1285b3330eb7723afe44c029"/>
+      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+++-"/>
+      <fingerprint md5="d2d9eb670b19f3ad75ead68a8bdfad7e"/>
     </file>
     <file name="Includes\Nodes\History\History.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="0" panelstate="+++-"/>
@@ -111,7 +111,7 @@
       <fingerprint md5="e28ab39c6cbf38c39f91839423036e24"/>
     </file>
     <file name="Includes\Nodes\Process\Process.pbi">
-      <config load="0" scan="1" panel="1" warn="1" lastopen="0" panelstate="+++-"/>
+      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+++-"/>
       <fingerprint md5="16869d1faefa0af38d780dd1ab98eaf7"/>
     </file>
     <file name="Includes\Nodes\Random\Random.pbi">
@@ -148,25 +148,25 @@
     </file>
     <file name="Libraries\Lua\Lua.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+++"/>
-      <fingerprint md5="194d030a2f60ea6bef4274147a85e9b3"/>
+      <fingerprint md5="e7c1a05e277a6bc8d61c1613f2e8c3c8"/>
     </file>
     <file name="Main.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="c53347f1b98816500fae5c81d2f0bc98"/>
+      <fingerprint md5="d55a4951c2a96b17c51dbd4c1cf0e708"/>
     </file>
   </section>
   <section name="targets">
     <target name="x86" enabled="1" default="0">
       <inputfile value="Main.pb"/>
       <outputfile value="Distribution\x86\D3hex.exe"/>
-      <compiler version="PureBasic 5.31 (Windows - x86)"/>
+      <compiler version="PureBasic 5.40 LTS Beta 1 (Windows - x86)"/>
       <executable value="Distribution\x86\D3hex.exe"/>
       <directory value="Distribution\x86\"/>
       <options unicode="1" xpskin="1" user="1" onerror="1" debug="1"/>
       <purifier enable="1" granularity="1,1,1,1"/>
       <icon enable="1">Data\Images\Icon.ico</icon>
-      <compilecount enable="1" value="525"/>
-      <buildcount enable="1" value="58"/>
+      <compilecount enable="1" value="527"/>
+      <buildcount enable="1" value="60"/>
       <versioninfo enable="1">
         <field3 value="D3hex"/>
         <field14 value="D3nexus.de"/>
@@ -176,14 +176,14 @@
     <target name="x64" enabled="1" default="1">
       <inputfile value="Main.pb"/>
       <outputfile value="Distribution\x64\D3hex.exe"/>
-      <compiler version="PureBasic 5.31 (Windows - x64)"/>
+      <compiler version="PureBasic 5.40 LTS Beta 1 (Windows - x64)"/>
       <executable value="Distribution\x64\D3hex.exe"/>
       <directory value="Distribution\x64\"/>
-      <options unicode="1" xpskin="1" user="1" onerror="1" debug="1"/>
+      <options unicode="1" xpskin="1" user="1" onerror="1"/>
       <purifier enable="0" granularity="1,1,1,1"/>
       <icon enable="1">Data\Images\Icon.ico</icon>
-      <compilecount enable="1" value="3762"/>
-      <buildcount enable="1" value="65"/>
+      <compilecount enable="1" value="3786"/>
+      <buildcount enable="1" value="67"/>
       <versioninfo enable="1">
         <field3 value="D3hex"/>
         <field14 value="D3nexus.de"/>

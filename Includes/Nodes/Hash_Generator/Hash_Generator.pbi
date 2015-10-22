@@ -23,7 +23,6 @@
 ; 
 ; 
 ; 
-; TODO: Refactor this node. Make a list of hash-functions instead of hardcoding everything.
 ; TODO: Add more hash-functions
 ; 
 ; ###################################################################################################################
@@ -43,6 +42,13 @@ EndDeclareModule
 ; ###################################################################################################################
 
 Module _Node_Hash_Generator
+  ; ################################################### Init ########################################################
+  UseCRC32Fingerprint()
+  UseMD5Fingerprint()
+  UseSHA1Fingerprint()
+  UseSHA2Fingerprint()
+  UseSHA3Fingerprint()
+  
   ; ################################################### Includes ####################################################
   UseModule Constants
   UseModule Helper
@@ -59,6 +65,7 @@ Module _Node_Hash_Generator
   EndEnumeration
   
   Enumeration
+    #Hash_State_Idle
     #Hash_State_Calculate
     #Hash_State_Done
   EndEnumeration
@@ -72,22 +79,19 @@ Module _Node_Hash_Generator
   EndStructure
   Global Main.Main
   
-  Structure Hash_Temp_Value
-    Position.q
-    
-    StructureUnion
-      CRC32.l
-    EndStructureUnion
-  EndStructure
-  
   Structure Hash
+    Name.s
+    
+    Plugin.i
+    Bits.i
+    
     Item_State.i
     State.i
+    Position.i
     
     Result.s
     
     Fingerprint_ID.i      ; From Examine...Fingerprint()
-    List Temp_Value.Hash_Temp_Value()
   EndStructure
   
   Structure Object
@@ -103,12 +107,9 @@ Module _Node_Hash_Generator
     ; #### Hash state
     Automatic.i
     
-    Calculate.i
     Size.q
     
-    Hash_CRC32.Hash
-    Hash_MD5.Hash
-    Hash_SHA1.Hash
+    List Hash.Hash()
   EndStructure
   
   ; ################################################### Variables ###################################################
@@ -127,6 +128,8 @@ Module _Node_Hash_Generator
   Declare   Input_Event(*Input.Node::Conn_Input, *Event.Node::Event)
   
   Declare   Window_Close(*Node.Node::Object)
+  
+  Declare   Hash_Reset(*Node.Node::Object, *Hash.Hash, Force_Calculate = #False)
   
   ; ################################################### Procedures ##################################################
   
@@ -158,6 +161,59 @@ Module _Node_Hash_Generator
     ; #### Add Input
     *Input = Node::Input_Add(*Node)
     *Input\Function_Event = @Input_Event()
+    
+    ; #### Add hash functions
+    AddElement(*Object\Hash())
+    *Object\Hash()\Name = "CRC32"
+    *Object\Hash()\Plugin = #PB_Cipher_CRC32
+    
+    AddElement(*Object\Hash())
+    *Object\Hash()\Name = "MD5"
+    *Object\Hash()\Plugin = #PB_Cipher_MD5
+    
+    AddElement(*Object\Hash())
+    *Object\Hash()\Name = "SHA-1"
+    *Object\Hash()\Plugin = #PB_Cipher_SHA1
+    
+    AddElement(*Object\Hash())
+    *Object\Hash()\Name = "SHA-2 (224)"
+    *Object\Hash()\Plugin = #PB_Cipher_SHA2
+    *Object\Hash()\Bits = 224
+    
+    AddElement(*Object\Hash())
+    *Object\Hash()\Name = "SHA-2 (256)"
+    *Object\Hash()\Plugin = #PB_Cipher_SHA2
+    *Object\Hash()\Bits = 256
+    
+    AddElement(*Object\Hash())
+    *Object\Hash()\Name = "SHA-2 (384)"
+    *Object\Hash()\Plugin = #PB_Cipher_SHA2
+    *Object\Hash()\Bits = 384
+    
+    AddElement(*Object\Hash())
+    *Object\Hash()\Name = "SHA-2 (512)"
+    *Object\Hash()\Plugin = #PB_Cipher_SHA2
+    *Object\Hash()\Bits = 512
+    
+    AddElement(*Object\Hash())
+    *Object\Hash()\Name = "SHA-3 (224)"
+    *Object\Hash()\Plugin = #PB_Cipher_SHA3
+    *Object\Hash()\Bits = 224
+    
+    AddElement(*Object\Hash())
+    *Object\Hash()\Name = "SHA-3 (256)"
+    *Object\Hash()\Plugin = #PB_Cipher_SHA3
+    *Object\Hash()\Bits = 256
+    
+    AddElement(*Object\Hash())
+    *Object\Hash()\Name = "SHA-3 (384)"
+    *Object\Hash()\Plugin = #PB_Cipher_SHA3
+    *Object\Hash()\Bits = 384
+    
+    AddElement(*Object\Hash())
+    *Object\Hash()\Name = "SHA-3 (512)"
+    *Object\Hash()\Plugin = #PB_Cipher_SHA3
+    *Object\Hash()\Bits = 512
     
     ProcedureReturn *Node
   EndProcedure
@@ -196,9 +252,9 @@ Module _Node_Hash_Generator
     
     *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "Automatic", NBT::#Tag_Byte) : NBT::Tag_Set_Number(*NBT_Tag, *Object\Automatic)
     
-    *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "CRC32_Activated", NBT::#Tag_Byte) : NBT::Tag_Set_Number(*NBT_Tag, *Object\Hash_CRC32\Item_State)
-    *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "MD5_Activated", NBT::#Tag_Byte)   : NBT::Tag_Set_Number(*NBT_Tag, *Object\Hash_MD5\Item_State)
-    *NBT_Tag = NBT::Tag_Add(*Parent_Tag, "SHA1_Activated", NBT::#Tag_Byte)  : NBT::Tag_Set_Number(*NBT_Tag, *Object\Hash_SHA1\Item_State)
+    ForEach *Object\Hash()
+      *NBT_Tag = NBT::Tag_Add(*Parent_Tag, *Object\Hash()\Name+"_Activated", NBT::#Tag_Byte) : NBT::Tag_Set_Number(*NBT_Tag, *Object\Hash()\Item_State)
+    Next
     
     ProcedureReturn #True
   EndProcedure
@@ -220,12 +276,14 @@ Module _Node_Hash_Generator
     
     *NBT_Tag = NBT::Tag(*Parent_Tag, "Automatic") : *Object\Automatic = NBT::Tag_Get_Number(*NBT_Tag)
     
-    *NBT_Tag = NBT::Tag(*Parent_Tag, "CRC32_Activated") : *Object\Hash_CRC32\Item_State = NBT::Tag_Get_Number(*NBT_Tag)
-    *NBT_Tag = NBT::Tag(*Parent_Tag, "MD5_Activated")   : *Object\Hash_MD5\Item_State   = NBT::Tag_Get_Number(*NBT_Tag)
-    *NBT_Tag = NBT::Tag(*Parent_Tag, "SHA1_Activated")  : *Object\Hash_SHA1\Item_State  = NBT::Tag_Get_Number(*NBT_Tag)
+    ForEach *Object\Hash()
+      *NBT_Tag = NBT::Tag(*Parent_Tag, *Object\Hash()\Name+"_Activated") : *Object\Hash()\Item_State = NBT::Tag_Get_Number(*NBT_Tag)
+    Next
     
     If *Object\Automatic
-      *Object\Calculate = #True
+      ForEach *Object\Hash()
+        Hash_Reset(*Node, *Object\Hash())
+      Next
     EndIf
     
     ProcedureReturn #True
@@ -240,38 +298,27 @@ Module _Node_Hash_Generator
       ProcedureReturn #False
     EndIf
     
-    If LastElement(*Object\Hash_CRC32\Temp_Value())
-      If *Object\Hash_CRC32\Temp_Value()\Position = *Object\Size
-        SetGadgetItemText(*Object\ListIcon, 0, *Object\Hash_CRC32\Result, 1)
-      Else
-        SetGadgetItemText(*Object\ListIcon, 0, "Calculating "+StrF(*Object\Hash_CRC32\Temp_Value()\Position / *Object\Size * 100,2)+"%", 1)
-      EndIf
-    Else
-      SetGadgetItemText(*Object\ListIcon, 0, "", 1)
-    EndIf
-    If LastElement(*Object\Hash_MD5\Temp_Value())
-      If *Object\Hash_MD5\Temp_Value()\Position = *Object\Size
-        SetGadgetItemText(*Object\ListIcon, 1, *Object\Hash_MD5\Result, 1)
-      Else
-        SetGadgetItemText(*Object\ListIcon, 1, "Calculating "+StrF(*Object\Hash_MD5\Temp_Value()\Position / *Object\Size * 100,2)+"%", 1)
-      EndIf
-    Else
-      SetGadgetItemText(*Object\ListIcon, 1, "", 1)
-    EndIf
-    If LastElement(*Object\Hash_SHA1\Temp_Value())
-      If *Object\Hash_SHA1\Temp_Value()\Position = *Object\Size
-        SetGadgetItemText(*Object\ListIcon, 2, *Object\Hash_SHA1\Result, 1)
-      Else
-        SetGadgetItemText(*Object\ListIcon, 2, "Calculating "+StrF(*Object\Hash_SHA1\Temp_Value()\Position / *Object\Size * 100,2)+"%", 1)
-      EndIf
-    Else
-      SetGadgetItemText(*Object\ListIcon, 2, "", 1)
-    EndIf
-    
-    ; #### Update checkboxes
-    SetGadgetItemState(*Object\ListIcon, 0, *Object\Hash_CRC32\Item_State)
-    SetGadgetItemState(*Object\ListIcon, 1, *Object\Hash_MD5\Item_State)
-    SetGadgetItemState(*Object\ListIcon, 2, *Object\Hash_SHA1\Item_State)
+    ForEach *Object\Hash()
+      ; #### Update message
+      Select *Object\Hash()\State
+        Case #Hash_State_Idle
+          SetGadgetItemText(*Object\ListIcon, ListIndex(*Object\Hash()), "", 1)
+          
+        Case #Hash_State_Calculate
+          If *Object\Hash()\Item_State & #PB_ListIcon_Checked
+            SetGadgetItemText(*Object\ListIcon, ListIndex(*Object\Hash()), "Calculating "+StrF(*Object\Hash()\Position / *Object\Size * 100,2)+"%", 1)
+          Else
+            SetGadgetItemText(*Object\ListIcon, ListIndex(*Object\Hash()), "", 1)
+          EndIf
+          
+        Case #Hash_State_Done
+          SetGadgetItemText(*Object\ListIcon, ListIndex(*Object\Hash()), *Object\Hash()\Result, 1)
+          
+      EndSelect
+      
+      ; #### Update checkboxes
+      SetGadgetItemState(*Object\ListIcon, ListIndex(*Object\Hash()), *Object\Hash()\Item_State)
+    Next
     
     ProcedureReturn #True
   EndProcedure
@@ -308,24 +355,13 @@ Module _Node_Hash_Generator
         EndIf
         
       Case Node::#Link_Event_Update
-        If *Object\Automatic
-          *Object\Calculate = #True
-        Else
-          *Object\Calculate = #False
-        EndIf
         *Object\Update_ListIcon = #True
-      
-        ; #### Delete precalculated values
-        *Object\Hash_CRC32\State = #Hash_State_Calculate
-        ForEach *Object\Hash_CRC32\Temp_Value()
-          If *Object\Hash_CRC32\Temp_Value()\Position > *Event\Position
-            DeleteElement(*Object\Hash_CRC32\Temp_Value())
-          EndIf
+        
+        ForEach *Object\Hash()
+          ForEach *Object\Hash()
+            Hash_Reset(*Node, *Object\Hash())
+          Next
         Next
-        
-        ClearList(*Object\Hash_MD5\Temp_Value())
-        
-        ClearList(*Object\Hash_SHA1\Temp_Value())
         
     EndSelect
     
@@ -350,13 +386,9 @@ Module _Node_Hash_Generator
       ProcedureReturn 
     EndIf
     
-    *Object\Hash_CRC32\Item_State = GetGadgetItemState(Event_Gadget, 0)
-    *Object\Hash_MD5\Item_State = GetGadgetItemState(Event_Gadget, 1)
-    *Object\Hash_SHA1\Item_State = GetGadgetItemState(Event_Gadget, 2)
-    
-    If *Object\Automatic
-      *Object\Calculate = #True
-    EndIf
+    ForEach *Object\Hash()
+      *Object\Hash()\Item_State = GetGadgetItemState(Event_Gadget, ListIndex(*Object\Hash()))
+    Next
     
   EndProcedure
   
@@ -402,14 +434,18 @@ Module _Node_Hash_Generator
     Select Event_Menu
       Case #Menu_Automatic
         *Object\Automatic = GetToolBarButtonState(*Object\ToolBar, #Menu_Automatic)
-        *Object\Calculate = #True
+        If *Object\Automatic
+          ForEach *Object\Hash()
+            If *Object\Hash()\State = #Hash_State_Idle
+              Hash_Reset(*Node, *Object\Hash())
+            EndIf
+          Next
+        EndIf
         
       Case #Menu_Refresh
-        *Object\Calculate = #True
-        ; #### Delete precalculated values
-        ClearList(*Object\Hash_CRC32\Temp_Value())
-        ClearList(*Object\Hash_MD5\Temp_Value())
-        ClearList(*Object\Hash_SHA1\Temp_Value())
+        ForEach *Object\Hash()
+          Hash_Reset(*Node, *Object\Hash(), #True)
+        Next
         
     EndSelect
   EndProcedure
@@ -470,9 +506,9 @@ Module _Node_Hash_Generator
       AddGadgetColumn(*Object\ListIcon, 1, "Hash", 500)
       
       ; #### Add ListIcon items
-      AddGadgetItem(*Object\ListIcon,  0, "CRC32")
-      AddGadgetItem(*Object\ListIcon,  1, "MD5")
-      AddGadgetItem(*Object\ListIcon,  2, "SHA1")
+      ForEach *Object\Hash()
+        AddGadgetItem(*Object\ListIcon,  ListIndex(*Object\Hash()), *Object\Hash()\Name)
+      Next
       
       BindGadgetEvent(*Object\ListIcon, @Window_Event_ListIcon())
       
@@ -509,6 +545,32 @@ Module _Node_Hash_Generator
     EndIf
   EndProcedure
   
+  Procedure Hash_Reset(*Node.Node::Object, *Hash.Hash, Force_Calculate = #False)
+    If Not *Node
+      ProcedureReturn #False
+    EndIf
+    Protected *Object.Object = *Node\Custom_Data
+    If Not *Object
+      ProcedureReturn #False
+    EndIf
+    
+    *Hash\Position = 0
+    
+    If *Hash\Fingerprint_ID
+      FinishFingerprint(*Hash\Fingerprint_ID)
+      *Hash\Fingerprint_ID = 0
+    EndIf
+    
+    If *Object\Automatic Or Force_Calculate
+      *Hash\State = #Hash_State_Calculate
+    Else
+      *Hash\State = #Hash_State_Idle
+    EndIf
+    
+    *Object\Update_ListIcon = #True
+    
+  EndProcedure
+  
   Procedure Calculate(*Node.Node::Object)
     If Not *Node
       ProcedureReturn #False
@@ -518,6 +580,7 @@ Module _Node_Hash_Generator
       ProcedureReturn #False
     EndIf
     
+    Protected Calculate
     Protected Position.q
     Protected Data_Size.i, *Data
     Protected Start_Time.q = ElapsedMilliseconds()
@@ -528,45 +591,27 @@ Module _Node_Hash_Generator
       ProcedureReturn #False
     EndIf
     
-    ; #### Initialize the hash function if it doesn't have precalculated values
-    If Not LastElement(*Object\Hash_CRC32\Temp_Value()) And *Object\Hash_CRC32\Item_State & #PB_ListIcon_Checked
-      *Object\Hash_CRC32\State = #Hash_State_Calculate
-      AddElement(*Object\Hash_CRC32\Temp_Value())
-    EndIf
-    If Not LastElement(*Object\Hash_MD5\Temp_Value()) And *Object\Hash_MD5\Item_State & #PB_ListIcon_Checked
-      If *Object\Hash_MD5\Fingerprint_ID : FinishFingerprint(*Object\Hash_MD5\Fingerprint_ID) : EndIf
-      *Object\Hash_MD5\Fingerprint_ID = ExamineMD5Fingerprint(#PB_Any)
-      *Object\Hash_MD5\State = #Hash_State_Calculate
-      AddElement(*Object\Hash_MD5\Temp_Value())
-    EndIf
-    If Not LastElement(*Object\Hash_SHA1\Temp_Value()) And *Object\Hash_SHA1\Item_State & #PB_ListIcon_Checked
-      If *Object\Hash_SHA1\Fingerprint_ID : FinishFingerprint(*Object\Hash_SHA1\Fingerprint_ID) : EndIf
-      *Object\Hash_SHA1\Fingerprint_ID = ExamineSHA1Fingerprint(#PB_Any)
-      *Object\Hash_SHA1\State = #Hash_State_Calculate
-      AddElement(*Object\Hash_SHA1\Temp_Value())
-    EndIf
+    ; #### Initialize the hash functions if it doesn't have precalculated values
+    ForEach *Object\Hash()
+      If *Object\Hash()\State = #Hash_State_Calculate And *Object\Hash()\Item_State & #PB_ListIcon_Checked
+        If Not *Object\Hash()\Fingerprint_ID
+          *Object\Hash()\Fingerprint_ID = StartFingerprint(#PB_Any, *Object\Hash()\Plugin, *Object\Hash()\Bits)
+        EndIf
+      EndIf
+    Next
     
     Repeat
-      
-      *Object\Calculate = #False
+      Calculate = #False
       
       ; #### Get the lowest position of all hash functions
-      Position = 9223372036854775807
-      If *Object\Hash_CRC32\Item_State & #PB_ListIcon_Checked
-        If Position > *Object\Hash_CRC32\Temp_Value()\Position
-          Position = *Object\Hash_CRC32\Temp_Value()\Position
+      Position = *Object\Size
+      ForEach *Object\Hash()
+        If *Object\Hash()\State = #Hash_State_Calculate And *Object\Hash()\Item_State & #PB_ListIcon_Checked
+          If Position > *Object\Hash()\Position
+            Position = *Object\Hash()\Position
+          EndIf
         EndIf
-      EndIf
-      If *Object\Hash_MD5\Item_State & #PB_ListIcon_Checked
-        If Position > *Object\Hash_MD5\Temp_Value()\Position
-          Position = *Object\Hash_MD5\Temp_Value()\Position
-        EndIf
-      EndIf
-      If *Object\Hash_SHA1\Item_State & #PB_ListIcon_Checked
-        If Position > *Object\Hash_SHA1\Temp_Value()\Position
-          Position = *Object\Hash_SHA1\Temp_Value()\Position
-        EndIf
-      EndIf
+      Next
       
       ; #### Get the data
       If Position < *Object\Size
@@ -578,21 +623,14 @@ Module _Node_Hash_Generator
         If Node::Input_Get_Data(FirstElement(*Node\Input()), Position, Data_Size, *Data, #Null)
           
           ; #### Calculate the hash
-          If *Object\Hash_CRC32\Item_State & #PB_ListIcon_Checked And *Object\Hash_CRC32\Temp_Value()\Position = Position
-            *Object\Hash_CRC32\Temp_Value()\CRC32 = CRC32Fingerprint(*Data, Data_Size, *Object\Hash_CRC32\Temp_Value()\CRC32)
-            *Object\Hash_CRC32\Temp_Value()\Position + Data_Size
-            *Object\Calculate = #True
-          EndIf
-          If *Object\Hash_MD5\Item_State & #PB_ListIcon_Checked And *Object\Hash_MD5\Temp_Value()\Position = Position And *Object\Hash_MD5\Fingerprint_ID
-            NextFingerprint(*Object\Hash_MD5\Fingerprint_ID, *Data, Data_Size)
-            *Object\Hash_MD5\Temp_Value()\Position + Data_Size
-            *Object\Calculate = #True
-          EndIf
-          If *Object\Hash_SHA1\Item_State & #PB_ListIcon_Checked And *Object\Hash_SHA1\Temp_Value()\Position = Position And *Object\Hash_SHA1\Fingerprint_ID
-            NextFingerprint(*Object\Hash_SHA1\Fingerprint_ID, *Data, Data_Size)
-            *Object\Hash_SHA1\Temp_Value()\Position + Data_Size
-            *Object\Calculate = #True
-          EndIf
+          ForEach *Object\Hash()
+            If *Object\Hash()\State = #Hash_State_Calculate And *Object\Hash()\Item_State & #PB_ListIcon_Checked And *Object\Hash()\Position = Position And *Object\Hash()\Fingerprint_ID
+              AddFingerprintBuffer(*Object\Hash()\Fingerprint_ID, *Data, Data_Size)
+              *Object\Hash()\Position + Data_Size
+              *Object\Update_ListIcon = #True
+              Calculate = #True
+            EndIf
+          Next
           
         EndIf
         
@@ -600,22 +638,17 @@ Module _Node_Hash_Generator
       Else
         
         ; #### finish the hash
-        If *Object\Hash_CRC32\Item_State & #PB_ListIcon_Checked And *Object\Hash_CRC32\State = #Hash_State_Calculate
-          *Object\Hash_CRC32\State = #Hash_State_Done
-          *Object\Hash_CRC32\Result = RSet(Hex(*Object\Hash_CRC32\Temp_Value()\CRC32, #PB_Long), 8, "0")
-        EndIf
-        If *Object\Hash_MD5\Item_State & #PB_ListIcon_Checked And *Object\Hash_MD5\State = #Hash_State_Calculate And *Object\Hash_MD5\Fingerprint_ID
-          *Object\Hash_MD5\State = #Hash_State_Done
-          *Object\Hash_MD5\Result = UCase(FinishFingerprint(*Object\Hash_MD5\Fingerprint_ID)) : *Object\Hash_MD5\Fingerprint_ID = 0
-        EndIf
-        If *Object\Hash_SHA1\Item_State & #PB_ListIcon_Checked And *Object\Hash_SHA1\State = #Hash_State_Calculate And *Object\Hash_SHA1\Fingerprint_ID
-          *Object\Hash_SHA1\State = #Hash_State_Done
-          *Object\Hash_SHA1\Result = UCase(FinishFingerprint(*Object\Hash_SHA1\Fingerprint_ID)) : *Object\Hash_SHA1\Fingerprint_ID = 0
-        EndIf
+        ForEach *Object\Hash()
+          If *Object\Hash()\State = #Hash_State_Calculate And *Object\Hash()\Item_State & #PB_ListIcon_Checked And *Object\Hash()\Fingerprint_ID
+            *Object\Hash()\Result = UCase(FinishFingerprint(*Object\Hash()\Fingerprint_ID)) : *Object\Hash()\Fingerprint_ID = 0
+            *Object\Hash()\State = #Hash_State_Done
+            *Object\Update_ListIcon = #True
+          EndIf
+        Next
         
       EndIf
       
-    Until *Object\Calculate = #False Or Start_Time + 15 < ElapsedMilliseconds()
+    Until Calculate = #False Or Start_Time + 15 < ElapsedMilliseconds()
     
   EndProcedure
   
@@ -628,10 +661,7 @@ Module _Node_Hash_Generator
       ProcedureReturn #False
     EndIf
     
-    If *Object\Calculate
-      *Object\Update_ListIcon = #True
-      Calculate(*Node)
-    EndIf
+    Calculate(*Node)
     
     If *Object\Window
       If *Object\Update_ListIcon
@@ -670,9 +700,9 @@ Module _Node_Hash_Generator
   
 EndModule
 
-; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 363
-; FirstLine = 358
+; IDE Options = PureBasic 5.40 LTS Beta 1 (Windows - x64)
+; CursorPosition = 30
+; FirstLine = 78
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP
