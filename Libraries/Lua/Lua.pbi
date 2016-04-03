@@ -504,7 +504,7 @@
     
     luaL_loadfilex.C_int    (*L.lua_State, filename.p-utf8, mode.p-utf8)
     
-    Macro luaL_loadfile(L,f) : luaL_loadfilex(L,f,#Null) : EndMacro
+    Macro luaL_loadfile(L,f) : luaL_loadfilex(L,f,"bt") : EndMacro        ; mode: Format can be binary or text (The pseudotype converts the null-string into an empty string, so #Null$ can't be used)
     
     luaL_loadbufferx.C_int  (*L.lua_State, buff.p-utf8, sz.i, name.p-utf8, mode.p-utf8)
     luaL_loadstring.C_int   (*L.lua_State, s.p-utf8)
@@ -542,7 +542,7 @@
   
   Macro luaL_typename(L,i) : lua_typename(L, lua_type(L,(i))) : EndMacro
   
-  Macro luaL_dofile(L, fn) : Bool(luaL_loadfile(L, fn) Or lua_pcall(L, 0, #LUA_MULTRET, 0)) : EndMacro    ; FIXME: All these functions should return the amount of pushed stack items. Bool and Or is preventing that
+  Macro luaL_dofile(L, fn) : Bool(luaL_loadfile(L, fn) Or lua_pcall(L, 0, #LUA_MULTRET, 0)) : EndMacro    ; FIXME: All these functions should return errors. Bool is preventing that
   
   Macro luaL_dostring(L, s) : Bool(luaL_loadstring(L, s) Or lua_pcall(L, 0, #LUA_MULTRET, 0)) : EndMacro
   
@@ -550,7 +550,7 @@
   
   ;Macro luaL_opt(L,f,n,d) : (lua_isnoneornil(L,(n)) ? (d) : f(L,(n))) : EndMacro
   
-  Macro luaL_loadbuffer(L,s,sz,n) : luaL_loadbufferx(L,s,sz,n,#Null) : EndMacro
+  Macro luaL_loadbuffer(L,s,sz,n) : luaL_loadbufferx(L,s,sz,n,"bt") : EndMacro    ; mode: Format can be binary or text (The pseudotype converts the null-string into an empty string, so #Null$ can't be used)
   
 EndDeclareModule
 
@@ -582,9 +582,10 @@ EndModule
 ; * TORT Or OTHERWISE, ARISING FROM, OUT OF Or IN CONNECTION With THE
 ; * SOFTWARE Or THE USE Or OTHER DEALINGS IN THE SOFTWARE.
 ; ******************************************************************************/
-; IDE Options = PureBasic 5.40 LTS Beta 8 (Windows - x64)
-; CursorPosition = 557
-; FirstLine = 534
+
+; IDE Options = PureBasic 5.42 LTS (Windows - x64)
+; CursorPosition = 513
+; FirstLine = 490
 ; Folding = --------
 ; EnableUnicode
 ; EnableXP

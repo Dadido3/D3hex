@@ -88,7 +88,7 @@
     Macro C_uLong : l : EndMacro
   CompilerEndIf
   
-  Structure z_stream Align #PB_Structure_AlignC ; SizeOf_x64(Z_Stream) = 88, SizeOf_x86(Z_Stream) = 56
+  Structure z_stream Align #PB_Structure_AlignC ; SizeOf_x64(z_stream) = 88, SizeOf_x86(z_stream) = 56
     *next_in.Byte     ; next input byte
     avail_in.C_uInt   ; number of bytes available at next_in
     total_in.C_uLong  ; total nb of input bytes read so far
@@ -112,7 +112,7 @@
   ;     gzip header information passed To And from zlib routines.  See RFC 1952
   ;  For more details on the meanings of these fields.
   
-  Structure gz_header Align #PB_Structure_AlignC ; SizeOf_x64(Z_Stream) = 72, SizeOf_x86(Z_Stream) = 52
+  Structure gz_header Align #PB_Structure_AlignC ; SizeOf_x64(gz_header) = 72, SizeOf_x86(gz_header) = 52
       text.C_int      ; true if compressed data believed to be text
       time.C_uLong    ; modification time
       xflags.C_int    ; extra flags (not used when writing a gzip file)
@@ -310,9 +310,8 @@ EndDeclareModule
 Module ZLIB
   
 EndModule
-; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 288
-; FirstLine = 266
+; IDE Options = PureBasic 5.40 LTS (Windows - x64)
+; CursorPosition = 240
 ; Folding = --
 ; EnableXP
 ; DisableDebugger
