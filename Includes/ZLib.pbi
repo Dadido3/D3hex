@@ -105,7 +105,7 @@
     *opaque           ; private data object passed to zalloc and zfree
   
     data_type.C_int   ; best guess about the data type: binary or text
-    adler.l           ; adler32 value of the uncompressed data
+    adler.C_uLong     ; adler32 value of the uncompressed data
     reserved.C_uLong  ; reserved for future use
   EndStructure
   
