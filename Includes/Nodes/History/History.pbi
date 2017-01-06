@@ -267,7 +267,12 @@ Module _Node_History
     
     *Object\Update = #True
     
-    ClearList(*Object\Operation_Future())
+    While FirstElement(*Object\Operation_Future())
+      If *Object\Operation_Future()\Data
+        FreeMemory(*Object\Operation_Future()\Data)
+      EndIf
+      DeleteElement(*Object\Operation_Future())
+    Wend
     
     ProcedureReturn #True
   EndProcedure
@@ -1300,8 +1305,11 @@ Module _Node_History
   ; ################################################### End #########################################################
   
 EndModule
-; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1127
-; FirstLine = 1122
+; IDE Options = PureBasic 5.42 LTS (Windows - x64)
+; CursorPosition = 271
+; FirstLine = 248
 ; Folding = ------
 ; EnableXP
+; EnableCompileCount = 0
+; EnableBuildCount = 0
+; EnableExeConstant
