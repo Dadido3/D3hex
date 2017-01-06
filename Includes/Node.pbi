@@ -70,21 +70,21 @@ DeclareModule Node
   Prototype   Function_Delete(*Object)
   Prototype   Function_Window(*Object)
   
-  Prototype   Function_Configuration_Get(*Object, *Parent_Tag.NBT::Tag)
-  Prototype   Function_Configuration_Set(*Object, *Parent_Tag.NBT::Tag)
+  Prototype   Function_Configuration_Get(*Object, *Parent_Tag.NBT::Tag)         ; Retrieves the configuration of the node. It will be written into the *Parent_Tag
+  Prototype   Function_Configuration_Set(*Object, *Parent_Tag.NBT::Tag)         ; Sets the configuration of the node. It will be read from the *Parent_Tag
   
-  Prototype   Function_Event(*Object, *Event)
+  Prototype   Function_Event(*Object, *Event)                                   ; Send event to the object. (Save, redo, undo, ...)
   
-  Prototype   Function_Link_Event(*InOut, *Event)
+  Prototype   Function_Link_Event(*InOut, *Event)                               ; Send event to an input or output. (Data update, Descriptor update, redo, undo, ...)
   
-  Prototype   Function_Get_Segments(*Output, List Range.Output_Segment())
-  Prototype   Function_Get_Descriptor(*Output)
-  Prototype.q Function_Get_Size(*Output)
-  Prototype   Function_Get_Data(*Output, Position.q, Size.i, *Data, *Metadata)
-  Prototype   Function_Set_Data(*Output, Position.q, Size.i, *Data)
-  Prototype   Function_Shift(*Output, Position.q, Offset.q)
-  Prototype   Function_Set_Data_Check(*Output, Position.q, Size.i)
-  Prototype   Function_Shift_Check(*Output, Position.q, Offset.q)
+  Prototype   Function_Get_Segments(*Output, List Range.Output_Segment())       ; Get the list of segments of the output
+  Prototype   Function_Get_Descriptor(*Output)                                  ; Get the data descriptor of the output
+  Prototype.q Function_Get_Size(*Output)                                        ; Get the size of the output
+  Prototype   Function_Get_Data(*Output, Position.q, Size.i, *Data, *Metadata)  ; Read data and metadata from the output
+  Prototype   Function_Set_Data(*Output, Position.q, Size.i, *Data)             ; Write data to the output
+  Prototype   Function_Shift(*Output, Position.q, Offset.q)                     ; Shift data from the output
+  Prototype   Function_Set_Data_Check(*Output, Position.q, Size.i)              ; Check if the write operation is possible
+  Prototype   Function_Shift_Check(*Output, Position.q, Offset.q)               ; Check if the shift operation is possible
   
   ; ################################################### Structures B ################################################
   Structure Main
@@ -683,8 +683,11 @@ Module Node
   
 EndModule
 
-; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 661
-; FirstLine = 616
+; IDE Options = PureBasic 5.42 LTS (Windows - x64)
+; CursorPosition = 75
+; FirstLine = 51
 ; Folding = ----
 ; EnableXP
+; EnableCompileCount = 0
+; EnableBuildCount = 0
+; EnableExeConstant

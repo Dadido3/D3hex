@@ -207,7 +207,7 @@ Procedure Search_Window_Update_Input(*Node.Node::Object)
           DisableGadget(*Object_Search\CheckBox[0], #True)
           DisableGadget(*Object_Search\CheckBox[1], #True)
           DisableGadget(*Object_Search\CheckBox[2], #True)
-        Case #Integer_U_1, #Integer_S_1, #Integer_U_2, #Integer_S_2, #Integer_S_4, #Integer_S_8, #Float_4, #Float_8
+        Case #Integer_U_8, #Integer_S_8, #Integer_U_16, #Integer_S_16, #Integer_S_32, #Integer_S_64, #Float_32, #Float_64
           DisableGadget(*Object_Search\CheckBox[0], #True)
           DisableGadget(*Object_Search\CheckBox[1], #True)
           DisableGadget(*Object_Search\CheckBox[2], #False)
@@ -259,7 +259,7 @@ Procedure Search_Window_Update_Input(*Node.Node::Object)
           DisableGadget(*Object_Search\CheckBox[0], #True)
           DisableGadget(*Object_Search\CheckBox[1], #True)
           DisableGadget(*Object_Search\CheckBox[2], #True)
-        Case #Integer_U_1, #Integer_S_1, #Integer_U_2, #Integer_S_2, #Integer_S_4, #Integer_S_8, #Float_4, #Float_8
+        Case #Integer_U_8, #Integer_S_8, #Integer_U_16, #Integer_S_16, #Integer_S_32, #Integer_S_64, #Float_32, #Float_64
           DisableGadget(*Object_Search\CheckBox[0], #True)
           DisableGadget(*Object_Search\CheckBox[1], #True)
           DisableGadget(*Object_Search\CheckBox[2], #False)
@@ -420,56 +420,56 @@ Procedure Search_Prepare_Keyword(*Node.Node::Object)
         EndIf
       EndIf
       
-    Case #Integer_U_1
+    Case #Integer_U_8
       *Object_Search\Raw_Keyword_Size = 1
       *Object_Search\Raw_Keyword = AllocateMemory(*Object_Search\Raw_Keyword_Size)
       If *Object_Search\Raw_Keyword
         PokeA(*Object_Search\Raw_Keyword, Val(*Object_Search\Keyword))
       EndIf
       
-    Case #Integer_S_1
+    Case #Integer_S_8
       *Object_Search\Raw_Keyword_Size = 1
       *Object_Search\Raw_Keyword = AllocateMemory(*Object_Search\Raw_Keyword_Size)
       If *Object_Search\Raw_Keyword
         PokeB(*Object_Search\Raw_Keyword, Val(*Object_Search\Keyword))
       EndIf
       
-    Case #Integer_U_2
+    Case #Integer_U_16
       *Object_Search\Raw_Keyword_Size = 2
       *Object_Search\Raw_Keyword = AllocateMemory(*Object_Search\Raw_Keyword_Size)
       If *Object_Search\Raw_Keyword
         PokeU(*Object_Search\Raw_Keyword, Val(*Object_Search\Keyword))
       EndIf
       
-    Case #Integer_S_2
+    Case #Integer_S_16
       *Object_Search\Raw_Keyword_Size = 2
       *Object_Search\Raw_Keyword = AllocateMemory(*Object_Search\Raw_Keyword_Size)
       If *Object_Search\Raw_Keyword
         PokeW(*Object_Search\Raw_Keyword, Val(*Object_Search\Keyword))
       EndIf
       
-    Case #Integer_S_4
+    Case #Integer_S_32
       *Object_Search\Raw_Keyword_Size = 4
       *Object_Search\Raw_Keyword = AllocateMemory(*Object_Search\Raw_Keyword_Size)
       If *Object_Search\Raw_Keyword
         PokeL(*Object_Search\Raw_Keyword, Val(*Object_Search\Keyword))
       EndIf
       
-    Case #Integer_S_8
+    Case #Integer_S_64
       *Object_Search\Raw_Keyword_Size = 8
       *Object_Search\Raw_Keyword = AllocateMemory(*Object_Search\Raw_Keyword_Size)
       If *Object_Search\Raw_Keyword
         PokeQ(*Object_Search\Raw_Keyword, Val(*Object_Search\Keyword))
       EndIf
       
-    Case #Float_4
+    Case #Float_32
       *Object_Search\Raw_Keyword_Size = 4
       *Object_Search\Raw_Keyword = AllocateMemory(*Object_Search\Raw_Keyword_Size)
       If *Object_Search\Raw_Keyword
         PokeF(*Object_Search\Raw_Keyword, ValF(*Object_Search\Keyword))
       EndIf
       
-    Case #Float_8
+    Case #Float_64
       *Object_Search\Raw_Keyword_Size = 8
       *Object_Search\Raw_Keyword = AllocateMemory(*Object_Search\Raw_Keyword_Size)
       If *Object_Search\Raw_Keyword
@@ -499,7 +499,7 @@ Procedure Search_Prepare_Keyword(*Node.Node::Object)
   EndSelect
   
   Select *Object_Search\Type
-    Case #Integer_U_1, #Integer_S_1, #Integer_U_2, #Integer_S_2, #Integer_S_4, #Integer_S_8, #Float_4, #Float_8
+    Case #Integer_U_8, #Integer_S_8, #Integer_U_16, #Integer_S_16, #Integer_S_32, #Integer_S_64, #Float_32, #Float_64
       If *Object_Search\Big_Endian
         Memory::Mirror(*Object_Search\Raw_Keyword, *Object_Search\Raw_Keyword_Size)
       EndIf
@@ -509,7 +509,7 @@ Procedure Search_Prepare_Keyword(*Node.Node::Object)
   
   ; #### Setup the fast compare stuff
   Select *Object_Search\Type
-    Case #Data_Raw, #Integer_U_1, #Integer_S_1, #Integer_U_2, #Integer_S_2, #Integer_S_4, #Integer_S_8, #Float_4, #Float_8
+    Case #Data_Raw, #Integer_U_8, #Integer_S_8, #Integer_U_16, #Integer_S_16, #Integer_S_32, #Integer_S_64, #Float_32, #Float_64
       If *Object_Search\Raw_Keyword And *Object_Search\Raw_Keyword_Size > 0
         *Object_Search\Fast_Compare_Amount = 1
         *Object_Search\Fast_Compare[0] = PeekA(*Object_Search\Raw_Keyword)
@@ -576,56 +576,56 @@ Procedure Search_Prepare_Replacement(*Node.Node::Object)
         EndIf
       EndIf
       
-    Case #Integer_U_1
+    Case #Integer_U_8
       *Object_Search\Raw_Replacement_Size = 1
       *Object_Search\Raw_Replacement = AllocateMemory(*Object_Search\Raw_Replacement_Size)
       If *Object_Search\Raw_Replacement
         PokeA(*Object_Search\Raw_Replacement, Val(*Object_Search\Replacement))
       EndIf
       
-    Case #Integer_S_1
+    Case #Integer_S_8
       *Object_Search\Raw_Replacement_Size = 1
       *Object_Search\Raw_Replacement = AllocateMemory(*Object_Search\Raw_Replacement_Size)
       If *Object_Search\Raw_Replacement
         PokeB(*Object_Search\Raw_Replacement, Val(*Object_Search\Replacement))
       EndIf
       
-    Case #Integer_U_2
+    Case #Integer_U_16
       *Object_Search\Raw_Replacement_Size = 2
       *Object_Search\Raw_Replacement = AllocateMemory(*Object_Search\Raw_Replacement_Size)
       If *Object_Search\Raw_Replacement
         PokeU(*Object_Search\Raw_Replacement, Val(*Object_Search\Replacement))
       EndIf
       
-    Case #Integer_S_2
+    Case #Integer_S_16
       *Object_Search\Raw_Replacement_Size = 2
       *Object_Search\Raw_Replacement = AllocateMemory(*Object_Search\Raw_Replacement_Size)
       If *Object_Search\Raw_Replacement
         PokeW(*Object_Search\Raw_Replacement, Val(*Object_Search\Replacement))
       EndIf
       
-    Case #Integer_S_4
+    Case #Integer_S_32
       *Object_Search\Raw_Replacement_Size = 4
       *Object_Search\Raw_Replacement = AllocateMemory(*Object_Search\Raw_Replacement_Size)
       If *Object_Search\Raw_Replacement
         PokeL(*Object_Search\Raw_Replacement, Val(*Object_Search\Replacement))
       EndIf
       
-    Case #Integer_S_8
+    Case #Integer_S_64
       *Object_Search\Raw_Replacement_Size = 8
       *Object_Search\Raw_Replacement = AllocateMemory(*Object_Search\Raw_Replacement_Size)
       If *Object_Search\Raw_Replacement
         PokeQ(*Object_Search\Raw_Replacement, Val(*Object_Search\Replacement))
       EndIf
       
-    Case #Float_4
+    Case #Float_32
       *Object_Search\Raw_Replacement_Size = 4
       *Object_Search\Raw_Replacement = AllocateMemory(*Object_Search\Raw_Replacement_Size)
       If *Object_Search\Raw_Replacement
         PokeF(*Object_Search\Raw_Replacement, ValF(*Object_Search\Replacement))
       EndIf
       
-    Case #Float_8
+    Case #Float_64
       *Object_Search\Raw_Replacement_Size = 8
       *Object_Search\Raw_Replacement = AllocateMemory(*Object_Search\Raw_Replacement_Size)
       If *Object_Search\Raw_Replacement
@@ -676,7 +676,7 @@ Procedure Search_Prepare_Replacement(*Node.Node::Object)
   EndSelect
   
   Select *Object_Search\Type
-    Case #Integer_U_1, #Integer_S_1, #Integer_U_2, #Integer_S_2, #Integer_S_4, #Integer_S_8, #Float_4, #Float_8
+    Case #Integer_U_8, #Integer_S_8, #Integer_U_16, #Integer_S_16, #Integer_S_32, #Integer_S_64, #Float_32, #Float_64
       If *Object_Search\Big_Endian
         Memory::Mirror(*Object_Search\Raw_Replacement, *Object_Search\Raw_Replacement_Size)
       EndIf
@@ -1290,14 +1290,14 @@ Procedure Search_Window_Open(*Node.Node::Object)
     *Object_Search\Frame[0] = FrameGadget(#PB_Any, 10, 70, Width-130, 140, "Type")
     *Object_Search\ComboBox[0] = ComboBoxGadget(#PB_Any, 20, 90, Width-150, 20)
     AddGadgetItem(*Object_Search\ComboBox[0], 0, "Raw Data")                 : SetGadgetItemData(*Object_Search\ComboBox[0], 0, #Data_Raw)
-    AddGadgetItem(*Object_Search\ComboBox[0], 1, "Unsigned 1 Byte Integer")  : SetGadgetItemData(*Object_Search\ComboBox[0], 1, #Integer_U_1)
-    AddGadgetItem(*Object_Search\ComboBox[0], 2, "Signed 1 Byte Integer")    : SetGadgetItemData(*Object_Search\ComboBox[0], 2, #Integer_S_1)
-    AddGadgetItem(*Object_Search\ComboBox[0], 3, "Unsigned 2 Byte Integer")  : SetGadgetItemData(*Object_Search\ComboBox[0], 3, #Integer_U_2)
-    AddGadgetItem(*Object_Search\ComboBox[0], 4, "Signed 2 Byte Integer")    : SetGadgetItemData(*Object_Search\ComboBox[0], 4, #Integer_S_2)
-    AddGadgetItem(*Object_Search\ComboBox[0], 5, "Signed 4 Byte Integer")    : SetGadgetItemData(*Object_Search\ComboBox[0], 5, #Integer_S_4)
-    AddGadgetItem(*Object_Search\ComboBox[0], 6, "Signed 8 Byte Integer")    : SetGadgetItemData(*Object_Search\ComboBox[0], 6, #Integer_S_8)
-    AddGadgetItem(*Object_Search\ComboBox[0], 7, "4 Byte Float")             : SetGadgetItemData(*Object_Search\ComboBox[0], 7, #Float_4)
-    AddGadgetItem(*Object_Search\ComboBox[0], 8, "8 Byte Float")             : SetGadgetItemData(*Object_Search\ComboBox[0], 8, #Float_8)
+    AddGadgetItem(*Object_Search\ComboBox[0], 1, "Unsigned 1 Byte Integer")  : SetGadgetItemData(*Object_Search\ComboBox[0], 1, #Integer_U_8)
+    AddGadgetItem(*Object_Search\ComboBox[0], 2, "Signed 1 Byte Integer")    : SetGadgetItemData(*Object_Search\ComboBox[0], 2, #Integer_S_8)
+    AddGadgetItem(*Object_Search\ComboBox[0], 3, "Unsigned 2 Byte Integer")  : SetGadgetItemData(*Object_Search\ComboBox[0], 3, #Integer_U_16)
+    AddGadgetItem(*Object_Search\ComboBox[0], 4, "Signed 2 Byte Integer")    : SetGadgetItemData(*Object_Search\ComboBox[0], 4, #Integer_S_16)
+    AddGadgetItem(*Object_Search\ComboBox[0], 5, "Signed 4 Byte Integer")    : SetGadgetItemData(*Object_Search\ComboBox[0], 5, #Integer_S_32)
+    AddGadgetItem(*Object_Search\ComboBox[0], 6, "Signed 8 Byte Integer")    : SetGadgetItemData(*Object_Search\ComboBox[0], 6, #Integer_S_64)
+    AddGadgetItem(*Object_Search\ComboBox[0], 7, "4 Byte Float")             : SetGadgetItemData(*Object_Search\ComboBox[0], 7, #Float_32)
+    AddGadgetItem(*Object_Search\ComboBox[0], 8, "8 Byte Float")             : SetGadgetItemData(*Object_Search\ComboBox[0], 8, #Float_64)
     AddGadgetItem(*Object_Search\ComboBox[0], 9, "Ascii String")             : SetGadgetItemData(*Object_Search\ComboBox[0], 9, #String_Ascii)
     AddGadgetItem(*Object_Search\ComboBox[0], 10, "UTF-8 String")            : SetGadgetItemData(*Object_Search\ComboBox[0], 10, #String_UTF8)
     AddGadgetItem(*Object_Search\ComboBox[0], 11, "UTF-16 String")           : SetGadgetItemData(*Object_Search\ComboBox[0], 11, #String_UTF16)
@@ -1401,11 +1401,11 @@ Procedure Search_Do_Helper(*Node.Node::Object, Position.q, *Fast_Memory=#Null, F
   EndIf
   
   Select *Object_Search\Type
-    Case #Integer_U_1, #Integer_S_1
+    Case #Integer_U_8, #Integer_S_8
       ; #### The First byte matches --> Found
       ProcedureReturn #True
       
-    Case #Data_Raw, #Integer_U_2, #Integer_S_2, #Integer_S_4, #Integer_S_8, #Float_4, #Float_8
+    Case #Data_Raw, #Integer_U_16, #Integer_S_16, #Integer_S_32, #Integer_S_64, #Float_32, #Float_64
       If *Fast_Memory
         ; #### Fast Memory available
         If CompareMemory(*Object_Search\Raw_Keyword, *Fast_Memory, *Object_Search\Raw_Keyword_Size)
@@ -1926,9 +1926,9 @@ EndProcedure
 ; ##################################################### End #########################################################
 
 
-; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1468
-; FirstLine = 1448
+; IDE Options = PureBasic 5.42 LTS (Windows - x64)
+; CursorPosition = 1407
+; FirstLine = 1438
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

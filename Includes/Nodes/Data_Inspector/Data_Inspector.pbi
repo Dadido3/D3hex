@@ -227,7 +227,7 @@ Module _Node_Data_Inspector
           EndIf
         Next
         
-      Case #Integer_U_1; = #PB_Ascii
+      Case #Integer_U_8; = #PB_Ascii
         If Size >= 1
           If Node::Input_Get_Data(FirstElement(*Node\Input()), 0, 1, @Other_Data, @Ascii_Metadata)
             If Ascii_Metadata & #Metadata_Readable
@@ -236,7 +236,7 @@ Module _Node_Data_Inspector
           EndIf
         EndIf
         
-      Case #Integer_S_1; = #PB_Byte
+      Case #Integer_S_8; = #PB_Byte
         If Size >= 1
           If Node::Input_Get_Data(FirstElement(*Node\Input()), 0, 1, @Other_Data, @Ascii_Metadata)
             If Ascii_Metadata & #Metadata_Readable
@@ -245,7 +245,7 @@ Module _Node_Data_Inspector
           EndIf
         EndIf
         
-      Case #Integer_U_2; = #PB_Unicode
+      Case #Integer_U_16; = #PB_Unicode
         If Size >= 2
           If Node::Input_Get_Data(FirstElement(*Node\Input()), 0, 2, @Other_Data, @Ascii_Metadata)
             If Ascii_Metadata & #Metadata_Readable
@@ -257,7 +257,7 @@ Module _Node_Data_Inspector
           EndIf
         EndIf
         
-      Case #Integer_S_2; = #PB_Word
+      Case #Integer_S_16; = #PB_Word
         If Size >= 2
           If Node::Input_Get_Data(FirstElement(*Node\Input()), 0, 2, @Other_Data, @Ascii_Metadata)
             If Ascii_Metadata & #Metadata_Readable
@@ -269,7 +269,7 @@ Module _Node_Data_Inspector
           EndIf
         EndIf
         
-      Case #Integer_U_4; = #PB_Long (Unsigned)
+      Case #Integer_U_32; = #PB_Long (Unsigned)
         If Size >= 4
           If Node::Input_Get_Data(FirstElement(*Node\Input()), 0, 4, @Other_Data, @Ascii_Metadata)
             If Ascii_Metadata & #Metadata_Readable
@@ -281,7 +281,7 @@ Module _Node_Data_Inspector
           EndIf
         EndIf
         
-      Case #Integer_S_4; = #PB_Long
+      Case #Integer_S_32; = #PB_Long
         If Size >= 4
           If Node::Input_Get_Data(FirstElement(*Node\Input()), 0, 4, @Other_Data, @Ascii_Metadata)
             If Ascii_Metadata & #Metadata_Readable
@@ -293,7 +293,7 @@ Module _Node_Data_Inspector
           EndIf
         EndIf
         
-      Case #Integer_U_8; = #PB_Quad (Unsigned)
+      Case #Integer_U_64; = #PB_Quad (Unsigned)
         If Size >= 8
           If Node::Input_Get_Data(FirstElement(*Node\Input()), 0, 8, @Other_Data, @Ascii_Metadata)
             If Ascii_Metadata & #Metadata_Readable
@@ -305,7 +305,7 @@ Module _Node_Data_Inspector
           EndIf
         EndIf
         
-      Case #Integer_S_8; = #PB_Quad
+      Case #Integer_S_64; = #PB_Quad
         If Size >= 8
           If Node::Input_Get_Data(FirstElement(*Node\Input()), 0, 8, @Other_Data, @Ascii_Metadata)
             If Ascii_Metadata & #Metadata_Readable
@@ -317,7 +317,7 @@ Module _Node_Data_Inspector
           EndIf
         EndIf
         
-      Case #Float_4    ; = #PB_Float
+      Case #Float_32    ; = #PB_Float
         If Size >= 4
           If Node::Input_Get_Data(FirstElement(*Node\Input()), 0, 4, @Other_Data, @Ascii_Metadata)
             If Ascii_Metadata & #Metadata_Readable
@@ -329,7 +329,7 @@ Module _Node_Data_Inspector
           EndIf
         EndIf
         
-      Case #Float_8    ; = #PB_Double
+      Case #Float_64    ; = #PB_Double
         If Size >= 8
           If Node::Input_Get_Data(FirstElement(*Node\Input()), 0, 8, @Other_Data, @Ascii_Metadata)
             If Ascii_Metadata & #Metadata_Readable
@@ -451,19 +451,19 @@ Module _Node_Data_Inspector
         Next
         ProcedureReturn #True
         
-      Case #Integer_U_1; = #PB_Ascii
+      Case #Integer_U_8; = #PB_Ascii
         PokeA(@Other_Data, Val(String))
         If Node::Input_Set_Data(FirstElement(*Node\Input()), 0, 1, @Other_Data)
           ProcedureReturn #True
         EndIf
         
-      Case #Integer_S_1; = #PB_Byte
+      Case #Integer_S_8; = #PB_Byte
         PokeB(@Other_Data, Val(String))
         If Node::Input_Set_Data(FirstElement(*Node\Input()), 0, 1, @Other_Data)
           ProcedureReturn #True
         EndIf
         
-      Case #Integer_U_2; = #PB_Unicode
+      Case #Integer_U_16; = #PB_Unicode
         PokeU(@Other_Data, Val(String))
         If Flags & #Flag_Big_Endian
           Memory::Mirror(@Other_Data, 2)
@@ -472,7 +472,7 @@ Module _Node_Data_Inspector
           ProcedureReturn #True
         EndIf
         
-      Case #Integer_S_2; = #PB_Word
+      Case #Integer_S_16; = #PB_Word
         PokeW(@Other_Data, Val(String))
         If Flags & #Flag_Big_Endian
           Memory::Mirror(@Other_Data, 2)
@@ -481,7 +481,7 @@ Module _Node_Data_Inspector
           ProcedureReturn #True
         EndIf
         
-      Case #Integer_U_4; = #PB_Long (Unsigned)
+      Case #Integer_U_32; = #PB_Long (Unsigned)
         PokeL(@Other_Data, Val(String))
         If Flags & #Flag_Big_Endian
           Memory::Mirror(@Other_Data, 2)
@@ -490,7 +490,7 @@ Module _Node_Data_Inspector
           ProcedureReturn #True
         EndIf
         
-      Case #Integer_S_4; = #PB_Long
+      Case #Integer_S_32; = #PB_Long
         PokeL(@Other_Data, Val(String))
         If Flags & #Flag_Big_Endian
           Memory::Mirror(@Other_Data, 4)
@@ -499,7 +499,7 @@ Module _Node_Data_Inspector
           ProcedureReturn #True
         EndIf
         
-      Case #Integer_U_8; = #PB_Quad (Unsigned)
+      Case #Integer_U_64; = #PB_Quad (Unsigned)
         PokeQ(@Other_Data, Val(String))
         If Flags & #Flag_Big_Endian
           Memory::Mirror(@Other_Data, 8)
@@ -508,7 +508,7 @@ Module _Node_Data_Inspector
           ProcedureReturn #True
         EndIf
         
-      Case #Integer_S_8; = #PB_Quad
+      Case #Integer_S_64; = #PB_Quad
         PokeQ(@Other_Data, Val(String))
         If Flags & #Flag_Big_Endian
           Memory::Mirror(@Other_Data, 8)
@@ -517,7 +517,7 @@ Module _Node_Data_Inspector
           ProcedureReturn #True
         EndIf
         
-      Case #Float_4    ; = #PB_Float
+      Case #Float_32    ; = #PB_Float
         PokeF(@Other_Data, ValF(String))
         If Flags & #Flag_Big_Endian
           Memory::Mirror(@Other_Data, 4)
@@ -526,7 +526,7 @@ Module _Node_Data_Inspector
           ProcedureReturn #True
         EndIf
         
-      Case #Float_8    ; = #PB_Double
+      Case #Float_64    ; = #PB_Double
         PokeD(@Other_Data, ValD(String))
         If Flags & #Flag_Big_Endian
           Memory::Mirror(@Other_Data, 8)
@@ -849,16 +849,16 @@ Module _Node_Data_Inspector
       
       ; #### Add ListIcon items
       AddGadgetItem(*Object\ListIcon,  0, "Binary")   : SetGadgetItemData(*Object\ListIcon,  0, #Data_Raw)
-      AddGadgetItem(*Object\ListIcon,  1, "uint8")    : SetGadgetItemData(*Object\ListIcon,  1, #Integer_U_1)
-      AddGadgetItem(*Object\ListIcon,  2, "int8")     : SetGadgetItemData(*Object\ListIcon,  2, #Integer_S_1)
-      AddGadgetItem(*Object\ListIcon,  3, "uint16")   : SetGadgetItemData(*Object\ListIcon,  3, #Integer_U_2)
-      AddGadgetItem(*Object\ListIcon,  4, "int16")    : SetGadgetItemData(*Object\ListIcon,  4, #Integer_S_2)
-      AddGadgetItem(*Object\ListIcon,  5, "uint32")   : SetGadgetItemData(*Object\ListIcon,  5, #Integer_U_4)
-      AddGadgetItem(*Object\ListIcon,  6, "int32")    : SetGadgetItemData(*Object\ListIcon,  6, #Integer_S_4)
-      AddGadgetItem(*Object\ListIcon,  7, "uint64")   : SetGadgetItemData(*Object\ListIcon,  7, #Integer_U_8)
-      AddGadgetItem(*Object\ListIcon,  8, "int64")    : SetGadgetItemData(*Object\ListIcon,  8, #Integer_S_8)
-      AddGadgetItem(*Object\ListIcon,  9, "float32")  : SetGadgetItemData(*Object\ListIcon,  9, #Float_4)
-      AddGadgetItem(*Object\ListIcon, 10, "float64")  : SetGadgetItemData(*Object\ListIcon, 10, #Float_8)
+      AddGadgetItem(*Object\ListIcon,  1, "uint8")    : SetGadgetItemData(*Object\ListIcon,  1, #Integer_U_8)
+      AddGadgetItem(*Object\ListIcon,  2, "int8")     : SetGadgetItemData(*Object\ListIcon,  2, #Integer_S_8)
+      AddGadgetItem(*Object\ListIcon,  3, "uint16")   : SetGadgetItemData(*Object\ListIcon,  3, #Integer_U_16)
+      AddGadgetItem(*Object\ListIcon,  4, "int16")    : SetGadgetItemData(*Object\ListIcon,  4, #Integer_S_16)
+      AddGadgetItem(*Object\ListIcon,  5, "uint32")   : SetGadgetItemData(*Object\ListIcon,  5, #Integer_U_32)
+      AddGadgetItem(*Object\ListIcon,  6, "int32")    : SetGadgetItemData(*Object\ListIcon,  6, #Integer_S_32)
+      AddGadgetItem(*Object\ListIcon,  7, "uint64")   : SetGadgetItemData(*Object\ListIcon,  7, #Integer_U_64)
+      AddGadgetItem(*Object\ListIcon,  8, "int64")    : SetGadgetItemData(*Object\ListIcon,  8, #Integer_S_64)
+      AddGadgetItem(*Object\ListIcon,  9, "float32")  : SetGadgetItemData(*Object\ListIcon,  9, #Float_32)
+      AddGadgetItem(*Object\ListIcon, 10, "float64")  : SetGadgetItemData(*Object\ListIcon, 10, #Float_64)
       AddGadgetItem(*Object\ListIcon, 11, "Ascii")    : SetGadgetItemData(*Object\ListIcon, 11, #String_Ascii)
       AddGadgetItem(*Object\ListIcon, 12, "UTF8")     : SetGadgetItemData(*Object\ListIcon, 12, #String_UTF8)
       AddGadgetItem(*Object\ListIcon, 13, "UTF16")    : SetGadgetItemData(*Object\ListIcon, 13, #String_UTF16)
@@ -965,9 +965,9 @@ Module _Node_Data_Inspector
   
 EndModule
 
-; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 769
-; FirstLine = 765
+; IDE Options = PureBasic 5.42 LTS (Windows - x64)
+; CursorPosition = 860
+; FirstLine = 838
 ; Folding = ---
 ; EnableUnicode
 ; EnableXP

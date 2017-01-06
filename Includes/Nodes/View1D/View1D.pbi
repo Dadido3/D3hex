@@ -425,21 +425,21 @@ Module _Node_View1D
         ; #### Get the settings from the data descriptor of the output
         If Not *Input_Channel\Manually
           ; TODO: Get settings from data-descriptor
-          *Input_Channel\ElementType = #Integer_U_1
+          *Input_Channel\ElementType = #Integer_U_8
         EndIf
         
         ; #### Set ElementSize
         Select *Input_Channel\ElementType
-          Case #Integer_U_1 : *Input_Channel\ElementSize = 1
-          Case #Integer_S_1 : *Input_Channel\ElementSize = 1
-          Case #Integer_U_2 : *Input_Channel\ElementSize = 2
-          Case #Integer_S_2 : *Input_Channel\ElementSize = 2
-          Case #Integer_U_4 : *Input_Channel\ElementSize = 4
-          Case #Integer_S_4 : *Input_Channel\ElementSize = 4
-          Case #Integer_U_8 : *Input_Channel\ElementSize = 8
-          Case #Integer_S_8 : *Input_Channel\ElementSize = 8
-          Case #Float_4     : *Input_Channel\ElementSize = 4
-          Case #Float_8     : *Input_Channel\ElementSize = 8
+          Case #Integer_U_8   : *Input_Channel\ElementSize = 1
+          Case #Integer_S_8   : *Input_Channel\ElementSize = 1
+          Case #Integer_U_16  : *Input_Channel\ElementSize = 2
+          Case #Integer_S_16  : *Input_Channel\ElementSize = 2
+          Case #Integer_U_32  : *Input_Channel\ElementSize = 4
+          Case #Integer_S_32  : *Input_Channel\ElementSize = 4
+          Case #Integer_U_64  : *Input_Channel\ElementSize = 8
+          Case #Integer_S_64  : *Input_Channel\ElementSize = 8
+          Case #Float_32      : *Input_Channel\ElementSize = 4
+          Case #Float_64      : *Input_Channel\ElementSize = 8
         EndSelect
         
         ; #### Get range of all points
@@ -516,11 +516,11 @@ Module _Node_View1D
               AddElement(*Input_Channel\Value())
               *Input_Channel\Value()\Position = (Temp_Start + *Input_Channel\Offset) / *Input_Channel\ElementSize + i
               Select *Input_Channel\ElementType
-                Case #Integer_U_1 : *Input_Channel\Value()\Value = PeekA(*Temp+i)
-                Case #Integer_S_1 : *Input_Channel\Value()\Value = PeekB(*Temp+i)
-                Case #Integer_U_2 : *Input_Channel\Value()\Value = PeekU(*Temp+i*2)
-                Case #Integer_S_2 : *Input_Channel\Value()\Value = PeekW(*Temp+i*2)
-                Case #Integer_U_4
+                Case #Integer_U_8   : *Input_Channel\Value()\Value = PeekA(*Temp+i)
+                Case #Integer_S_8   : *Input_Channel\Value()\Value = PeekB(*Temp+i)
+                Case #Integer_U_16  : *Input_Channel\Value()\Value = PeekU(*Temp+i*2)
+                Case #Integer_S_16  : *Input_Channel\Value()\Value = PeekW(*Temp+i*2)
+                Case #Integer_U_32
                   Temp_Value = PeekL(*Temp+i*4)
                   Temp_Value_2 = Temp_Value & $7FFFFFFF
                   If Temp_Value & $80000000
@@ -528,8 +528,8 @@ Module _Node_View1D
                   Else
                     *Input_Channel\Value()\Value = Temp_Value_2
                   EndIf
-                Case #Integer_S_4 : *Input_Channel\Value()\Value = PeekL(*Temp+i*4)
-                Case #Integer_U_8
+                Case #Integer_S_32  : *Input_Channel\Value()\Value = PeekL(*Temp+i*4)
+                Case #Integer_U_64
                   Temp_Value = PeekQ(*Temp+i*8)
                   Temp_Value_2 = Temp_Value & $7FFFFFFFFFFFFFFF
                   If Temp_Value & $8000000000000000
@@ -537,9 +537,9 @@ Module _Node_View1D
                   Else
                     *Input_Channel\Value()\Value = Temp_Value_2
                   EndIf
-                Case #Integer_S_8 : *Input_Channel\Value()\Value = PeekQ(*Temp+i*8)
-                Case #Float_4     : *Input_Channel\Value()\Value = PeekF(*Temp+i*4)
-                Case #Float_8     : *Input_Channel\Value()\Value = PeekD(*Temp+i*8)
+                Case #Integer_S_64  : *Input_Channel\Value()\Value = PeekQ(*Temp+i*8)
+                Case #Float_32      : *Input_Channel\Value()\Value = PeekF(*Temp+i*4)
+                Case #Float_64      : *Input_Channel\Value()\Value = PeekD(*Temp+i*8)
               EndSelect
             Next
             FreeMemory(*Temp)
@@ -1324,8 +1324,8 @@ Module _Node_View1D
   
 EndModule
 
-; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 459
-; FirstLine = 422
+; IDE Options = PureBasic 5.42 LTS (Windows - x64)
+; CursorPosition = 541
+; FirstLine = 529
 ; Folding = ----
 ; EnableXP

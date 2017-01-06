@@ -330,7 +330,7 @@ Procedure Settings_Window_Event_Button_In_Add()
   *Input\Function_Event = @Input_Event()
   
   *Input_Channel = *Input\Custom_Data
-  *Input_Channel\ElementType = #Integer_U_1
+  *Input_Channel\ElementType = #Integer_U_8
   
   *Settings_Window\Update_ListIcon = #True
 EndProcedure
@@ -439,16 +439,16 @@ Procedure Settings_Window_Open(*Node.Node::Object)
     
     *Settings_Window\Text_In[1] = TextGadget(#PB_Any, 20, 300, 50, 20, "Type:", #PB_Text_Right)
     *Settings_Window\ComboBox_In = ComboBoxGadget(#PB_Any, 80, 300, 170, 20)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 0, "uint8")  : SetGadgetItemData(*Settings_Window\ComboBox_In, 0, #Integer_U_1)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 1, "int8")   : SetGadgetItemData(*Settings_Window\ComboBox_In, 1, #Integer_S_1)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 2, "uint16") : SetGadgetItemData(*Settings_Window\ComboBox_In, 2, #Integer_U_2)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 3, "int16")  : SetGadgetItemData(*Settings_Window\ComboBox_In, 3, #Integer_S_2)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 4, "uint32") : SetGadgetItemData(*Settings_Window\ComboBox_In, 4, #Integer_U_4)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 5, "int32")  : SetGadgetItemData(*Settings_Window\ComboBox_In, 5, #Integer_S_4)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 6, "uint64") : SetGadgetItemData(*Settings_Window\ComboBox_In, 6, #Integer_U_8)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 7, "int64")  : SetGadgetItemData(*Settings_Window\ComboBox_In, 7, #Integer_S_8)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 8, "float32"): SetGadgetItemData(*Settings_Window\ComboBox_In, 8, #Float_4)
-    AddGadgetItem(*Settings_Window\ComboBox_In, 9, "float64"): SetGadgetItemData(*Settings_Window\ComboBox_In, 9, #Float_8)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 0, "uint8")  : SetGadgetItemData(*Settings_Window\ComboBox_In, 0, #Integer_U_8)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 1, "int8")   : SetGadgetItemData(*Settings_Window\ComboBox_In, 1, #Integer_S_8)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 2, "uint16") : SetGadgetItemData(*Settings_Window\ComboBox_In, 2, #Integer_U_16)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 3, "int16")  : SetGadgetItemData(*Settings_Window\ComboBox_In, 3, #Integer_S_16)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 4, "uint32") : SetGadgetItemData(*Settings_Window\ComboBox_In, 4, #Integer_U_32)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 5, "int32")  : SetGadgetItemData(*Settings_Window\ComboBox_In, 5, #Integer_S_32)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 6, "uint64") : SetGadgetItemData(*Settings_Window\ComboBox_In, 6, #Integer_U_64)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 7, "int64")  : SetGadgetItemData(*Settings_Window\ComboBox_In, 7, #Integer_S_64)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 8, "float32"): SetGadgetItemData(*Settings_Window\ComboBox_In, 8, #Float_32)
+    AddGadgetItem(*Settings_Window\ComboBox_In, 9, "float64"): SetGadgetItemData(*Settings_Window\ComboBox_In, 9, #Float_64)
     
     *Settings_Window\Text_In[2] = TextGadget(#PB_Any, 20, 330, 50, 20, "Offset:", #PB_Text_Right)
     *Settings_Window\Spin_In = SpinGadget(#PB_Any, 80, 330, 170, 20, -2147483648, 2147483647, #PB_Spin_Numeric)
@@ -539,8 +539,8 @@ EndProcedure
 ; ##################################################### End #########################################################
 
 
-; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 122
-; FirstLine = 22
+; IDE Options = PureBasic 5.42 LTS (Windows - x64)
+; CursorPosition = 450
+; FirstLine = 416
 ; Folding = --
 ; EnableXP

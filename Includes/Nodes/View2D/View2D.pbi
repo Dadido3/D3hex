@@ -1444,8 +1444,11 @@ Module _Node_View2D
   
 EndModule
 
-; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 402
-; FirstLine = 385
+; IDE Options = PureBasic 5.42 LTS (Windows - x64)
+; CursorPosition = 855
+; FirstLine = 840
 ; Folding = ----
 ; EnableXP
+; EnableCompileCount = 0
+; EnableBuildCount = 0
+; EnableExeConstant

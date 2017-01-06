@@ -451,7 +451,7 @@ Module _Node_File
           Filename = SaveFileRequester("Save File", "", "", 0)
           If Filename
             *Object\Filename = Filename
-            *Object\Mode = #Mode_Write
+            *Object\Mode = #Mode_Write ; TODO: Update the GUI
             *Object\Cached = #True
             *Object\Shared_Read = #True
             *Object\Shared_Write = #True
@@ -465,7 +465,7 @@ Module _Node_File
           Filename = SaveFileRequester("Save File", "", "", 0)
           If Filename
             *Object\Filename = Filename
-            *Object\Mode = #Mode_Write
+            *Object\Mode = #Mode_Write ; TODO: Update the GUI
             *Object\Cached = #True
             *Object\Shared_Read = #True
             *Object\Shared_Write = #True
@@ -476,7 +476,7 @@ Module _Node_File
           If Filename
             If CopyFile(*Object\Filename, Filename)
               *Object\Filename = Filename
-              *Object\Mode = #Mode_Write
+              *Object\Mode = #Mode_Write ; TODO: Update the GUI
               *Object\Cached = #True
               *Object\Shared_Read = #True
               *Object\Shared_Write = #True
@@ -1212,9 +1212,9 @@ Module _Node_File
   
 EndModule
 
-; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 977
-; FirstLine = 973
+; IDE Options = PureBasic 5.42 LTS (Windows - x64)
+; CursorPosition = 476
+; FirstLine = 449
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

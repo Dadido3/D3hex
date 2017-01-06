@@ -35,16 +35,16 @@ DeclareModule Constants
   ; ################################################### Constants ###################################################
   Enumeration
     #Data_Raw
-    #Integer_U_1  ; = #PB_Ascii
-    #Integer_S_1  ; = #PB_Byte
-    #Integer_U_2  ; = #PB_Unicode
-    #Integer_S_2  ; = #PB_Word
-    #Integer_U_4  ; = #PB_Long (Unsigned)
-    #Integer_S_4  ; = #PB_Long
-    #Integer_U_8  ; = #PB_Quad (Unsigned)
-    #Integer_S_8  ; = #PB_Quad
-    #Float_4      ; = #PB_Float
-    #Float_8      ; = #PB_Double
+    #Integer_U_8    ; = #PB_Ascii
+    #Integer_S_8    ; = #PB_Byte
+    #Integer_U_16   ; = #PB_Unicode
+    #Integer_S_16   ; = #PB_Word
+    #Integer_U_32   ; = #PB_Long (Unsigned)
+    #Integer_S_32   ; = #PB_Long
+    #Integer_U_64   ; = #PB_Quad (Unsigned)
+    #Integer_S_64   ; = #PB_Quad
+    #Float_32       ; = #PB_Float
+    #Float_64       ; = #PB_Double
     #String_Ascii
     #String_UTF8
     #String_UTF16
@@ -95,8 +95,8 @@ Module Constants
   
 EndModule
 
-; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 48
-; FirstLine = 29
+; IDE Options = PureBasic 5.42 LTS (Windows - x64)
+; CursorPosition = 46
+; FirstLine = 26
 ; EnableUnicode
 ; EnableXP
