@@ -398,6 +398,9 @@ Module Node_Editor
       EndIf
       DrawText(10, 1, *Object\Name)
       
+      ; #### Debug
+      DrawText(10, 15, Str(*Object\ID))
+      
       DrawingMode(#PB_2DDrawing_AllChannels)
       DrawingFont(FontID(Main\Font_ID_Small))
       
@@ -1153,9 +1156,9 @@ Module Node_Editor
   
 EndModule
 
-; IDE Options = PureBasic 5.31 (Windows - x64)
-; CursorPosition = 1099
-; FirstLine = 1084
+; IDE Options = PureBasic 5.42 LTS (Windows - x64)
+; CursorPosition = 401
+; FirstLine = 372
 ; Folding = ----
 ; EnableUnicode
 ; EnableXP

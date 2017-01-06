@@ -55,16 +55,16 @@
 ;   - Vergleich
 ;   - Mathematische operationen (+, -, *, /, ...)
 ;   - Korrellation / Autokorrellation
-;   - Checksum
 ;   - Diskrete Fourier Transformation (bzw. FFT)
 ;   - Disassembler (x86/64, 6809, ...)
 ;   - Audiowiedergabe
 ;   - Cheat-Engine like node
-;   - Text-Viewer (Shows the data as text in a editor gadget)
+;   - Text-Editor
 ;   
 ; - Data_Source elemente
 ;   - Signalgeneratoren (Ausgabe verschiedener Datentypen (Byte, Word, Long, Float, Double...))
 ;   - Physikalische / Logische Datenträger
+;   - Serial Port
 ;   - Clipboard
 ;   
 ; - Strukturelemente
@@ -179,7 +179,7 @@
 ;   - Fixed the string encoding
 ;   - Added Tooltips
 ;   - Changed colors in node "Editor"
-;   - Added a event distributor for shortcut, menu and toolbar events
+;   - Added an event distributor for shortcut, menu and toolbar events
 ;   - Many other small changes and refactoring
 ;   
 ; - V0.969 (INDEV)
@@ -198,6 +198,7 @@ UsePNGImageEncoder()
 
 ; ##################################################### External Includes ###########################################
 
+XIncludeFile "Includes/Julia/julia.pbi"
 XIncludeFile "Includes/D3docker/D3docker.pbi"
 XIncludeFile "Includes/D3HT.pbi"
 XIncludeFile "Includes/D3NBT.pbi"
@@ -215,7 +216,7 @@ XIncludeFile "Includes/Icons.pbi"
 DeclareModule Main
   EnableExplicit
   ; ################################################### Constants ###################################################
-  #Version = 0968
+  #Version = 0969
   
   Enumeration 1
     #Menu_Dummy
@@ -273,16 +274,14 @@ DeclareModule Main
     Menu_ID.i
     ToolBar_ID.i
     StatusBar_ID.i
-    ;MDI.i
-    ;Panel.i
+    
     D3docker.i
-    ; ####
     D3docker_Height.i
     D3docker_Width.i
-    ;Panel_Height.i          ; Höhe des Panels
-    Menu_Height.i           ; Höhe des Menüs
-    ToolBar_Height.i        ; Höhe der ToolBar
-    StatusBar_Height.i      ; Höhe der StatusBar
+    
+    Menu_Height.i
+    ToolBar_Height.i
+    StatusBar_Height.i
   EndStructure
   Global Window.Window
   
@@ -300,6 +299,8 @@ XIncludeFile "Includes/Node.pbi"
 XIncludeFile "Includes/About.pbi"
 XIncludeFile "Includes/Window.pbi"
 
+XIncludeFile "Includes/Julia_API.pbi"
+
 XIncludeFile "Includes/Nodes/Binary_Operation/Binary_Operation.pbi"
 XIncludeFile "Includes/Nodes/Copy/Copy.pbi"
 XIncludeFile "Includes/Nodes/Data_Inspector/Data_Inspector.pbi"
@@ -315,6 +316,7 @@ XIncludeFile "Includes/Nodes/Process/Process.pbi"
 XIncludeFile "Includes/Nodes/Random/Random.pbi"
 XIncludeFile "Includes/Nodes/View1D/View1D.pbi"
 XIncludeFile "Includes/Nodes/View2D/View2D.pbi"
+XIncludeFile "Includes/Nodes/Julia/Julia.pbi"
 
 XIncludeFile "Includes/Node_Editor.pbi"
 
@@ -680,6 +682,9 @@ Module Main
   Logger::Init(Window\ID)
   Window::Init(Window\ID, Window\D3docker, Window\StatusBar_ID)
   
+  ; #### Init Julia
+  Julia_API::Init()
+  
   Node_Editor::Open()
   
   If FileSize(Helper::SHGetFolderPath(#CSIDL_APPDATA)+"\D3\Hexeditor\Node_Configuration.D3hex") < 0
@@ -710,13 +715,19 @@ Module Main
   
   Node_Editor::Configuration_Save(Helper::SHGetFolderPath(#CSIDL_APPDATA)+"\D3\Hexeditor\Node_Configuration.D3hex")
   
+  ; #### Deinit Julia
+  Julia_API::Deinit()
+  
   ; ################################################### Data Sections ###############################################
   
 EndModule
 
-; IDE Options = PureBasic 5.40 LTS Beta 8 (Windows - x64)
-; CursorPosition = 188
-; FirstLine = 148
+; IDE Options = PureBasic 5.42 LTS (Windows - x64)
+; CursorPosition = 718
+; FirstLine = 671
 ; Folding = --
 ; EnableUnicode
 ; EnableXP
+; EnableCompileCount = 0
+; EnableBuildCount = 0
+; EnableExeConstant
