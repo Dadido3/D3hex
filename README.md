@@ -14,7 +14,7 @@ This means that all functions of the software are available as single nodes, whi
 - And many more
 
 In a very simple case you just connect a source to the hex-editor node. This could look similar to this:
-![<Image missing>](https://raw.githubusercontent.com/Dadido3/D3hex/master/Screenshots/Nodes_Simple.png)  
+![<Image missing>](/Screenshots/Nodes_Simple.png)  
 The "History" node is used to virtualize all operations made by the "Editor" node.
 This allows undo and redo operations, until you finally press "save".
 Without the "History" node, you would write directly into the "File".
@@ -25,9 +25,9 @@ It is planned to implement a plugin system, which allows to extend the available
 In this case it would be possible to contribute in any language, which can compile c like shared libraries (.dll files).
 
 ## License
-D3hex is released under the [GPL](./License/GNU GPL v2.0.txt).
+D3hex is released under the [GPL](/LICENSE).
 
 ## Screenshots
-![<Image missing>](https://raw.githubusercontent.com/Dadido3/D3hex/master/Screenshots/4.png)
-![<Image missing>](https://raw.githubusercontent.com/Dadido3/D3hex/master/Screenshots/1.png)
-![<Image missing>](https://raw.githubusercontent.com/Dadido3/D3hex/master/Screenshots/3.png)
+![<Image missing>](/Screenshots/4.png)
+![<Image missing>](/Screenshots/1.png)
+![<Image missing>](/Screenshots/3.png)
