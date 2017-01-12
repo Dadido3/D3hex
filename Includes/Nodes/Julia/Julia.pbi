@@ -47,17 +47,6 @@ Module _Node_Julia
   UseModule Helper
   
   ; ################################################### Prototypes ##################################################
-;   ;PrototypeC   Julia_Callback_Input_Event(*Julia_Object.jl_value_t, *Input.Node::Conn_Input)
-;   
-;   ;PrototypeC   Julia_Callback_Output_Event(*Julia_Object.jl_value_t, *Output.Node::Conn_Output)
-;   ;PrototypeC   Julia_Callback_Output_Get_Segments(*Julia_Object.jl_value_t, *Output.Node::Conn_Output)
-;   ;PrototypeC   Julia_Callback_Output_Get_Descriptor(*Julia_Object.jl_value_t, *Output.Node::Conn_Output)
-;   PrototypeC.q Julia_Callback_Output_Get_Size(*Julia_Object.jl_value_t, *Output.Node::Conn_Output)
-;   PrototypeC   Julia_Callback_Output_Get_Data(*Julia_Object.jl_value_t, *Output.Node::Conn_Output, Position.q, *Data.jl_array_t, *Metadata.jl_array_t)
-;   PrototypeC   Julia_Callback_Output_Set_Data(*Julia_Object.jl_value_t, *Output.Node::Conn_Output, Position.q, *Data.jl_array_t)
-;   PrototypeC   Julia_Callback_Output_Shift(*Julia_Object.jl_value_t, *Output.Node::Conn_Output, Position.q, Offset.q)
-;   PrototypeC   Julia_Callback_Output_Set_Data_Check(*Julia_Object.jl_value_t, *Output.Node::Conn_Output, Position.q, Size.i)
-;   PrototypeC   Julia_Callback_Output_Shift_Check(*Julia_Object.jl_value_t, *Output.Node::Conn_Output, Position.q, Offset.q)
   
   ; ################################################### Structures ##################################################
   
@@ -75,13 +64,13 @@ Module _Node_Julia
   Structure Conn_Input
     *Node_Conn.Node::Conn_Input
     
-    ;*Julia_Callback_Event.jl_function_t
+    *Julia_Callback_Event.jl_function_t
   EndStructure
   
   Structure Conn_Output
     *Node_Conn.Node::Conn_Output
     
-    ;*Julia_Callback_Event.jl_function_t
+    *Julia_Callback_Event.jl_function_t
     ;*Julia_Callback_Get_Segments.jl_function_t
     ;*Julia_Callback_Get_Descriptor.jl_function_t
     *Julia_Callback_Get_Size.jl_function_t
@@ -275,8 +264,37 @@ Module _Node_Julia
       ProcedureReturn #False
     EndIf
     
-    Protected Event.Node::Event
-    Protected Offset.q, Size.q
+    Protected JL_GC_Previous
+    Protected Dim *Argument.jl_value_t(3-1)
+    Protected *Result
+    Protected Result = #False
+    
+    ; #### Get the julia callback function
+    ForEach *Object\Input()
+      If *Object\Input()\Node_Conn = *Input
+        If *Object\Input()\Julia_Callback_Event
+          
+          JL_GC_Previous = jl_gc_enable(#False)
+          
+          *Argument(0) = *Object\Julia_Object
+          *Argument(1) = jl_box_voidpointer(*Input)
+          *Argument(2) = jl_box_voidpointer(*Event)
+          
+          jl_gc_enable(JL_GC_Previous)
+          
+          *Result = jl_call(*Object\Input()\Julia_Callback_Event, @*Argument(0), 3)
+          If *Result
+            Result = jl_unbox_int64(*Result)
+          EndIf
+          
+          If jl_exception_occurred()
+            Logger::Entry_Add_Error("Julia_Node Event callback failed", "Error: " + PeekS(jl_typeof_str(jl_exception_occurred()), -1, #PB_UTF8))
+          EndIf
+          
+          ProcedureReturn Result
+        EndIf
+      EndIf
+    Next
     
     ProcedureReturn #False
   EndProcedure
@@ -296,6 +314,38 @@ Module _Node_Julia
     If Not *Object
       ProcedureReturn #False
     EndIf
+    
+    Protected JL_GC_Previous
+    Protected Dim *Argument.jl_value_t(3-1)
+    Protected *Result
+    Protected Result = #False
+    
+    ; #### Get the julia callback function
+    ForEach *Object\Output()
+      If *Object\Output()\Node_Conn = *Output
+        If *Object\Output()\Julia_Callback_Event
+          
+          JL_GC_Previous = jl_gc_enable(#False)
+          
+          *Argument(0) = *Object\Julia_Object
+          *Argument(1) = jl_box_voidpointer(*Output)
+          *Argument(2) = jl_box_voidpointer(*Event)
+          
+          jl_gc_enable(JL_GC_Previous)
+          
+          *Result = jl_call(*Object\Output()\Julia_Callback_Event, @*Argument(0), 3)
+          If *Result
+            Result = jl_unbox_int64(*Result)
+          EndIf
+          
+          If jl_exception_occurred()
+            Logger::Entry_Add_Error("Julia_Node Event callback failed", "Error: " + PeekS(jl_typeof_str(jl_exception_occurred()), -1, #PB_UTF8))
+          EndIf
+          
+          ProcedureReturn Result
+        EndIf
+      EndIf
+    Next
     
     ProcedureReturn #False
   EndProcedure
@@ -813,7 +863,7 @@ Module _Node_Julia
         DeleteElement(*Object\Input())
       EndIf
     Next
-    ; #### The real node input will be deleted later
+    ; #### The real node input will be deleted later TODO: Remove node input later
     
     ProcedureReturn #True
   EndProcedure
@@ -835,8 +885,8 @@ Module _Node_Julia
     ForEach *Object\Input()
       If *Object\Input()\Node_Conn = *Input
         Select Event
-          ;Case "Event"            : *Object\Input()\Julia_Callback_Event = *Julia_Callback ; TODO: Add more callbacks to the julia node
-          ;Default                 : ProcedureReturn #False
+          Case "Event"            : *Object\Input()\Julia_Callback_Event = *Julia_Callback
+          Default                 : ProcedureReturn #False
         EndSelect
         ProcedureReturn #True
       EndIf
@@ -856,10 +906,10 @@ Module _Node_Julia
     
     AddElement(*Object\Output())
     *Object\Output()\Node_Conn = Node::Output_Add(*Node, Name, Short_Name)
-    ;*Object\Output()\Node_Conn\Function_Event = @Output_Event()
+    *Object\Output()\Node_Conn\Function_Event = @Output_Event()
     ;*Object\Output()\Node_Conn\Function_Get_Segments = @Output_Get_Segments()
     ;*Object\Output()\Node_Conn\Function_Get_Descriptor = @Output_Get_Descriptor()
-    *Object\Output()\Node_Conn\Function_Get_Size = @Output_Get_Size()
+    *Object\Output()\Node_Conn\Function_Get_Size = @Output_Get_Size() ; TODO: Add more callbacks to the julia node
     *Object\Output()\Node_Conn\Function_Get_Data = @Output_Get_Data()
     *Object\Output()\Node_Conn\Function_Set_Data = @Output_Set_Data()
     *Object\Output()\Node_Conn\Function_Shift = @Output_Shift()
@@ -888,7 +938,7 @@ Module _Node_Julia
         DeleteElement(*Object\Output())
       EndIf
     Next
-    ; #### The real node output will be deleted later
+    ; #### The real node output will be deleted later TODO: Remove node output later
     
     ProcedureReturn #True
   EndProcedure
@@ -910,7 +960,7 @@ Module _Node_Julia
     ForEach *Object\Output()
       If *Object\Output()\Node_Conn = *Output
         Select Event
-          ;Case "Event"            : *Object\Output()\Julia_Callback_Event = *Julia_Callback
+          Case "Event"            : *Object\Output()\Julia_Callback_Event = *Julia_Callback
           ;Case "Get_Segments"     : *Object\Output()\Julia_Callback_Get_Segments = *Julia_Callback
           ;Case "Get_Descriptor"   : *Object\Output()\Julia_Callback_Get_Descriptor = *Julia_Callback
           Case "Get_Size"         : *Object\Output()\Julia_Callback_Get_Size = *Julia_Callback
@@ -1027,8 +1077,8 @@ Module _Node_Julia
 EndModule
 
 ; IDE Options = PureBasic 5.42 LTS (Windows - x64)
-; CursorPosition = 792
-; FirstLine = 779
+; CursorPosition = 273
+; FirstLine = 268
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP
