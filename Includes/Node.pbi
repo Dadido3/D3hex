@@ -35,7 +35,7 @@ DeclareModule Node
   ; ################################################### Constants ###################################################
   #Event_Values = 10
   
-  Enumeration
+  Enumeration ; Referenced in Julia. If changed, also change definition in Julia
     ; #### Normal events
     #Event_Save
     #Event_SaveAs
@@ -91,7 +91,7 @@ DeclareModule Node
   EndStructure
   Global Main.Main
   
-  Structure Event
+  Structure Event Align #PB_Structure_AlignC; Referenced in Julia. If changed, also change definition in Julia
     Type.l
     
     Position.q    ; Position of the event, if it has any
@@ -683,8 +683,8 @@ Module Node
 EndModule
 
 ; IDE Options = PureBasic 5.42 LTS (Windows - x64)
-; CursorPosition = 75
-; FirstLine = 51
+; CursorPosition = 93
+; FirstLine = 85
 ; Folding = ----
 ; EnableXP
 ; EnableCompileCount = 0

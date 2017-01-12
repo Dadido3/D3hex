@@ -151,16 +151,48 @@ Module Julia_API
     ; #### Node
     Temp_String = "module Node" + #Linebreak
     
-    Temp_String + "type Object" + #Linebreak + 
+    Temp_String + "const Event_Values = " + Node::#Event_Values + #Linebreak +
+                  #Linebreak +
+                  "const Event_Save = " + Node::#Event_Save + #Linebreak +
+                  "const Event_SaveAs = " + Node::#Event_SaveAs + #Linebreak +
+                  "const Event_Cut = " + Node::#Event_Cut + #Linebreak +
+                  "const Event_Copy = " + Node::#Event_Copy + #Linebreak +
+                  "const Event_Paste = " + Node::#Event_Paste + #Linebreak +
+                  "const Event_Undo = " + Node::#Event_Undo + #Linebreak +
+                  "const Event_Redo = " + Node::#Event_Redo + #Linebreak +
+                  "const Event_Goto = " + Node::#Event_Goto + #Linebreak +
+                  "const Event_Search = " + Node::#Event_Search + #Linebreak +
+                  "const Event_Search_Continue = " + Node::#Event_Search_Continue + #Linebreak +
+                  "const Event_Close = " + Node::#Event_Close + #Linebreak +
+                  #Linebreak +
+                  "const Link_Event_Update_Descriptor = " + Node::#Link_Event_Update_Descriptor + #Linebreak +
+                  "const Link_Event_Update = " + Node::#Link_Event_Update + #Linebreak +
+                  "const Link_Event_Goto = " + Node::#Link_Event_Goto + #Linebreak
+    
+    Temp_String + "type Object" + #Linebreak +
                   "end" + #Linebreak
     
-    Temp_String + "type Event" + #Linebreak + 
+    Temp_String + "type Event" + #Linebreak +
+                  #Linebreak +
+                  "  event_type::Int32" + #Linebreak +
+                  "  position::Int64" + #Linebreak +
+                  "  size::Int64" + #Linebreak +
+                  #Linebreak +
+                  "  value::NTuple{Event_Values, Int64}" + #Linebreak +
+                  #Linebreak +
+                  "  custom_data::Ptr{Void}" + #Linebreak +
+                  "  function Event(event_type::Int64, position::Int64, size::Int64)" + #Linebreak +
+                  "    event = new()" + #Linebreak +
+                  "    event.event_type, event.position, event.size = Int32(event_type), position, size" + #Linebreak +
+                  "    event" + #Linebreak +
+                  "  end" + #Linebreak +
+                  "end" + #Linebreak +
+                  "@assert sizeof(Event) == " + SizeOf(Node::Event) + #Linebreak
+    
+    Temp_String + "type Conn_Input" + #Linebreak +
                   "end" + #Linebreak
     
-    Temp_String + "type Conn_Input" + #Linebreak + 
-                  "end" + #Linebreak
-    
-    Temp_String + "type Conn_Output" + #Linebreak + 
+    Temp_String + "type Conn_Output" + #Linebreak +
                   "end" + #Linebreak
     
     Temp_String + "Get(id::Int) = ccall(convert(Ptr{Void}, "+Str(Node::@Get())+"), Ptr{Object}, (Csize_t,), id)" + #Linebreak
@@ -178,13 +210,25 @@ Module Julia_API
     Temp_String + "Link_Disconnect(input::Ptr{Conn_Input}) = ccall(convert(Ptr{Void}, "+Str(Node::@Link_Disconnect())+"), Csize_t, (Ptr{Conn_Input},), input)" + #Linebreak
     Temp_String + "Link_Connect(output::Ptr{Conn_Output}, input::Ptr{Conn_Input}) = ccall(convert(Ptr{Void}, "+Str(Node::@Link_Connect())+"), Csize_t, (Ptr{Conn_Output}, Ptr{Conn_Input}), output, input)" + #Linebreak
     
-    Temp_String + "Input_Event(input::Ptr{Conn_Input}, event::Ptr{Event}) = ccall(convert(Ptr{Void}, "+Str(Node::@Input_Event())+"), Csize_t, (Ptr{Conn_Input}, Ptr{Event}), input, event)" + #Linebreak
-    Temp_String + "Output_Event(output::Ptr{Conn_Output}, event::Ptr{Event}) = ccall(convert(Ptr{Void}, "+Str(Node::@Output_Event())+"), Csize_t, (Ptr{Conn_Output}, Ptr{Event}), output, event)" + #Linebreak
+    Temp_String + "Input_Event(input::Ptr{Conn_Input}, event::Ref{Event}) = ccall(convert(Ptr{Void}, "+Str(Node::@Input_Event())+"), Csize_t, (Ptr{Conn_Input}, Ref{Event}), input, event)" + #Linebreak
+    Temp_String + "Input_Event(input::Ptr{Conn_Input}, event::Event) = ccall(convert(Ptr{Void}, "+Str(Node::@Input_Event())+"), Csize_t, (Ptr{Conn_Input}, Ref{Event}), input, event)" + #Linebreak
+    Temp_String + "Output_Event(output::Ptr{Conn_Output}, event::Ref{Event}) = ccall(convert(Ptr{Void}, "+Str(Node::@Output_Event())+"), Csize_t, (Ptr{Conn_Output}, Ref{Event}), output, event)" + #Linebreak
+    Temp_String + "Output_Event(output::Ptr{Conn_Output}, event::Event) = ccall(convert(Ptr{Void}, "+Str(Node::@Output_Event())+"), Csize_t, (Ptr{Conn_Output}, Ref{Event}), output, event)" + #Linebreak
     Temp_String + "Input_Get_Descriptor(input::Ptr{Conn_Input}) = ccall(convert(Ptr{Void}, "+Str(Node::@Input_Get_Descriptor())+"), Csize_t, (Ptr{Conn_Input},), input)" + #Linebreak
     ; TODO: Expose Input_Get_Segments to Julia
     Temp_String + "Input_Get_Size(input::Ptr{Conn_Input}) = ccall(convert(Ptr{Void}, "+Str(Node::@Input_Get_Size())+"), Int64, (Ptr{Conn_Input},), input)" + #Linebreak
-    Temp_String + "Input_Get_Data(input::Ptr{Conn_Input}, position::Int64, size::Csize_t, data::Array{UInt8,1}, metadata::Array{UInt8,1}) = ccall(convert(Ptr{Void}, "+Str(Node::@Input_Get_Data())+"), Csize_t, (Ptr{Conn_Input}, Int64, Csize_t, Ref{Array{UInt8,1}}, Ref{Array{UInt8,1}}), input, position, size, Ref{data}, Ref{metadata})" + #Linebreak
-    Temp_String + "Input_Set_Data(input::Ptr{Conn_Input}, position::Int64, size::Csize_t, data::Array{UInt8,1}) = ccall(convert(Ptr{Void}, "+Str(Node::@Input_Set_Data())+"), Csize_t, (Ptr{Conn_Input}, Int64, Csize_t, Ref{Array{UInt8,1}}), input, position, size, Ref{data})" + #Linebreak
+    Temp_String + "function Input_Get_Data(input::Ptr{Conn_Input}, position::Int64, data::Array{UInt8,1}, metadata::Array{UInt8,1})" + #Linebreak +
+                  "  size = min(sizeof(data), sizeof(metadata))" + #Linebreak +
+                  "  ccall(convert(Ptr{Void}, "+Str(Node::@Input_Get_Data())+"), Csize_t, (Ptr{Conn_Input}, Int64, Csize_t, Ptr{Array{UInt8,1}}, Ptr{Array{UInt8,1}}), input, position, size, data, metadata)" + #Linebreak +
+                  "end"+ #Linebreak
+    Temp_String + "function Input_Get_Data(input::Ptr{Conn_Input}, position::Int64, data::Array{UInt8,1})" + #Linebreak +
+                  "  size = sizeof(data)" + #Linebreak +
+                  "  ccall(convert(Ptr{Void}, "+Str(Node::@Input_Get_Data())+"), Csize_t, (Ptr{Conn_Input}, Int64, Csize_t, Ptr{Array{UInt8,1}}, Ptr{Array{UInt8,1}}), input, position, size, data, C_NULL)" + #Linebreak +
+                  "end"+ #Linebreak
+    Temp_String + "function Input_Set_Data(input::Ptr{Conn_Input}, position::Int64, data::Array{UInt8,1})" + #Linebreak +
+                  "  size = sizeof(data)" + #Linebreak +
+                  "  ccall(convert(Ptr{Void}, "+Str(Node::@Input_Set_Data())+"), Csize_t, (Ptr{Conn_Input}, Int64, Csize_t, Ptr{Array{UInt8,1}}), input, position, size, data)" + #Linebreak +
+                  "end"+ #Linebreak
     Temp_String + "Input_Shift(input::Ptr{Conn_Input}, position::Int64, offset::Int64) = ccall(convert(Ptr{Void}, "+Str(Node::@Input_Shift())+"), Csize_t, (Ptr{Conn_Input}, Int64, Int64), input, position, offset)" + #Linebreak
     Temp_String + "Input_Set_Data_Check(input::Ptr{Conn_Input}, position::Int64, size::Csize_t) = ccall(convert(Ptr{Void}, "+Str(Node::@Input_Set_Data_Check())+"), Csize_t, (Ptr{Conn_Input}, Int64, Csize_t), input, position, size)" + #Linebreak
     Temp_String + "Input_Shift_Check(input::Ptr{Conn_Input}, position::Int64, offset::Int64) = ccall(convert(Ptr{Void}, "+Str(Node::@Input_Shift_Check())+"), Csize_t, (Ptr{Conn_Input}, Int64, Int64), input, position, offset)" + #Linebreak
@@ -235,8 +279,8 @@ Module Julia_API
 EndModule
 
 ; IDE Options = PureBasic 5.42 LTS (Windows - x64)
-; CursorPosition = 79
-; FirstLine = 72
+; CursorPosition = 214
+; FirstLine = 180
 ; Folding = --
 ; EnableUnicode
 ; EnableXP
