@@ -7,7 +7,7 @@
   <section name="data">
     <explorer view="Includes\Nodes\View2D\" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2017-01-12 21:20" user="David Vogel" host="DAVIDS"/>
+    <lastopen date="2017-01-15 02:39" user="David Vogel" host="DAVIDS"/>
   </section>
   <section name="files">
     <file name="Includes\About.pbi">
@@ -48,7 +48,7 @@
     </file>
     <file name="Includes\Julia\julia.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+++"/>
-      <fingerprint md5="a94503d127bdd6aeeb6606ba3390c571"/>
+      <fingerprint md5="b4977f0a1af0a5fa896ba0f13c650003"/>
     </file>
     <file name="Includes\Julia_API.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++"/>
@@ -116,7 +116,7 @@
     </file>
     <file name="Includes\Nodes\Julia\Julia.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="++++"/>
-      <fingerprint md5="8600cb9f102acb0d0e38b8a0311c9515"/>
+      <fingerprint md5="7de971bfa39c7214756b40a4388b7074"/>
     </file>
     <file name="Includes\Nodes\Network_Terminal\Network_Terminal.pbi">
       <config load="0" scan="1" panel="1" warn="1" lastopen="0" panelstate="+++-"/>
@@ -194,7 +194,7 @@
       <options unicode="1" xpskin="1" user="1" onerror="1" debug="1"/>
       <purifier enable="0" granularity="1,1,1,1"/>
       <icon enable="1">Data\Images\Icon.ico</icon>
-      <compilecount enable="1" value="4163"/>
+      <compilecount enable="1" value="4173"/>
       <buildcount enable="1" value="67"/>
       <versioninfo enable="1">
         <field3 value="D3hex"/>

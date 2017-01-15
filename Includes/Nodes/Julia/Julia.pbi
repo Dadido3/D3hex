@@ -166,7 +166,7 @@ Module _Node_Julia
       *Object\Julia_Module = jl_call1(*func, *argument)
       
       If jl_exception_occurred()
-        Logger::Entry_Add_Error("Error while loading a Julia script", "Path: " + Path + #CRLF$ + "Error: " + PeekS(jl_typeof_str(jl_exception_occurred()), -1, #PB_UTF8))
+        Logger::Entry_Add_Error("Error while loading a Julia script", "Path: " + Path + #CRLF$ + "Error: " + Julia_API::JL_GetError(jl_exception_occurred()))
       EndIf
       
       ; #### Call constructor of the module
@@ -183,7 +183,7 @@ Module _Node_Julia
         EndIf
         
         If jl_exception_occurred()
-          Logger::Entry_Add_Error("Error while creating an instance of " + "Object", "Module: " + "Object" + #CRLF$ + "Error: " + PeekS(jl_typeof_str(jl_exception_occurred()), -1, #PB_UTF8))
+          Logger::Entry_Add_Error("Error while creating an instance of " + "Object", "Module: " + "Object" + #CRLF$ + "Error: " + Julia_API::JL_GetError(jl_exception_occurred()))
         EndIf
       EndIf
     EndIf
@@ -288,7 +288,7 @@ Module _Node_Julia
           EndIf
           
           If jl_exception_occurred()
-            Logger::Entry_Add_Error("Julia_Node Event callback failed", "Error: " + PeekS(jl_typeof_str(jl_exception_occurred()), -1, #PB_UTF8))
+            Logger::Entry_Add_Error("Julia_Node Event callback failed", "Error: " + Julia_API::JL_GetError(jl_exception_occurred()))
           EndIf
           
           ProcedureReturn Result
@@ -339,7 +339,7 @@ Module _Node_Julia
           EndIf
           
           If jl_exception_occurred()
-            Logger::Entry_Add_Error("Julia_Node Event callback failed", "Error: " + PeekS(jl_typeof_str(jl_exception_occurred()), -1, #PB_UTF8))
+            Logger::Entry_Add_Error("Julia_Node Event callback failed", "Error: " + Julia_API::JL_GetError(jl_exception_occurred()))
           EndIf
           
           ProcedureReturn Result
@@ -419,7 +419,7 @@ Module _Node_Julia
           EndIf
           
           If jl_exception_occurred()
-            Logger::Entry_Add_Error("Julia Get_Size callback failed", "Error: " + PeekS(jl_typeof_str(jl_exception_occurred()), -1, #PB_UTF8))
+            Logger::Entry_Add_Error("Julia Get_Size callback failed", "Error: " + Julia_API::JL_GetError(jl_exception_occurred()))
           EndIf
           
           ProcedureReturn Result
@@ -486,7 +486,7 @@ Module _Node_Julia
           EndIf
           
           If jl_exception_occurred()
-            Logger::Entry_Add_Error("Julia_Node Get_Data callback failed", "Error: " + PeekS(jl_typeof_str(jl_exception_occurred()), -1, #PB_UTF8))
+            Logger::Entry_Add_Error("Julia_Node Get_Data callback failed", "Error: " + Julia_API::JL_GetError(jl_exception_occurred()))
           EndIf
           
           ProcedureReturn Result
@@ -548,7 +548,7 @@ Module _Node_Julia
           EndIf
           
           If jl_exception_occurred()
-            Logger::Entry_Add_Error("Julia_Node Set_Data callback failed", "Error: " + PeekS(jl_typeof_str(jl_exception_occurred()), -1, #PB_UTF8))
+            Logger::Entry_Add_Error("Julia_Node Set_Data callback failed", "Error: " + Julia_API::JL_GetError(jl_exception_occurred()))
           EndIf
           
           ProcedureReturn Result
@@ -597,7 +597,7 @@ Module _Node_Julia
           EndIf
           
           If jl_exception_occurred()
-            Logger::Entry_Add_Error("Julia_Node Shift callback failed", "Error: " + PeekS(jl_typeof_str(jl_exception_occurred()), -1, #PB_UTF8))
+            Logger::Entry_Add_Error("Julia_Node Shift callback failed", "Error: " + Julia_API::JL_GetError(jl_exception_occurred()))
           EndIf
           
           ProcedureReturn Result
@@ -646,7 +646,7 @@ Module _Node_Julia
           EndIf
           
           If jl_exception_occurred()
-            Logger::Entry_Add_Error("Julia_Node Set_Data_Check callback failed", "Error: " + PeekS(jl_typeof_str(jl_exception_occurred()), -1, #PB_UTF8))
+            Logger::Entry_Add_Error("Julia_Node Set_Data_Check callback failed", "Error: " + Julia_API::JL_GetError(jl_exception_occurred()))
           EndIf
           
           ProcedureReturn Result
@@ -695,7 +695,7 @@ Module _Node_Julia
           EndIf
           
           If jl_exception_occurred()
-            Logger::Entry_Add_Error("Julia_Node Shift_Check callback failed", "Error: " + PeekS(jl_typeof_str(jl_exception_occurred()), -1, #PB_UTF8))
+            Logger::Entry_Add_Error("Julia_Node Shift_Check callback failed", "Error: " + Julia_API::JL_GetError(jl_exception_occurred()))
           EndIf
           
           ProcedureReturn Result
@@ -1077,8 +1077,8 @@ Module _Node_Julia
 EndModule
 
 ; IDE Options = PureBasic 5.42 LTS (Windows - x64)
-; CursorPosition = 273
-; FirstLine = 268
+; CursorPosition = 697
+; FirstLine = 650
 ; Folding = -----
 ; EnableUnicode
 ; EnableXP

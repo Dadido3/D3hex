@@ -45,8 +45,9 @@ DeclareModule Julia_API
   Global Main.Main
   
   Structure JL_Module
+    *Helper.jl_value_t
     *PB.jl_value_t
-    *GC_Preserve.jl_value_t
+    *Logger.jl_value_t
     *Node.jl_value_t
   EndStructure
   Global JL_Module.JL_Module
@@ -60,6 +61,8 @@ DeclareModule Julia_API
   Global JL_GC_Unref.JL_GC_Unref
   
   ; ################################################### Functions ###################################################
+  Declare.s JL_GetError(*Error.jl_value_t)
+  
   Declare   Init()
   Declare   Deinit()
   
@@ -71,6 +74,19 @@ EndDeclareModule
 
 Module Julia_API
   ; ################################################### Procedures ##################################################
+  Procedure.s JL_GetError(*Error.jl_value_t)
+    Protected *Result
+    Protected *Function = jl_get_function(JL_Module\Helper, "GetError")
+    
+    *Result = jl_call1(*Function, *Error)
+    If *Result And jl_array_data(*Result)
+      ProcedureReturn PeekS(jl_array_data(*Result), jl_array_len(*Result), #PB_UTF8)
+    EndIf
+    
+    ProcedureReturn ""
+  EndProcedure
+  
+  ; ################################################### Procedures exported to Julia ################################
   ProcedureC PB_Debug(Message.s)
     Debug "Julia-Debug: " + Message
   EndProcedure
@@ -83,38 +99,23 @@ Module Julia_API
     Logger::Entry_Add(Logger::#Entry_Type_Warning, Name, Description, "Unknown", "Unknown", -1)
   EndProcedure
   
+  ; ################################################### Procedures to initialize Julia ##############################
   Procedure Register_Functions()
     Protected Temp_String.s
     
-    ; #### Debug
-    Temp_String = "module PB" + #Linebreak
+    ; #### Helper
+    Temp_String = "module Helper" + #Linebreak
     
-    Temp_String + "Debug(message::String) = ccall(convert(Ptr{Void}, "+Str(@PB_Debug())+"), Void, (Cwstring,), message)" + #Linebreak
+    Temp_String + "export gc_ref, gc_unref, GetError" + #Linebreak
     
-    Temp_String + "end"
-    
-    JL_Module\PB = jl_eval_string(Temp_String)
-    If jl_exception_occurred()
-      Logger::Entry_Add_Error("Couldn't register PB module in Julia", "jl_eval_string(Temp_String) failed: " + PeekS(jl_typeof_str(jl_exception_occurred()), -1, #PB_UTF8))
-    EndIf
-    
-    ; #### Logger
-    Temp_String = "module Logger" + #Linebreak
-    
-    Temp_String + "Entry_Add_Error(name::String, description::String) = ccall(convert(Ptr{Void}, "+Str(@Logger_Entry_Add_Error())+"), Void, (Cwstring,Cwstring), name, description)" + #Linebreak
-    Temp_String + "Entry_Add_Warning(name::String, description::String) = ccall(convert(Ptr{Void}, "+Str(@Logger_Entry_Add_Warning())+"), Void, (Cwstring,Cwstring), name, description)" + #Linebreak
-    
-    Temp_String + "end"
-    
-    JL_Module\PB = jl_eval_string(Temp_String)
-    If jl_exception_occurred()
-      Logger::Entry_Add_Error("Couldn't register Logger module in Julia", "jl_eval_string(Temp_String) failed: " + PeekS(jl_typeof_str(jl_exception_occurred()), -1, #PB_UTF8))
-    EndIf
-    
-    ; #### GC Preserve
-    Temp_String = "module GC_Preserve" + #Linebreak
-    
-    Temp_String + "export gc_ref, gc_unref" + #Linebreak
+    Temp_String + "function GetError(error)" + #Linebreak +
+	                "  local stream = IOBuffer(true, true)" + #Linebreak +
+	                "  showerror(stream, error)" + #Linebreak +
+	               ;~"  write(stream, \"\nErrorObject: \")" + #Linebreak +
+	               ; "  show(stream, error)" + #Linebreak +
+	                "  seek(stream, 0)" + #Linebreak +
+	                "  read(stream)" + #Linebreak +
+                  "end" + #Linebreak
     
     Temp_String + "const gc_preserve = ObjectIdDict() # reference counted closures" + #Linebreak
     Temp_String + "function gc_ref(x::ANY)" + #Linebreak + 
@@ -137,15 +138,42 @@ Module Julia_API
     
     Temp_String + "end"
     
-    JL_Module\GC_Preserve = jl_eval_string(Temp_String)
+    JL_Module\Helper = jl_eval_string(Temp_String)
     If jl_exception_occurred()
-      Logger::Entry_Add_Error("Couldn't register GC_Preserve module in Julia", "jl_eval_string(Temp_String) failed: " + PeekS(jl_typeof_str(jl_exception_occurred()), -1, #PB_UTF8))
+      Logger::Entry_Add_Error("Couldn't register Helper module in Julia", "jl_eval_string(Temp_String) failed: " + PeekS(jl_typeof_str(jl_exception_occurred()), -1, #PB_UTF8))
     EndIf
     
+    ; #### PureBasic
+    Temp_String = "module PB" + #Linebreak
+    
+    Temp_String + "Debug(message::String) = ccall(convert(Ptr{Void}, "+Str(@PB_Debug())+"), Void, (Cwstring,), message)" + #Linebreak
+    
+    Temp_String + "end"
+    
+    JL_Module\PB = jl_eval_string(Temp_String)
+    If jl_exception_occurred()
+      Logger::Entry_Add_Error("Couldn't register PB module in Julia", "jl_eval_string(Temp_String) failed: " + JL_GetError(jl_exception_occurred()))
+    EndIf
+    
+    ; #### Logger
+    Temp_String = "module Logger" + #Linebreak
+    
+    Temp_String + "Entry_Add_Error(name::String, description::String) = ccall(convert(Ptr{Void}, "+Str(@Logger_Entry_Add_Error())+"), Void, (Cwstring,Cwstring), name, description)" + #Linebreak
+    Temp_String + "Entry_Add_Warning(name::String, description::String) = ccall(convert(Ptr{Void}, "+Str(@Logger_Entry_Add_Warning())+"), Void, (Cwstring,Cwstring), name, description)" + #Linebreak
+    
+    Temp_String + "end"
+    
+    JL_Module\Logger = jl_eval_string(Temp_String)
+    If jl_exception_occurred()
+      Logger::Entry_Add_Error("Couldn't register Logger module in Julia", "jl_eval_string(Temp_String) failed: " + JL_GetError(jl_exception_occurred()))
+    EndIf
+    
+    ; #### GC Preserve
+    
     ; #### Retrieve gc_ref and gc_unref functions
-    If JL_Module\GC_Preserve
-      JL_GC_Ref = jl_unbox_voidpointer(jl_get_function(JL_Module\GC_Preserve, "gc_ref_c"))
-      JL_GC_Unref = jl_unbox_voidpointer(jl_get_function(JL_Module\GC_Preserve, "gc_unref_c"))
+    If JL_Module\Helper
+      JL_GC_Ref = jl_unbox_voidpointer(jl_get_function(JL_Module\Helper, "gc_ref_c"))       ; Not actually retrieving a jl_function here
+      JL_GC_Unref = jl_unbox_voidpointer(jl_get_function(JL_Module\Helper, "gc_unref_c"))
     EndIf
     
     ; #### Node
@@ -237,7 +265,7 @@ Module Julia_API
     
     JL_Module\Node = jl_eval_string(Temp_String)
     If jl_exception_occurred()
-      Logger::Entry_Add_Error("Couldn't register Node module in Julia", "jl_eval_string(Temp_String) failed: " + PeekS(jl_typeof_str(jl_exception_occurred()), -1, #PB_UTF8))
+      Logger::Entry_Add_Error("Couldn't register Node module in Julia", "jl_eval_string(Temp_String) failed: " + JL_GetError(jl_exception_occurred()))
     EndIf
     
     ProcedureReturn #True
@@ -279,8 +307,8 @@ Module Julia_API
 EndModule
 
 ; IDE Options = PureBasic 5.42 LTS (Windows - x64)
-; CursorPosition = 214
-; FirstLine = 180
+; CursorPosition = 114
+; FirstLine = 91
 ; Folding = --
 ; EnableUnicode
 ; EnableXP
