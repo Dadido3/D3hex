@@ -5,7 +5,9 @@ module Node_Histogram
 	type Object
 		node_id::Int64
 		
-		histogram::Array{UInt8, 1}
+		histogram_max::Float32
+		histogram_min::Float32
+		histogram::Array{Float32, 2}
 		
 		input::Ptr{Node.Conn_Input}
 		output::Ptr{Node.Conn_Output}
@@ -41,7 +43,10 @@ module Node_Histogram
 	end
 	
 	function Output_Callback_Get_Data(this::Object, output::Ptr{Void}, position::Int64, data::Array{UInt8,1}, metadata::Array{UInt8,1})
-		histogram = this.histogram
+		# Get and flatten histogram data
+		local histogram = this.histogram[:]
+		local max_value = this.histogram_max
+		local min_value = this.histogram_min
 		
 		# Get size
 		size = min(length(histogram) - position, length(data), length(metadata))
@@ -49,8 +54,34 @@ module Node_Histogram
 			return 0
 		end
 		
+		# Get only the slice of data, which is needed
+		histogram = histogram[position+1:position+size]
+		
+		# Nonlinear scale
+		histogram = sqrt(histogram)
+		max_value = sqrt(max_value)
+		min_value = sqrt(min_value)
+		
+		# Normalize array
+		if min_value != max_value
+			histogram = (histogram - min_value) / (max_value - min_value) * 255
+		end
+		
+		# Customc scaling
+		histogram *= 10
+		
+		# Limit range to UInt8
+		@simd for i in 1:length(histogram)
+			@inbounds if histogram[i] > 255
+				histogram[i] = 255
+			end
+		end
+		
+		# Flatten array and change its type
+		histogram = floor(UInt8, histogram[:])
+		
 		# Copy data
-		data[1:size] .= histogram[position+1:position+size]
+		data[1:size] .= histogram
 		metadata[1:size] .= 0b10000001
 		
 		return 1
@@ -58,39 +89,33 @@ module Node_Histogram
 	
 	function Update_Histogram(this::Object)
 		inputsize = Node.Input_Get_Size(this.input)
-		if inputsize < 0
-			return false
-		end
 		
-		inputdata = zeros(UInt8, inputsize)
-		if Node.Input_Get_Data(this.input, 0, inputdata) == 0
-			return false
+		if inputsize >= 0
+			inputdata = zeros(UInt8, inputsize)
+			if Node.Input_Get_Data(this.input, 0, inputdata) == 0
+				this.histogram = zeros(UInt8, 0)
+				return false
+			end
+		else
+			inputdata = zeros(UInt8, 0)
 		end
 		
 		histogram = zeros(Float32, 256, 256)
-		maximum = 0
+		max_value = 0
 		for i in 1:length(inputdata)-1
 			histogram[inputdata[i]+1, inputdata[i+1]+1] += 1
-			if maximum < histogram[inputdata[i]+1, inputdata[i+1]+1]
-				maximum = histogram[inputdata[i]+1, inputdata[i+1]+1]
+			if max_value < histogram[inputdata[i]+1, inputdata[i+1]+1]
+				max_value = histogram[inputdata[i]+1, inputdata[i+1]+1]
 			end
 		end
 		
-		# Nonlinear scale
-		histogram = sqrt(histogram)
-		maximum = sqrt(maximum)
-		
-		# Normalize array
-		histogram = histogram .* 255 / maximum
-		
-		# Flatten array and change its type
-		histogram = convert(Array{UInt8, 1}, floor(histogram[:]))
-		
 		# Write to object
 		this.histogram = histogram
+		this.histogram_max = max_value
+		this.histogram_min = minimum(histogram)
 		
 		# Send event out of the output
-		event = Node.Event(Node.Link_Event_Update, 0, sizeof(histogram))
+		event = Node.Event(Node.Link_Event_Update, 0, 256 * 256)
 		Node.Output_Event(this.output, event)
 		
 		return true
